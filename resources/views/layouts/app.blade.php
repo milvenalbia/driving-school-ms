@@ -19,33 +19,18 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body
-        x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false, 'title': '{{ $title }}'}"
+        x-data="{ page: 'ecommerce', 'loaded': false, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false, 'title': '{{ $title }}'}"
         x-init="
             darkMode = JSON.parse(localStorage.getItem('darkMode'));
             $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
         :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
     >
-    {{-- Loader --}}
-        <div x-show="loaded"
-                x-init="
-                setTimeout(() => {
-                    loaded = false;
-                }, 500);
-            "
-            class="fixed left-0 top-0 z-999999 flex h-screen w-screen items-center justify-center bg-white dark:bg-black">
-            <div
-              class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
-            >
-              <div
-                class="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-red-400 rounded-full"
-              ></div>
-            </div>
-          </div>
+        {{-- Loader --}}
+        <x-elements.preloader />
 
         <div class="flex h-screen overflow-hidden">
             <livewire:layout.sidebar />
@@ -61,5 +46,7 @@
             </div>
         
         </div>
+
+        @yield('scripts')
     </body>
 </html>

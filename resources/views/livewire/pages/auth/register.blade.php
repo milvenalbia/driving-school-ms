@@ -82,8 +82,8 @@ new #[Layout('layouts.guest')] class extends Component
                 Name
             </label>
             <div class="relative">
-                <x-text-input wire:model="name" id="name" type="text" name="name" placeholder="Enter your full name" required autofocus autocomplete="name" />
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <x-elements.text-input wire:model="name" id="name" type="text" name="name" placeholder="Enter your full name" required autofocus autocomplete="name" />
+                <x-elements.input-error :messages="$errors->get('name')" class="mt-2" />
                 <span class="absolute right-4 top-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -97,8 +97,8 @@ new #[Layout('layouts.guest')] class extends Component
                 Email
             </label>
             <div class="relative">
-                <x-text-input wire:model="email" placeholder="Enter your email" id="email" type="email" name="email" required autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                <x-elements.text-input wire:model="email" placeholder="Enter your email" id="email" type="email" name="email" required autocomplete="username" />
+                <x-elements.input-error :messages="$errors->get('email')" class="mt-2" />
 
                 <span class="absolute right-4 top-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -113,13 +113,13 @@ new #[Layout('layouts.guest')] class extends Component
                 Password
             </label>
             <div class="relative">
-                <x-text-input wire:model="password" id="password"
+                <x-elements.text-input wire:model="password" id="password"
                         type="password"
                         name="password"
                         placeholder="Enter your password"
                         required autocomplete="new-password" />
 
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <x-elements.input-error :messages="$errors->get('password')" class="mt-2" />
 
                 <span class="absolute right-4 top-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">
@@ -134,12 +134,12 @@ new #[Layout('layouts.guest')] class extends Component
                 Re-type Password
             </label>
             <div class="relative">
-                <x-text-input wire:model="password_confirmation" id="password_confirmation"
+                <x-elements.text-input wire:model="password_confirmation" id="password_confirmation"
                         type="password"
                         placeholder="Confirm your password"
                         name="password_confirmation" required autocomplete="new-password" />
 
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                <x-elements.input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
 
                 <span class="absolute right-4 top-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">

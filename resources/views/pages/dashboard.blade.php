@@ -244,4 +244,6 @@
   </div>
   <!-- Card Item End -->
 </div>
+
+<livewire:dashboard.chart-component />
 </x-app-layout>

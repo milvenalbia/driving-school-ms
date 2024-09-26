@@ -78,20 +78,18 @@ new #[Layout('layouts.guest')] class extends Component
                     Email
                 </label>
                 <div class="relative">
-                    <x-text-input
+                    <x-elements.text-input
                     type="email"
                     placeholder="Email Address"
                     wire:model="form.email" id="email" name="email" required autofocus autocomplete="username"
                     />
 
                     <span class="absolute right-4 top-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                        </svg>
+                    <x-icons.mail />
                         
                     </span>
                 </div>
-                <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+                <x-elements.input-error :messages="$errors->get('form.email')" class="mt-2" />
                 </div>
 
                 <div class="mb-6">
@@ -99,7 +97,7 @@ new #[Layout('layouts.guest')] class extends Component
                     Password
                 </label>
                 <div class="relative">
-                    <x-text-input
+                    <x-elements.text-input
                     type="password"
                     wire:model="form.password"
                     id="password"
@@ -110,12 +108,10 @@ new #[Layout('layouts.guest')] class extends Component
                     
 
                     <span class="absolute right-4 top-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                        </svg>
+                    <x-icons.lock />
                     </span>
                 </div>
-                <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
+                <x-elements.input-error :messages="$errors->get('form.password')" class="mt-2" />
                 </div>
 
                 <div class="mb-5">
@@ -126,12 +122,12 @@ new #[Layout('layouts.guest')] class extends Component
                 />
                 </div>
 
-                <div class="mt-6 text-center">
+                {{-- <div class="mt-6 text-center">
                 <p class="font-medium">
                     Don’t have any account?
                     <a href={{ route('register') }} wire:navigate class="text-primary">Sign Up</a>
                 </p>
-                </div>
+                </div> --}}
             </form>
             </div>
         </div>

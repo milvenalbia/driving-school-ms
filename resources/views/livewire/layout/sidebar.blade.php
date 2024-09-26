@@ -19,7 +19,7 @@ new class extends Component
 
 <aside
   :class="sidebarToggle ? 'translate-x-0' : '-translate-x-full'"
-  class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white drop-shadow-1 duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
+  class="absolute left-0 top-0 z-9999 flex h-screen w-70 flex-col overflow-y-hidden bg-white drop-shadow-1 duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0"
   @click.outside="sidebarToggle = false"
 >
   <!-- SIDEBAR HEADER -->
@@ -65,9 +65,10 @@ new class extends Component
          
           <li>
             <a
-              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-800 duration-300 ease-in-out hover:bg-primary dark:text-white"
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black duration-300 ease-in-out hover:bg-primary hover:text-white dark:text-white"
               href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary  text-white': (title === 'Dashboard') }"
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Dashboard') }"
             >
             <x-icons.dashboard-icon />
             
@@ -79,22 +80,24 @@ new class extends Component
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Booking') }"
+              href="{{ route('schedules') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Schedule') }"
             >
             <x-icons.booking />
             
             
 
-              Booking
+              Schedule
             </a>
           </li>
 
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Students') }"
+              href="{{ route('students') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Students') }"
             >
             <x-icons.student />          
             
@@ -107,8 +110,9 @@ new class extends Component
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Instructors') }"
+              href="{{ route('instructors') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Instructors') }"
             >
             <x-icons.instructor />
             
@@ -131,21 +135,23 @@ new class extends Component
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
               href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Daily Bookings') }"
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Daily Bookings') }"
             >
             <x-icons.daily-booking />
             
             
 
-              Daily Bookings
+              Schedule Reports
             </a>
           </li>
 
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Student Reports') }"
+              href="{{ route('student-reports') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Student Reports') }"
             >
             <x-icons.student-report />
             
@@ -164,13 +170,14 @@ new class extends Component
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
-              :class="{ 'bg-primary ': (title === 'Users') }"
+              href="{{ route('users') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Users') }"
             >
             <x-icons.users />
-            
 
-  
+
+
               Users
             </a>
           </li>

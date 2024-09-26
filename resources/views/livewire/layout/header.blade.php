@@ -67,7 +67,8 @@ new class extends Component
 
     <div class="flex items-center gap-3 2xsm:gap-7">
       <ul class="flex items-center gap-2 2xsm:gap-4">
-        <li>
+        {{-- Darkmode --}}
+        {{-- <li>
           <!-- Dark Mode Toggler -->
           <label
             :class="darkMode ? 'bg-primary' : 'bg-stroke'"
@@ -92,7 +93,7 @@ new class extends Component
             </span>
           </label>
           <!-- Dark Mode Toggler -->
-        </li>
+        </li> --}}
 
         <!-- Notification Menu Area -->
         <li
@@ -120,6 +121,7 @@ new class extends Component
 
           <!-- Dropdown Start -->
           <div
+            x-cloak
             x-show="dropdownOpen"
             class="absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80"
           >
@@ -170,7 +172,7 @@ new class extends Component
           </span>
 
           <span class="h-12 w-12 rounded-full">
-            <img src="./images/user/user-01.png" alt="User" />
+            <img class="object-cover w-full h-full rounded-full" src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=600" alt="User" />
           </span>
 
           <x-icons.arrow-down />
@@ -178,6 +180,7 @@ new class extends Component
 
         <!-- Dropdown Start -->
         <div
+          x-cloak
           x-show="dropdownOpen"
           class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
         >
