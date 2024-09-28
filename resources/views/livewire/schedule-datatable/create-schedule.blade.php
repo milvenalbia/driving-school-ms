@@ -78,7 +78,7 @@
                     <x-elements.select wire:model="type" id="s-type">
                         <option value="">Schedule Type</option>
                         <option value="course">Course</option>
-                        <option value="theoritical">Theoritical Test</option>
+                        <option value="theoretical">Theoretical Test</option>
                         <option value="pratical">Practical Test</option>
                     </x-elements.select>
                     <x-elements.input-error :messages="$errors->get('type')" class="mt-2" />

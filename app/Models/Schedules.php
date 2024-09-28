@@ -16,6 +16,7 @@ class Schedules extends Model
         'date',
         'type',
         'instructor',
+        'enrolled_student',
         'slots',
         'amount',
     ];

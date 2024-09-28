@@ -17,6 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
+        <button class="bg-primary py-2 px-4 text-white rounded-md">Generate PDF</button>
        </div>
         
     </header>
@@ -25,18 +26,13 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
-                    <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                    <livewire:datatable-component.th-cell field="" label="Schedule Code"/>
-                    <livewire:datatable-component.th-cell field="name" label="Name" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                    <livewire:datatable-component.th-cell field="date" label="Schedule Date" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                    <livewire:datatable-component.th-cell field="" label="Type"/>
-                    <livewire:datatable-component.th-cell field="" label="Instructor"/>
-                    <livewire:datatable-component.th-cell field="" label="Slots"/>
-                    <livewire:datatable-component.th-cell field="amount" label="Amount" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                    {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
-                    <th class="py-3 px-4 flex items-center gap-1">
-                        <span>Actions</span>
-                    </th>
+                    <livewire:datatable-component.th-cell field="" label="Student ID"  />
+                    <livewire:datatable-component.th-cell field="" label="Student Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Course Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Instructor" />
+                    <livewire:datatable-component.th-cell field="" label="Hours"/>
+                    <livewire:datatable-component.th-cell field="" label="Remarks"/>
                 </tr>
         </thead>
         <tbody>
@@ -49,22 +45,11 @@
                     <td class="py-3 px-4">{{ $schedule->type }}</td>
                     <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
                     <td class="py-3 px-4">{{ $schedule->slots - $schedule->enrolled_student }}</td>
-                    <td class="py-3 px-4">{{ $schedule->amount }}</td>
                     {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
-                    <td class="py-3 px-4 flex items-center">
-                        <button class="text-blue-500 flex items-center hover:text-primary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
-                            <x-icons.edit />
-                            <span>Edit</span>
-                        </button>
-                        <button class="text-red-500 ml-2 flex items-center hover:text-red-700 transition ease-linear" wire:click="delete_schedule({{ $schedule->id }})">
-                            <x-icons.delete />
-                            <span>Delete</span>
-                        </button>
-                    </td>
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">
-                    <td class="py-3 px-4 text-center" colspan="9">No data available.</td>
+                    <td class="py-3 px-4 text-center" colspan="8">No data available.</td>
                 </tr>
             @endforelse
         </tbody>

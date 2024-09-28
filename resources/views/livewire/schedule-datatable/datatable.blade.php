@@ -41,6 +41,7 @@
                     <livewire:datatable-component.th-cell field="" label="Slots"/>
                     <livewire:datatable-component.th-cell field="amount" label="Amount" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
+                    <livewire:datatable-component.th-cell field="" label="Enrollees"/>
                     <th class="py-3 px-4 flex items-center gap-1">
                         <span>Actions</span>
                     </th>
@@ -58,12 +59,22 @@
                     <td class="py-3 px-4">{{ $schedule->slots - $schedule->enrolled_student }}</td>
                     <td class="py-3 px-4">{{ $schedule->amount }}</td>
                     {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
-                    <td class="py-3 px-4 flex items-center">
-                        <button class="text-blue-500 flex items-center hover:text-primary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
+                    <td class="py-3 px-4">
+                        <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3">
+                            <x-icons.eye />
+                            <span>View {{$schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student'}} </span>
+                        </button>
+                    </td>
+                    <td class="py-3 px-4 flex gap-2">
+                        <button class="bg-primary text-white flex items-center hover:bg-blue-600 transition ease-linear py-2 px-4 rounded-md" wire:click="enroll_student({{$schedule->id}})">
+                            <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
+                            <span>Enroll</span>
+                        </button>
+                        <button class="text-secondary flex items-center hover:text-primary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 ml-2 flex items-center hover:text-red-700 transition ease-linear" wire:click="delete_schedule({{ $schedule->id }})">
+                        <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:click="delete_schedule({{ $schedule->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>
@@ -90,6 +101,10 @@
         </x-slot:svg>
         {{session('success')}}
     </x-elements.notification>
+
+    <x-elements.modal name="enroll-student">
+        <livewire:schedule-datatable.schedule-enroll.enroll-student />
+    </x-elements.modal>
 
     <x-elements.modal name="create-schedule">
         <livewire:schedule-datatable.create-schedule />

@@ -65,6 +65,10 @@ class Datatable extends Component
         $this->dispatch('edit_schedule', $schedule_id);
     }
 
+    public function enroll_student($schedule_id){
+        $this->dispatch('update_schedule_id', $schedule_id);
+    }
+
     public function delete_schedule($schedule_id)
     {
  
