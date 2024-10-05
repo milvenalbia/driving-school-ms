@@ -40,7 +40,7 @@
                      </span>
                  </div>
              </div>
-             <div class="w-full">
+             <div class="w-full hidden">
                  <label for="slots" class="mb-2.5 block font-medium text-black dark:text-white">
                      Slots
                  </label>
@@ -77,9 +77,8 @@
                 <div class="relative">
                     <x-elements.select wire:model="type" id="s-type">
                         <option value="">Schedule Type</option>
-                        <option value="course">Course</option>
                         <option value="theoretical">Theoretical Test</option>
-                        <option value="pratical">Practical Test</option>
+                        <option value="practical">Practical Test</option>
                     </x-elements.select>
                     <x-elements.input-error :messages="$errors->get('type')" class="mt-2" />
                 </div>

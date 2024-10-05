@@ -14,17 +14,20 @@ class CreateSchedule extends Component
     public string $name = '';
     public $date;
     public int $instructor = 0;
-    public int $slots;
+    public int $slots = 0;
     public string $type = '';
     public int $amount;
 
     protected $listeners = ['edit_schedule'];
 
-    public function mount(){
+    public function render()
+    {
         $instructors = Instructor::query()
-                        ->get(['id', 'firstname', 'lastname']);
+        ->get(['id', 'firstname', 'lastname']);
 
         $this->instructors = $instructors;
+
+        return view('livewire.schedule-datatable.create-schedule');
     }
 
     public function register_schedule()
@@ -34,7 +37,6 @@ class CreateSchedule extends Component
             'date' => 'required',
             'type' => ['required', 'string', 'max:255'],
             'instructor' => 'required',
-            'slots' => ['required', 'integer'],
             'amount' => ['required', 'integer']
         ]);
 
@@ -51,7 +53,7 @@ class CreateSchedule extends Component
             'date' => $validated['date'],
             'type' => $validated['type'],
             'instructor' => $validated['instructor'],
-            'slots' => $validated['slots'],
+            'slots' => 0,
             'amount' => $validated['amount'],
         ]);
  
@@ -87,7 +89,6 @@ class CreateSchedule extends Component
             'date' => 'required',
             'type' => ['required', 'string', 'max:255'],
             'instructor' => 'required',
-            'slots' => ['required', 'integer'],
             'amount' => ['required', 'integer']
         ]);
 
@@ -99,7 +100,7 @@ class CreateSchedule extends Component
             'date' => $validated['date'],
             'type' => $validated['type'],
             'instructor' => $validated['instructor'],
-            'slots' => $validated['slots'],
+            'slots' => 0,
             'amount' => $validated['amount'],
         ]);
  

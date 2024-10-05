@@ -18,16 +18,16 @@ class EnrollStudent extends Component
     public $suggestions = [];
     public $schedule_id;
     public $student_id;
+    public $isPractical = false;
+    public int $sessions = 0;
 
     protected $listeners = ['update_schedule_id'];
 
     public function updatedSearch()
     {
-        $enrolledStudentIds = CourseEnrolled::where('schedule_id', $this->schedule_id)
-        ->pluck('student_id');
 
         $this->suggestions = Students::where('user_id', 'like', '%' . $this->search . '%')
-                                ->whereNotIn('user_id', $enrolledStudentIds)
+                                ->where('enroll_status', false)
                                 ->take(5)
                                 ->get(['user_id', 'firstname', 'lastname']);
     }
@@ -37,6 +37,10 @@ class EnrollStudent extends Component
         if($schedule_id){
             $this->schedule_id = $schedule_id;
 
+            $schedule = Schedules::where('id', $schedule_id)->first();
+
+            $this->isPractical = $schedule->type === 'practical' ? true : false;
+
             $this->dispatch('open-modal', name: 'enroll-student');
         }
         
@@ -44,10 +48,17 @@ class EnrollStudent extends Component
 
     public function enroll_student()
     {
-
-            $validated = $this->validate([
-                'search' => ['required', 'string', 'max:255'],
-            ]);
+            if($this->isPractical){
+                $validated = $this->validate([
+                    'search' => ['required', 'string', 'max:255'],
+                    'sessions' => ['required']
+                ]);
+            }else{
+                $validated = $this->validate([
+                    'search' => ['required', 'string', 'max:255'],
+                ]);
+            }
+            
     
             $student_id = $this->student_id;
         
@@ -59,36 +70,49 @@ class EnrollStudent extends Component
                 return;
             } 
             
-            if (!$student->course_completed && $schedule->type === 'theoretical') {
-                $this->addError('search', 'The selected student has not yet completed any course lesson.');
-                return;
-            } 
-            
             if (!$student->theoretical_test && $schedule->type === 'practical') {
                 $this->addError('search', 'The selected student has not passed the theoretical test.');
                 return; 
             }
 
+           
             $course = CourseEnrolled::create([
-                'student_id' => $student_id,
+                'student_id' => $student->id,
+                'user_id' => $student_id,
                 'schedule_id' => $schedule->id,
+                'sessions' => $this->sessions ?? 0,
             ]);
+
     
             if($course){
                 $schedule->update([
                     'enrolled_student' => $schedule->enrolled_student + 1,
                 ]);
+
+                $student->update([
+                    'enroll_status' => true,
+                ]);
+    
+            }
+
+            if($this->isPractical){
+                $student->update([
+                    'assigned_instructor' => $schedule->instructor,
+                ]);
             }
     
     
-            $this->dispatch('success_message', 'Student Has Been Created Successfully');
+            $this->dispatch('success_message', 'Student Has Been Enrolled Successfully');
      
             $this->reset();
+
+            $this->isPractical = false;
        
     }
 
     public function formClose(){
         $this->reset();
+        $this->isPractical = false;
         $this->resetValidation();
     }
 }

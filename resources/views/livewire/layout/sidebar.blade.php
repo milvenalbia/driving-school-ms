@@ -121,6 +121,21 @@ new class extends Component
               Instructors
             </a>
           </li>
+
+          <li>
+            <a
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
+              href="{{ route('vehicles') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Vehicles') }"
+            >
+            <x-icons.car />
+            
+            
+
+              Vehicles
+            </a>
+          </li>
         </ul>
       </div>
       {{-- Menu End --}}

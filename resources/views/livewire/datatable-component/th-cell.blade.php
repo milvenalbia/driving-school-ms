@@ -5,7 +5,7 @@
     'sortDirection' => null,
 ])
 
-<th {{ $attributes->merge(['class' => "py-3 px-4" . ($field ? 'cursor-pointer' : '')]) }} 
+<th {{ $attributes->merge(['class' => "py-3 px-4 " .($field ? 'cursor-pointer' : '')]) }} 
     @if($field)
     wire:click="sortField('{{ $field }}')"
     @endif

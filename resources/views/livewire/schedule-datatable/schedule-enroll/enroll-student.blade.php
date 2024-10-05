@@ -1,14 +1,17 @@
-<div class="w-full border-stroke dark:border-strokedark">
+<div class="w-full border-stroke dark:border-strokedark" x-data="{ suggestion: @entangle('suggestions').length > 0 ? true : false, selected: '', session_count: 0}">
     <div class="w-full p-4 sm:p-12.5 xl:p-10">
     <div class="flex items-center justify-between mb-6 ">
         <h2 class="text-2xl font-bold text-black dark:text-white sm:text-title-xl2" >
            Enroll Student
         </h2>
-        <button @click="show = false" class="hover:text-red-500" wire:click="formClose"> 
-            <x-icons.close />
-        </button>
+        <button 
+        class="hover:text-red-500" 
+        wire:click="formClose"
+        @click="show = false; session_count = 0">
+    <x-icons.close />
+</button>
     </div>
-    <form wire:submit.prevent="enroll_student"  x-data="{ suggestion: @entangle('suggestions').length > 0 ? true : false, selected: ''}"> 
+    <form wire:submit.prevent="enroll_student" > 
         {{-- wire:submit.prevent="{{ $schedule_id ? 'update_schedule' : 'register_schedule' }}" --}}
 
         <div class="mb-4 relative">
@@ -44,7 +47,21 @@
                 @endforelse
             </ul>
         </div>
-        
+
+        @if($isPractical)
+        <div class="mb-4 relative">
+            <label for="sessions" class="mb-2.5 block font-medium text-black dark:text-white">
+                Session
+            </label>
+            <div class="flex">
+                <button type="button" class="text-white bg-black-2 py-2 px-5" @click="if(session_count > 0) session_count--"><x-icons.minus /></button>
+                <div class="w-full flex justify-center items-center text border border-stroke bg-transparent py-4" x-text="session_count"></div>
+                <button type="button" class="text-white bg-black-2 py-2 px-5" @click="session_count++"><x-icons.plus /></button>
+            </div>
+            <x-elements.text-input type="hidden" x-model="session_count" wire:model="sessions" x-init="$watch('session_count', value => $wire.set('sessions', value))" />
+            <x-elements.input-error :messa"ges="$errors->get('sessions')" class="mt-2" />
+        </div>
+        @endif
          
          <div class="mb-5">
          <input

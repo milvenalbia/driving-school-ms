@@ -38,7 +38,6 @@
                     <livewire:datatable-component.th-cell field="date" label="Schedule Date" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     <livewire:datatable-component.th-cell field="" label="Type"/>
                     <livewire:datatable-component.th-cell field="" label="Instructor"/>
-                    <livewire:datatable-component.th-cell field="" label="Slots"/>
                     <livewire:datatable-component.th-cell field="amount" label="Amount" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
                     <livewire:datatable-component.th-cell field="" label="Enrollees"/>
@@ -54,13 +53,13 @@
                     <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
                     <td class="py-3 px-4">{{ $schedule->name }}</td>
                     <td class="py-3 px-4">{{ $schedule->date }}</td>
-                    <td class="py-3 px-4">{{ $schedule->type }}</td>
+                    <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
                     <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">{{ $schedule->slots - $schedule->enrolled_student }}</td>
                     <td class="py-3 px-4">{{ $schedule->amount }}</td>
                     {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
                     <td class="py-3 px-4">
-                        <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3">
+                        <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
+                        wire:click="view_students({{ $schedule->id }})">
                             <x-icons.eye />
                             <span>View {{$schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student'}} </span>
                         </button>
@@ -104,6 +103,10 @@
 
     <x-elements.modal name="enroll-student">
         <livewire:schedule-datatable.schedule-enroll.enroll-student />
+    </x-elements.modal>
+
+    <x-elements.modal name="view-students"  maxWidth="auto">
+        <livewire:schedule-datatable.schedule-enroll.datatable />
     </x-elements.modal>
 
     <x-elements.modal name="create-schedule">

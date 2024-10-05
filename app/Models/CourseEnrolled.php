@@ -13,6 +13,9 @@ class CourseEnrolled extends Model
         'student_id',
         'schedule_id',
         'course_attendance',
+        'user_id',
+        'hours',
+        'sessions',
     ];
 
     public function schedule(){
@@ -20,7 +23,7 @@ class CourseEnrolled extends Model
     }
 
     public function student(){
-        return $this->belongsTo(Students::class, 'student_id');
+        return $this->belongsTo(Students::class, 'student_id'); 
     }
 
     public function schedules(){

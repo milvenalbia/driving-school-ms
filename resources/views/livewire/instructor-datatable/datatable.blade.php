@@ -33,10 +33,10 @@
         <thead>
             <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
                 <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                <livewire:datatable-component.th-cell field="" label="User ID" />
+                <livewire:datatable-component.th-cell label="User ID" />
                 <livewire:datatable-component.th-cell field="firstname" label="Name" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                 <livewire:datatable-component.th-cell field="email" label="Email" :sortBy="$sortBy" :sortDirection="$sortDirection" />
-                <livewire:datatable-component.th-cell field="" label="Contact" />
+                <livewire:datatable-component.th-cell label="Contact" />
                 <th class="py-3 px-4 flex items-center gap-1">
                     <span>Actions</span>
                 </th>

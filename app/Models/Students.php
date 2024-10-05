@@ -31,7 +31,8 @@ class Students extends Model
         'assigned_instructor',
         'course_attendance',
         'course_completed',
-        'theoretical_test', 
+        'theoretical_test',
+        'enroll_status',
         'practical_test',
     ];
 

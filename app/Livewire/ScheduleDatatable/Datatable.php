@@ -2,6 +2,7 @@
 
 namespace App\Livewire\ScheduleDatatable;
 
+use App\Models\CourseEnrolled;
 use App\Models\Schedules;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -61,6 +62,10 @@ class Datatable extends Component
         ]);
     }
 
+    public function view_students($schedule_id){
+        $this->dispatch('view_students', $schedule_id);
+    }
+
     public function edit_schedule($schedule_id){
         $this->dispatch('edit_schedule', $schedule_id);
     }
@@ -71,13 +76,20 @@ class Datatable extends Component
 
     public function delete_schedule($schedule_id)
     {
- 
+       
         $schedule = Schedules::where('id', $schedule_id)->first();
 
-        $schedule->delete();
+        if ($schedule) {
+            
+            CourseEnrolled::where('schedule_id', $schedule->id)->delete();
 
-        session()->flash('success', 'Schedule has been deleted successfully');
+            $schedule->delete();
 
-        $this->showNotification = true;
+            session()->flash('success', 'Schedule has been deleted successfully');
+            $this->showNotification = true;
+        } else {
+            session()->flash('error', 'Schedule not found.');
+            $this->showNotification = true;
+        }
     }
 }

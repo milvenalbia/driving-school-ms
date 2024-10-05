@@ -7,6 +7,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VehicleController;
 
 Route::redirect('/', 'dashboard');
 
@@ -32,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/student-reports',[StudentReportController::class, 'show']
     )->name('student-reports');
+
+    Route::get('/vehicles',[VehicleController::class, 'show']
+    )->name('vehicles');
 });
 
 require __DIR__.'/auth.php';

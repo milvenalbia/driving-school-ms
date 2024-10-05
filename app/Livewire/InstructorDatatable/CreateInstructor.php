@@ -55,7 +55,11 @@ class CreateInstructor extends Component
                     }
                 }
             ],
-            'phoneNumber' => ['required', 'string', 'max:255'],
+            'phoneNumber' => [
+                'required', 
+                'regex:/^09\d{9}$/',
+                'size:11'
+            ],
             'drivingExperience' => 'required',
         ]);
 
@@ -170,7 +174,11 @@ class CreateInstructor extends Component
                 }
             ],
             'drivingExperience' => 'required',
-            'phoneNumber' => ['required', 'string', 'max:255'],
+            'phoneNumber' => [
+                'required', 
+                'regex:/^09\d{9}$/',
+                'size:11'
+            ],
         ]);
 
         $instructor = Instructor::findOrFail($this->instructor_id);

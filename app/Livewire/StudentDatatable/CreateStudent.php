@@ -50,11 +50,17 @@ class CreateStudent extends Component
                     }
                 }
             ],
-            'phoneNumber' => ['required'],
+            'phoneNumber' => [
+                'required', 
+                'regex:/^09\d{9}$/',
+                'size:11'
+            ],
         ]);
 
         if($this->image_path){
             $validated['image_path'] = $this->image_path->store('public/photos');
+        }else{
+            $validated['image_path'] = null;
         }
 
         $userCount = Students::whereDate('created_at', now()->format('Y-m-d'))->count();
@@ -137,7 +143,6 @@ class CreateStudent extends Component
         $validated = $this->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'phoneNumber' => 'required',
             'email' => [
                 'required', 
                 'string', 
@@ -159,6 +164,11 @@ class CreateStudent extends Component
                         $fail('The email has already been taken in the students table.');
                     }
                 }
+            ],
+            'phoneNumber' => [
+                'required', 
+                'regex:/^09\d{9}$/',
+                'size:11'
             ],
         ]);
 
