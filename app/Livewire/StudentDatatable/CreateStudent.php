@@ -35,7 +35,7 @@ class CreateStudent extends Component
      public function register_student()
      {
          $validated = $this->validate([
-             'firstname' => ['required', 'string', 'max:255'],
+            'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => [
                 'required', 

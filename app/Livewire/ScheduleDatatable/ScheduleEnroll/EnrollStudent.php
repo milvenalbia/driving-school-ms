@@ -3,6 +3,7 @@
 namespace App\Livewire\ScheduleDatatable\ScheduleEnroll;
 
 use App\Models\CourseEnrolled;
+use App\Models\Payment;
 use App\Models\Schedules;
 use App\Models\Students;
 use Livewire\Component;
@@ -92,7 +93,21 @@ class EnrollStudent extends Component
                 $student->update([
                     'enroll_status' => true,
                 ]);
-    
+
+                $paymentCount = Payment::whereDate('created_at', now()->format('Y-m-d'))->count();
+
+                $sequentialNumber = $paymentCount;
+                    
+                $invoice_code = 'INV-' . now()->format('mdY') . str_pad($sequentialNumber, 3, '0', STR_PAD_LEFT);
+
+                Payment::create([
+                    'invoice_code' => $invoice_code,
+                    'student_id' => $student->id,
+                    'schedule_id' => $schedule->id,
+                    'paid_amount' => 0,
+                    'balance' => $schedule->amount,
+                    'status' => 'unpaid',
+                ]);
             }
 
             if($this->isPractical){

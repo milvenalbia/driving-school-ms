@@ -15,5 +15,7 @@ class Vehicle extends Model
         "type",
         "transmission_type",
         "status",
+        'start_date',
+        'end_date'
     ];
 }

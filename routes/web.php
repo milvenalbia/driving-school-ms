@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ScheduleContronller;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentReportController;
@@ -36,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/vehicles',[VehicleController::class, 'show']
     )->name('vehicles');
+    
+    Route::get('/payments',[PaymentController::class, 'show']
+    )->name('payments');
 });
 
 require __DIR__.'/auth.php';

@@ -18,6 +18,13 @@ class Datatable extends Component
     public $search = '';
     public $perPage = 10; 
     public $schedule_id;
+    public $attendance = [];
+    public $activeDay = [];  
+    public $enrollee;
+    public $day1_status = 'absent';
+    public $day2_status = 'absent';
+    public $day3_status = 'absent';
+    public $type = '';
 
     public $showNotification = false;
     protected $listeners = ['sortField', 'success_message', 'view_students'];
@@ -52,6 +59,17 @@ class Datatable extends Component
     public function view_students($schedule_id){
         if($schedule_id){
             $this->schedule_id = $schedule_id;
+            $schedule = Schedules::where('id', $schedule_id)->first();
+
+            $this->type = $schedule->type;
+
+            $this->dispatch('open-modal', name: 'view-students');
+        }
+    }
+
+    public function edit_enroll($course_id){
+        if($course_id){
+            $this->schedule_id = $course_id;
             $this->dispatch('open-modal', name: 'view-students');
         }
     }
@@ -84,6 +102,50 @@ class Datatable extends Component
         }
     }
 
+    public function setAttendance($enrollee_id, $day)
+    {
+
+        if(!$enrollee_id){
+            return;
+        }
+
+        $course = CourseEnrolled::where('id', $enrollee_id)->first();
+
+        $statusProperty = "day{$day}_status";
+
+        $status = (($course->$statusProperty ?? 'absent') === 'present') ? 'absent' : 'present';
+        
+        $course->update([
+            $statusProperty => $status,
+        ]);
+
+        session()->flash('success', 'Status updated successfully!');
+        $this->showNotification = true;
+        
+        $this->calculateAttendance($course);
+    }
+
+    private function calculateAttendance($course)
+    {
+        $day1 = (($course->day1_status ?? 'absent') === 'present') ? 1 : 0;
+        $day2 = (($course->day2_status ?? 'absent') === 'present') ? 1 : 0;
+        $day3 = (($course->day3_status ?? 'absent') === 'present') ? 1 : 0;
+
+        $day = $day1 + $day2 + $day3;
+
+        $course->update([
+            'course_attendance' => $day,
+        ]);
+    }
+    
+    public function edit_enrollee($enrollee_id){
+        if($enrollee_id){
+            $this->dispatch('close-modal', name: 'view_students');
+
+            $this->dispatch('update_enrollee', $enrollee_id);
+        }
+    }
+
     public function delete_enrollee($enrollees_id){
         $enrollee = CourseEnrolled::where('id', $enrollees_id)->first();
 
@@ -102,6 +164,8 @@ class Datatable extends Component
             if($student){
                 $student->update([
                     'enroll_status' => false,
+                    'theoretical_test' => null,
+                    'practical_test' => null
                 ]);
             }
             

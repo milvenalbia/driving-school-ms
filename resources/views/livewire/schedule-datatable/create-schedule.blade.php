@@ -28,13 +28,13 @@
             </div>
         </div>
          <div class="mb-4 flex items-center justify-between gap-4">
-             <div class="w-full" x-data x-init="flatpickr($refs.inputDate, {dateFormat: 'Y-m-d'});">
+             <div class="w-full" x-data x-init="flatpickr($refs.inputDate, {dateFormat: 'Y-m-d', minDate: 'today'});">
                  <label for="s-date" class="mb-2.5 block font-medium text-black dark:text-white">
                      Date
                  </label>
                  <div class="relative">
                      <x-elements.text-input wire:model="date" id="s-date" x-ref="inputDate" type="text" name="s-date" placeholder="Date" autofocus autocomplete="name" />
-                     <x-elements.input-error :messages="$errors->get('s-date')" class="mt-2" />
+                     <x-elements.input-error :messages="$errors->get('date')" class="mt-2" />
                      <span class="absolute right-4 top-4">
                          <x-icons.booking />                     
                      </span>

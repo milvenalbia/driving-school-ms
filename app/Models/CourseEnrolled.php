@@ -12,14 +12,26 @@ class CourseEnrolled extends Model
     protected $fillable = [
         'student_id',
         'schedule_id',
+        'vehicle_id',
         'course_attendance',
         'user_id',
         'hours',
+        'day1_status',
+        'day2_status',
+        'day3_status',
         'sessions',
+        'start_date',
+        'remarks',
+        'grade',
+        'course_type'
     ];
 
     public function schedule(){
         return $this->belongsTo(Schedules::class, 'schedule_id');
+    }
+
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 
     public function student(){

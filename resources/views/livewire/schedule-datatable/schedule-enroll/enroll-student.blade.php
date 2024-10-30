@@ -1,15 +1,12 @@
 <div class="w-full border-stroke dark:border-strokedark" x-data="{ suggestion: @entangle('suggestions').length > 0 ? true : false, selected: '', session_count: 0}">
     <div class="w-full p-4 sm:p-12.5 xl:p-10">
-    <div class="flex items-center justify-between mb-6 ">
+    <div class="flex items-center justify-between gap-12 mb-6">
         <h2 class="text-2xl font-bold text-black dark:text-white sm:text-title-xl2" >
            Enroll Student
         </h2>
-        <button 
-        class="hover:text-red-500" 
-        wire:click="formClose"
-        @click="show = false; session_count = 0">
-    <x-icons.close />
-</button>
+        <button @click="show = false; session_count = 0" class="hover:text-red-500" wire:click="formClose"> 
+            <x-icons.close />
+        </button>
     </div>
     <form wire:submit.prevent="enroll_student" > 
         {{-- wire:submit.prevent="{{ $schedule_id ? 'update_schedule' : 'register_schedule' }}" --}}
@@ -26,13 +23,13 @@
                 @focus="suggestion = true" 
                 @blur="setTimeout(() => suggestion = false, 200)" 
             />
+            <x-elements.input-error :messages="$errors->get('search')" class="mt-2" />
             <x-elements.text-input 
-                type="hidden" 
+                type="hidden"
                 wire:model="student_id"
                 x-model="selected"
                 x-init="$watch('selected', value => $wire.set('student_id', value))"
             />
-        <x-elements.input-error :messages="$errors->get('search')" class="mt-2" />
         
             <!-- Suggestions Dropdown -->
             <ul x-show="suggestion" class="absolute z-10 shadow-md rounded-md top-22 border border-blue-300 bg-white mt-1 w-full h-auto max-h-[250px] overflow-auto py-3 px-4">
@@ -59,7 +56,7 @@
                 <button type="button" class="text-white bg-black-2 py-2 px-5" @click="session_count++"><x-icons.plus /></button>
             </div>
             <x-elements.text-input type="hidden" x-model="session_count" wire:model="sessions" x-init="$watch('session_count', value => $wire.set('sessions', value))" />
-            <x-elements.input-error :messa"ges="$errors->get('sessions')" class="mt-2" />
+            <x-elements.input-error class="mt-2" :messa"ges="$errors->get('sessions')"/>
         </div>
         @endif
          

@@ -48,24 +48,24 @@
         </thead>
         <tbody>
             @forelse($schedules as $schedule)
-                <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                    <td class="py-3 px-4">{{ $schedule->id }}</td>
-                    <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
-                    <td class="py-3 px-4">{{ $schedule->name }}</td>
-                    <td class="py-3 px-4">{{ $schedule->date }}</td>
-                    <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
-                    <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">{{ $schedule->amount }}</td>
-                    {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
-                    <td class="py-3 px-4">
-                        <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
-                        wire:click="view_students({{ $schedule->id }})">
-                            <x-icons.eye />
-                            <span>View {{$schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student'}} </span>
-                        </button>
-                    </td>
-                    <td class="py-3 px-4 flex gap-2">
-                        <button class="bg-primary text-white flex items-center hover:bg-blue-600 transition ease-linear py-2 px-4 rounded-md" wire:click="enroll_student({{$schedule->id}})">
+            <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                <td class="py-3 px-4">{{ $schedule->id }}</td>
+                <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
+                <td class="py-3 px-4">{{ $schedule->name }}</td>
+                <td class="py-3 px-4">{{ $schedule->date }}</td>
+                <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
+                <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
+                <td class="py-3 px-4">{{ $schedule->amount }}</td>
+                <td class="py-3 px-4">
+                    <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
+                            wire:click="view_students({{ $schedule->id }})">
+                        <x-icons.eye />
+                        <span>View {{ $schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student' }} </span>
+                    </button>
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <button class="bg-primary text-white flex items-center hover:bg-blue-600 transition ease-linear py-2 px-4 rounded-md" wire:click="enroll_student({{ $schedule->id }})">
                             <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
                             <span>Enroll</span>
                         </button>
@@ -77,13 +77,14 @@
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>
-                    </td>
-                </tr>
-            @empty
-                <tr class="border-b border-stroke text-base">
-                    <td class="py-3 px-4 text-center" colspan="9">No data available.</td>
-                </tr>
-            @endforelse
+                    </div>
+                </td>
+            </tr>
+        @empty
+            <tr class="border-b border-stroke text-base">
+                <td class="py-3 px-4 text-center" colspan="9">No data available.</td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
     </div>
@@ -94,24 +95,28 @@
         {{ $schedules->links() }}
     </div>
 
-    <x-elements.notification >
-        <x-slot:svg>
-            <x-icons.success class="text-[#06D001]" />
-        </x-slot:svg>
-        {{session('success')}}
-    </x-elements.notification>
-
-    <x-elements.modal name="enroll-student">
-        <livewire:schedule-datatable.schedule-enroll.enroll-student />
+    <x-elements.modal name="edit-enroll-student">
+        <livewire:schedule-datatable.schedule-enroll.edit-enroll />
     </x-elements.modal>
 
-    <x-elements.modal name="view-students"  maxWidth="auto">
+    <x-elements.modal name="view-students"  maxWidth="90">
         <livewire:schedule-datatable.schedule-enroll.datatable />
     </x-elements.modal>
 
     <x-elements.modal name="create-schedule">
         <livewire:schedule-datatable.create-schedule />
     </x-elements.modal>
+
+    <x-elements.modal name="enroll-student">
+        <livewire:schedule-datatable.schedule-enroll.enroll-student />
+    </x-elements.modal>
+
+    <x-elements.notification >
+        <x-slot:svg>
+            <x-icons.success class="text-[#06D001]" />
+        </x-slot:svg>
+        {{session('success')}}
+    </x-elements.notification>
 
 </div>
 

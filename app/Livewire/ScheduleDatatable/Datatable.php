@@ -11,6 +11,7 @@ class Datatable extends Component
 {
     use WithPagination;
 
+    public $activeDay = 'Day 1';
     public $sortBy = 'id';
     public $sortDirection = 'asc';
     public $search = '';
@@ -18,7 +19,7 @@ class Datatable extends Component
 
     public $showNotification = false;
     public $showModal = false;
-    protected $listeners = ['sortField', 'success_message'];
+    protected $listeners = ['sortField', 'success_message', 'success_message_enroll'];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -36,6 +37,18 @@ class Datatable extends Component
         session()->flash('success', $message);
 
         $this->dispatch('close-modal');
+
+        $this->showNotification = true;
+
+    }
+
+    public function success_message_enroll($message)
+    {
+        session()->flash('success', $message);
+
+        $this->dispatch('close-modal', name: 'edit-enroll-student');
+
+        $this->dispatch('open-modal', name: 'view-students');
 
         $this->showNotification = true;
 
