@@ -54,7 +54,7 @@
                         </td>
                         <td class="py-3 px-4">{{ $payment->schedule->amount }}</td>
                         <td class="py-3 px-4">{{ $payment->paid_amount }}</td>
-                        <td class="py-3 px-4">{{ $payment->balance - $payment->paid_amount }}</td>
+                        <td class="py-3 px-4">{{ $payment->balance}}</td>
                         <td class="py-3 px-4">
                             @if ($payment->status === 'paid')
                             <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Paid</span>
@@ -66,7 +66,7 @@
                         </td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
-                                <button class="text-green-400 flex items-center hover:text-success transition ease-linear" wire:click="pay({{ $payment->id }})">
+                                <button class="text-green-400 flex items-center hover:text-success transition ease-linear" wire:click="showPayment({{ $payment->id }})">
                                     <x-icons.money />
                                     <span>Pay</span>
                                 </button>
@@ -92,7 +92,15 @@
             {{ $payments->links() }}
         </div>
     
-    </div> 
+    </div>
+
+    <x-elements.modal name="create-payment" maxWidth="40">
+        <livewire:payment-datatable.create-payment />
+    </x-elements.modal>
+
+    <x-elements.modal name="view-details">
+        <livewire:payment-datatable.view-details />
+    </x-elements.modal>
     
     <x-elements.notification >
         <x-slot:svg>

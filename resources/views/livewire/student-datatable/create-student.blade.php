@@ -71,7 +71,7 @@
         </div>
         </div>
 
-        <div x-data="{ phoneNumber: '', minLength: 11 }" class="mb-4">
+        <div x-data="{ phoneNumber: @entangle('phoneNumber'), minLength: 11 }" class="mb-4">
             <label for="studNumber" class="mb-2.5 block font-medium text-black dark:text-white">
                 Phone Number
             </label>

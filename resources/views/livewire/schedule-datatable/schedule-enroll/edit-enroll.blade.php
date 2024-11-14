@@ -93,13 +93,15 @@
                 Vehicle (<span class="text-primary text-sm"><b>Note:</b> To enable,select date, select vehicle type & transmission type</span>)
             </label>
             <div class="relative">
-                <x-elements.select wire:model="vehicle_id" id="vehicle" :disabled="empty($start_date) || empty($vehicle_type) || empty($transmission_type)" :class="empty($start_date) || empty($vehicle_type) || empty($transmission_type) ? 'cursor-not-allowed' : ''">
-                <option value="">Select Vehicle</option>
-                @forelse ($vehicles as $vehicle)
-                    <option value={{$vehicle->id}}>{{$vehicle->brand}} ({{$vehicle->license_plate}})</option>
-                @empty
-                    <option value="">No Vehicle Available</option>
-                @endforelse
+                <x-elements.select wire:model="vehicle_id" id="vehicle" 
+                    :disabled="empty($start_date) || empty($vehicle_type) || empty($transmission_type)" 
+                    :class="empty($start_date) || empty($vehicle_type) || empty($transmission_type) ? 'cursor-not-allowed' : ''">
+                    <option value="">Select Vehicle</option>
+                    @foreach($vehicles as $vehicle)
+                        <option value="{{ $vehicle->id }}">
+                            {{ $vehicle->brand }} ({{ $vehicle->license_plate }})
+                        </option>
+                    @endforeach
                 </x-elements.select>
                 <x-elements.input-error :messages="$errors->get('vehicle_id')" class="mt-2" />
             </div>
@@ -107,7 +109,7 @@
         @endif
 
 
-        <div x-data="{ grade: '', minLength: 2 }" class="mb-4">
+        <div x-data="{ grade: @entangle('grade'), minLength: 2 }" class="mb-4">
             <label for="grade" class="mb-2.5 block font-medium text-black dark:text-white">
                 Grade
             </label>

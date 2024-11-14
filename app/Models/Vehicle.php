@@ -18,4 +18,8 @@ class Vehicle extends Model
         'start_date',
         'end_date'
     ];
+
+    public function vehicleSchedules(){
+        return $this->hasMany(VehicleScheduling::class);
+    }
 }

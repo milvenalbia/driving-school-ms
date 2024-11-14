@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InstructorController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ScheduleContronller;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\StudentReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ScheduleContronller;
+use App\Http\Controllers\InstructorController;
 
 Route::redirect('/', 'dashboard');
 
@@ -32,8 +32,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/schedules',[ScheduleContronller::class, 'show']
     )->name('schedules');
 
-    Route::get('/student-reports',[StudentReportController::class, 'show']
+    Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
     )->name('student-reports');
+
+    Route::get('/schedule-reports',[ReportsController::class, 'showScheduleReports']
+    )->name('schedule-reports');
 
     Route::get('/vehicles',[VehicleController::class, 'show']
     )->name('vehicles');

@@ -83,7 +83,7 @@
                     <x-elements.input-error :messages="$errors->get('type')" class="mt-2" />
                 </div>
              </div>
-             <div x-data="{ amount: '', minLength: 11 }" class="w-full">
+             <div x-data="{ amount: @entangle('amount'), minLength: 11 }" class="w-full">
                  <label for="amount" class="mb-2.5 block font-medium text-black dark:text-white">
                      Amount
                  </label>

@@ -17,7 +17,7 @@
             </label>
             <x-elements.text-input 
                 type="text" 
-                placeholder="Search Student" 
+                placeholder="Search Student ID.." 
                 wire:model.live.debounce.300ms="search"
                 x-model="selected"
                 @focus="suggestion = true" 

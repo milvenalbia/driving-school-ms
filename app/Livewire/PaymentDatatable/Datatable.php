@@ -66,4 +66,13 @@ class Datatable extends Component
             'payments' => $payments,
         ]);
     }
+
+    public function showPayment($payment_id){
+        if(!$payment_id){
+            return;
+        }
+
+        $this->dispatch('showPayment', $payment_id);
+
+    }
 }

@@ -47,6 +47,8 @@
                         @if($type === 'theoretical')
                             <livewire:datatable-component.th-cell field="" label="Day Attended" />
                         @endif
+                        <livewire:datatable-component.th-cell field="" label="Status" />
+                        <livewire:datatable-component.th-cell field="" label="Pay Status" />
                         <th class="py-3 px-4">
                             <span>Actions</span>
                         </th>
@@ -101,12 +103,30 @@
                         </td>
                         @endif
                         <td class="py-3 px-4">
+                            @if ($enrollee->grade && $enrollee->grade > 74)
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                            @elseif($enrollee->grade && $enrollee->grade < 75)
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            @endif
+                        </td>
+                        <td class="py-3 px-4">
+                            @if ($enrollee->payments->status === 'paid')
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Paid</span>
+                            @elseif($enrollee->payments->status === 'partial')
+                                <span class="py-2 px-3 rounded-full bg-blue-300 text-white text-sm">Partial</span>
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Unpaid</span>
+                            @endif
+                        </td>
+                        <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
                                 <button class="text-secondary flex items-center hover:text-primary transition ease-linear" wire:click="edit_enrollee({{ $enrollee->id }})">
                                     <x-icons.edit />
                                     <span>Edit</span>
                                 </button>
-                                <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:click="delete_enrollee({{ $enrollee->id }})">
+                                <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" wire:click="delete_enrollee({{ $enrollee->id }})">
                                     <x-icons.delete />
                                     <span>Remove</span>
                                 </button>

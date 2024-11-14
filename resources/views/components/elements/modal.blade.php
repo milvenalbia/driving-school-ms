@@ -9,6 +9,8 @@ if($maxWidth){
     'xl' => ' sm:max-w-xl ',
     '2xl' => ' sm:max-w-2xl ',
     '90' => ' w-[90%] ',
+    '40' => 'w-[40%]',
+    '50' => 'w-[50%]',
 ][$maxWidth];
 }else{
     $maxWidth = null;

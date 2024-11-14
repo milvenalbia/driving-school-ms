@@ -4,7 +4,7 @@
             <x-icons.search class="absolute top-3 left-2" />
             <input
             class="input w-full rounded-md px-8 py-2 border border-stroke focus:outline-none focus:border-blue-500 transition-all duration-300 shadow-md shadow-stroke dark:shadow-none dark:bg-transparent dark:border-bodydark"
-            placeholder="Search name..."
+            placeholder="Search..."
             type="text"
             wire:model.live.debounce.300ms="search"
             />
@@ -29,23 +29,39 @@
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
                     <livewire:datatable-component.th-cell field="" label="Student Name"/>
                     <livewire:datatable-component.th-cell field="" label="Course Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
                     <livewire:datatable-component.th-cell field="" label="Hours"/>
                     <livewire:datatable-component.th-cell field="" label="Remarks"/>
                 </tr>
         </thead>
         <tbody>
-            @forelse($schedules as $schedule)
-                <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                    <td class="py-3 px-4">{{ $schedule->id }}</td>
-                    <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
-                    <td class="py-3 px-4">{{ $schedule->name }}</td>
-                    <td class="py-3 px-4">{{ $schedule->date }}</td>
-                    <td class="py-3 px-4">{{ $schedule->type }}</td>
-                    <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">{{ $schedule->slots - $schedule->enrolled_student }}</td>
-                    {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
+            @forelse($students as $student)
+                <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                    <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
+                        @if ($student->student->image_path)
+                            <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->student->image_path) }}" alt="profile" >
+                        @else
+                            <img class="w-10 h-10 object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile" >
+                        @endif
+                        <span>{{ $student->student->user_id }}</span>
+                    </td>
+                    <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
+                    <td class="py-3 px-4">{{ $student->schedule->name }}</td>
+                    <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
+                    <td class="py-3 px-4">{{ $student->practical_grade }}</td>
+                    <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
+                    <td class="py-3 px-4">{{ $student->hours }}</td>
+                    <td class="py-3 px-4">
+                        @if ($student->remarks === 1)
+                            <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                        @elseif($student->remarks === 0)
+                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                        @else
+                            <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">
@@ -58,9 +74,9 @@
 
     {{-- wire:confirm.prompt="Delete confirmation, type DELETE to delete user. |DELETE" --}}
 
-    {{-- <div class="mt-4">
-        {{ $schedules->links() }}
-    </div> --}}
+    <div class="mt-4">
+        {{ $students->links() }}
+    </div>
 
 </div>
 

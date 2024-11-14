@@ -69,10 +69,20 @@ class EnrollStudent extends Component
             if (!$student) {
                 $this->addError('search', 'The selected student does not exist.');
                 return;
-            } 
+            }
+
+            if ($student->theoretical_test && $schedule->type === 'theoretical') {
+                $this->addError('search', 'The selected student already completed the theoretical exam.');
+                return; 
+            }
             
             if (!$student->theoretical_test && $schedule->type === 'practical') {
                 $this->addError('search', 'The selected student has not passed the theoretical test.');
+                return; 
+            }
+
+            if ($student->practical_test && $schedule->type === 'practical') {
+                $this->addError('search', 'The selected student already completed the practical exam.');
                 return; 
             }
 
@@ -102,6 +112,7 @@ class EnrollStudent extends Component
 
                 Payment::create([
                     'invoice_code' => $invoice_code,
+                    'course_enrolled_id' => $course->id,
                     'student_id' => $student->id,
                     'schedule_id' => $schedule->id,
                     'paid_amount' => 0,

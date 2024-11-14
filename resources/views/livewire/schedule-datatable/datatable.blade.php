@@ -73,7 +73,7 @@
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:click="delete_schedule({{ $schedule->id }})">
+                        <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>

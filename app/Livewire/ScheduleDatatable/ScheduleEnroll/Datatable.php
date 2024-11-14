@@ -2,11 +2,13 @@
 
 namespace App\Livewire\ScheduleDatatable\ScheduleEnroll;
 
+use App\Models\Vehicle;
 use Livewire\Component;
+use App\Models\Students;
+use App\Models\Schedules;
 use Livewire\WithPagination;
 use App\Models\CourseEnrolled;
-use App\Models\Schedules;
-use App\Models\Students;
+use App\Models\VehicleScheduling;
 
 class Datatable extends Component
 {
@@ -87,7 +89,7 @@ class Datatable extends Component
                             ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
                     });
             })
-            ->with(['student', 'schedule'])
+            ->with(['student', 'schedule','payments'])
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
 
@@ -154,6 +156,27 @@ class Datatable extends Component
             $schedule = Schedules::where('id', $enrollee->schedule_id)->first();
 
             $student = Students::where('id', $enrollee->student_id)->first();
+
+            $vehicle_schedule = VehicleScheduling::where('course_enrolled_id', $enrollee->id)->first();
+
+            if($vehicle_schedule ){
+                $vehicle_schedule->delete();
+            }
+
+            if($enrollee->vehicle_id){
+                $hasNewUse = Vehicle::where('id', $enrollee->vehicle_id)
+                    ->whereHas('vehicleSchedules', function($scheduleQuery) {
+                        $scheduleQuery->where('use_status', 'new_use');
+                    })
+                    ->exists(); // This will return true if at least one record exists
+            
+                // Update status if there are no 'new_use' schedules
+                if (!$hasNewUse) {
+                    Vehicle::where('id', $enrollee->vehicle_id)
+                        ->update(['status' => 'good']);
+                }
+            }
+            
 
             if($schedule){
                 $schedule->update([

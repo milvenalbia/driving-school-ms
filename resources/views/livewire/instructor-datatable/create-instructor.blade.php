@@ -83,12 +83,12 @@
                     </span>
                 </div>
             </div>
-            <div x-data="{ phoneNumber: '', minLength: 11 }" class="w-full">
+            <div x-data="{ phoneNumber: @entangle('phoneNumber'), minLength: 11 }" class="w-full">
                 <label for="phoneNumber" class="mb-2.5 block font-medium text-black dark:text-white">
                     Phone Number
                 </label>
                 <div class="relative">
-                    <x-elements.text-input x-model="phoneNumber" wire:model="phoneNumber" id="phoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" autofocus autocomplete="phone_number" @input="phoneNumber = phoneNumber.replace(/[^0-9]/g, '')"
+                    <x-elements.text-input x-model="phoneNumber" wire:model="phoneNumber" id="phoneNumber" type="text" name="phoneNumber" placeholder="Phone Number" @input="phoneNumber = phoneNumber.replace(/[^0-9]/g, '')"
                     @keydown="if (phoneNumber.length >= minLength && event.keyCode !== 8 && event.keyCode !== 46) event.preventDefault()" />
                     <x-elements.input-error :messages="$errors->get('phoneNumber')" class="mt-2" />
                     <span class="absolute right-4 top-4">

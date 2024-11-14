@@ -2,6 +2,7 @@
 
 namespace App\Livewire\ReportsDatatable;
 
+use App\Models\StudentReport;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -38,17 +39,21 @@ class StudentReports extends Component
 
     public function render()
     {
-        // $schedules = Schedules::query()
-        //     ->when($this->search, function ($query) {
-        //             $query->where('name', 'like', '%' . $this->search . '%')
-        //                   ->orWhere('schedule_code', 'like', '%' . $this->search . '%');
-        //     })
-        //     ->orderBy($this->sortBy, $this->sortDirection)
-        //     ->paginate($this->perPage);
-        $schedules = [];
+        $students = StudentReport::query()
+            ->when($this->search, function ($query) {
+                $query->WhereHas('student', function ($query) {
+                        $query->where('firstname', 'like', '%' . $this->search . '%')
+                            ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                            ->orWhere('user_id', 'like', '%' .$this->search . '%')
+                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                    });
+            })
+            ->with(['student', 'schedule'])
+            ->orderBy($this->sortBy, $this->sortDirection)
+            ->paginate($this->perPage);
     
         return view('livewire.reports-datatable.student-reports', [
-            'schedules' => $schedules,
+            'students' => $students,
         ]);
     }
 }

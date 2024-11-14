@@ -41,4 +41,8 @@ class CourseEnrolled extends Model
     public function schedules(){
         return $this->hasMany(Schedules::class);
     }
+
+    public function payments(){
+        return $this->hasOne(Payment::class);
+    }
 }

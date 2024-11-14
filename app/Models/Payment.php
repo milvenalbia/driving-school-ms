@@ -11,6 +11,7 @@ class Payment extends Model
 
     protected $fillable = [
         'invoice_code',
+        'course_enrolled_id',
         'student_id',
         'schedule_id',
         'paid_amount',
@@ -24,5 +25,9 @@ class Payment extends Model
 
     public function student(){
         return $this->belongsTo(Students::class, 'student_id'); 
+    }
+
+    public function course(){
+        return $this->belongsTo(CourseEnrolled::class, 'course_enrolled_id'); 
     }
 }

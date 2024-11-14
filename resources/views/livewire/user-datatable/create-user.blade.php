@@ -103,7 +103,7 @@
                 <x-elements.select wire:model="role" name="role" id="role">
                     <option value="" class="text-body">Select user role</option>
                     <option value="admin" class="text-body">Admin</option>
-                    <option value="employee" class="text-body">Employee</option>
+                    <option value="instructor" class="text-body">Instructor</option>
                 </x-elements.select>
                 <x-elements.input-error :messages="$errors->get('role')" class="mt-2" />
             </div>
