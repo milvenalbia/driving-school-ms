@@ -96,7 +96,7 @@ new class extends Component
         </li> --}}
 
         <!-- Notification Menu Area -->
-        <li
+        {{-- <li
           class="relative"
           x-data="{ dropdownOpen: false, notifying: true }"
           @click.outside="dropdownOpen = false"
@@ -149,7 +149,7 @@ new class extends Component
             </ul>
           </div>
           <!-- Dropdown End -->
-        </li>
+        </li> --}}
         <!-- Notification Menu Area -->
       </ul>
 
@@ -172,7 +172,22 @@ new class extends Component
           </span>
 
           <span class="h-12 w-12 rounded-full">
-            <img class="object-cover w-full h-full rounded-full" src="https://images.pexels.com/photos/3760263/pexels-photo-3760263.jpeg?auto=compress&cs=tinysrgb&w=600" alt="User" />
+            @if (auth()->user()->role !== 'admin')
+              @php
+                $id = auth()->user()->user_id;
+          
+                // Fetch the appropriate user type
+                $user = auth()->user()->role === 'student'
+                        ? \App\Models\Students::where('user_id', $id)->first()
+                        : \App\Models\Instructor::where('user_id', $id)->first();
+          
+                // Determine the image path
+                $image = $user->image_path ?? asset('build/assets/images/profile.avif');
+              @endphp
+          
+              <!-- Display image -->
+              <img class="w-full h-full object-cover rounded-full" src="{{ $image ? Storage::url($image) : $image }}" alt="profile">
+            @endif
           </span>
 
           <x-icons.arrow-down />
