@@ -37,7 +37,6 @@
                 <livewire:datatable-component.th-cell field="firstname" label="Fullname" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                 <livewire:datatable-component.th-cell field="email" label="Email" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                 <livewire:datatable-component.th-cell field="" label="Contact" />
-                <livewire:datatable-component.th-cell field="" label="Instructor" />
                 <livewire:datatable-component.th-cell field="" label="Theoretical" />
                 <livewire:datatable-component.th-cell field="" label="Practical" />
                 <th class="py-3 px-4 flex items-center gap-1">
@@ -60,11 +59,6 @@
                     <td class="py-3 px-4">{{ $student->firstname }} {{ $student->lastname }}</td>
                     <td class="py-3 px-4">{{ $student->email }}</td>
                     <td class="py-3 px-4">{{ $student->phone_number }}</td>
-                    @if($student->assigned_instructor)
-                    <td class="py-3 px-4">{{ $student->assignedInstructor->firstname }} {{ $student->assignedInstructor->lastname }}</td>
-                    @else
-                    <td class="py-3 px-4">--</td>
-                    @endif
                     <td class="py-3 px-4">
                         @if ($student->theoretical_test === 1)
                             <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
@@ -84,11 +78,11 @@
                         @endif
                     </td>
                     <td class="py-3 px-4 flex items-center">
-                        <button class="text-blue-500 flex items-center hover:text-primary transition ease-linear" wire:click="edit_student({{ $student->id }})">
+                        <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="edit_student({{ $student->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 ml-2 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete student. |DELETE" wire:click="delete_student({{ $student->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 ml-2 flex items-center hover:text-white hover:red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete student. |DELETE" wire:click="delete_student({{ $student->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>

@@ -187,6 +187,8 @@ new class extends Component
           
               <!-- Display image -->
               <img class="w-full h-full object-cover rounded-full" src="{{ $image ? Storage::url($image) : $image }}" alt="profile">
+            @else
+              <img class="w-full h-full object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile">
             @endif
           </span>
 

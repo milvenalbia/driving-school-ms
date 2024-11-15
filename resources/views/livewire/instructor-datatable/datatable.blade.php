@@ -60,11 +60,11 @@
                     <td class="py-3 px-4">{{ $instructor->email }}</td>
                     <td class="py-3 px-4">{{ $instructor->phone_number }}</td>
                     <td class="py-3 px-4 flex items-center">
-                        <button class="text-blue-500 flex items-center hover:text-primary transition ease-linear" wire:click="edit_instructor({{ $instructor->id }})">
+                        <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="edit_instructor({{ $instructor->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 ml-2 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete instructor. |DELETE" wire:click="delete_instructor({{ $instructor->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 ml-2 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete instructor. |DELETE" wire:click="delete_instructor({{ $instructor->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>

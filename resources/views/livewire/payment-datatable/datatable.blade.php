@@ -66,14 +66,14 @@
                         </td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
-                                <button class="text-green-400 flex items-center hover:text-success transition ease-linear" wire:click="showPayment({{ $payment->id }})">
+                                <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="showPayment({{ $payment->id }})">
                                     <x-icons.money />
                                     <span>Pay</span>
                                 </button>
-                                <button class="text-secondary flex items-center hover:text-primary transition ease-linear" wire:click="view({{ $payment->id }})">
+                                {{-- <button class="text-secondary flex items-center hover:text-primary transition ease-linear" wire:click="view({{ $payment->id }})">
                                     <x-icons.eye />
                                     <span>View</span>
-                                </button>
+                                </button> --}}
                             </div>
                         </td>
                     </tr>

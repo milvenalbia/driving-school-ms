@@ -65,15 +65,15 @@
                 </td>
                 <td class="py-3 px-4">
                     <div class="flex items-center gap-2">
-                        <button class="bg-primary text-white flex items-center hover:bg-blue-600 transition ease-linear py-2 px-4 rounded-md" wire:click="enroll_student({{ $schedule->id }})">
+                        <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="enroll_student({{ $schedule->id }})">
                             <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
                             <span>Enroll</span>
                         </button>
-                        <button class="text-secondary flex items-center hover:text-primary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
+                        <button class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>

@@ -63,11 +63,11 @@
                     </td>
                     {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
                     <td class="py-3 px-4 flex items-center">
-                        <button class="text-blue-500 flex items-center hover:text-primary transition ease-linear" wire:click="edit_vehicle({{ $vehicle->id }})">
+                        <button class="border-2 border-primary rounded-md py-1 px-2 text-blue-500 flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="edit_vehicle({{ $vehicle->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="text-red-500 ml-2 flex items-center hover:text-red-700 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete vehicle. |DELETE" wire:click="delete_vehicle({{ $vehicle->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 ml-2 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete vehicle. |DELETE" wire:click="delete_vehicle({{ $vehicle->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>
