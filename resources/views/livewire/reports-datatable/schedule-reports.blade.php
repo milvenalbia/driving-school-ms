@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button>
+        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Download PDF</button>
        </div>
         
     </header>
@@ -35,7 +35,6 @@
                     <livewire:datatable-component.th-cell field="" label="Type"/>
                     <livewire:datatable-component.th-cell field="" label="Enrolled"/>
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
-                    <livewire:datatable-component.th-cell field="" label="Action"/>
                 </tr>
         </thead>
         <tbody>
@@ -50,14 +49,6 @@
                     <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
                     <td class="py-3 px-4">{{ $schedule->enrolled_student }}</td>
                     <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="view({{ $schedule->id }})">
-                                <x-icons.eye />
-                                <span>View</span>
-                            </button>
-                        </div>
-                    </td>
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">
@@ -68,11 +59,16 @@
     </table>
     </div>
 
-    {{-- wire:confirm.prompt="Delete confirmation, type DELETE to delete user. |DELETE" --}}
-
     <div class="mt-4">
         {{ $schedules->links() }}
     </div>
+
+    <x-elements.notification class="bg-red-800" >
+        <x-slot:svg>
+            <x-icons.warning class="text-red-500" />
+        </x-slot:svg>
+        {{session('error')}}
+    </x-elements.notification>
 
 </div>
 

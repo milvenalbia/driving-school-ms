@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md">Generate PDF</button>
+        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Download PDF</button>
        </div>
         
     </header>
@@ -26,6 +26,9 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
+                    <th class="py-3 px-4">
+                        <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="selectAll" />
+                    </th>
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
                     <livewire:datatable-component.th-cell field="" label="Student Name"/>
                     <livewire:datatable-component.th-cell field="" label="Course Name"/>
@@ -39,6 +42,9 @@
         <tbody>
             @forelse($students as $student)
                 <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                    <td class="py-3 px-4 ">
+                        <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="student_id" value="{{ $student->id }}" />
+                    </td>
                     <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
                         @if ($student->student->image_path)
                             <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->student->image_path) }}" alt="profile" >
@@ -77,6 +83,13 @@
     <div class="mt-4">
         {{ $students->links() }}
     </div>
+
+    <x-elements.notification class="bg-red-800" >
+        <x-slot:svg>
+            <x-icons.warning class="text-red-500" />
+        </x-slot:svg>
+        {{session('error')}}
+    </x-elements.notification>
 
 </div>
 

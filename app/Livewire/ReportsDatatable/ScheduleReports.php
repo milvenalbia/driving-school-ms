@@ -75,23 +75,68 @@ class ScheduleReports extends Component
     public function generatePDF()
     {
         if (empty($this->schedule_id)) {
-            $this->dispatch('error', 'Please select at least one schedule to generate PDF');
+
+            session()->flash('error', 'Please select at least one schedule to generate PDF');
+
+            $this->showNotification = true;
             return;
         }
 
         $selectedSchedules = Schedules::whereIn('id', $this->schedule_id)
-            ->with('instructorBy')
-            ->get();
+        ->with('instructorBy')
+        ->get();
 
         $pdf = PDF::loadView('pdf.schedules', [
             'schedules' => $selectedSchedules,
-            'generatedDate' => now()->format('Y-m-d H:i:s')
+        ]);
+
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+
+        // Optional: Set other PDF properties
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'dejavu sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
         ]);
 
         return response()->streamDownload(function() use ($pdf) {
             echo $pdf->output();
-        }, 'schedules_report_' . now()->format('Y-m-d') . '.pdf');
+        }, 'course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
     }
+
+    // public function generatePDF()
+    // {
+    //     if (empty($this->schedule_id)) {
+    //         session()->flash('error', 'Please select at least one schedule to generate PDF');
+    //         $this->showNotification = true;
+    //         return;
+    //     }
+
+    //     $selectedSchedules = Schedules::whereIn('id', $this->schedule_id)
+    //         ->with('instructorBy')
+    //         ->get();
+
+    //     $pdf = PDF::loadView('pdf.schedules', [
+    //         'schedules' => $selectedSchedules,
+    //     ]);
+
+    //     // Set paper size and orientation
+    //     $pdf->setPaper('A4', 'portrait');
+
+    //     // Optional: Set other PDF properties
+    //     $pdf->setOption([
+    //         'dpi' => 150,
+    //         'defaultFont' => 'dejavu sans',
+    //         'isHtml5ParserEnabled' => true,
+    //         'isRemoteEnabled' => true
+    //     ]);
+
+    //     // Stream the PDF to the browser for inline viewing
+    //     return $pdf->stream('course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
+    // }
+
 
     public function render()
     {

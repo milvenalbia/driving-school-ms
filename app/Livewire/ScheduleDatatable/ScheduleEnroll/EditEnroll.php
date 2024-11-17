@@ -245,7 +245,7 @@ class EditEnroll extends Component
                 ->where('student_id', $this->student_id)
                 ->first();
 
-        if($students){
+        if($students && $this->isPractical){
 
             $remarks = $students->theoritical_grade > 74 && $this->grade > 74 ? true : false;
             
@@ -255,7 +255,12 @@ class EditEnroll extends Component
                 'remarks' => $remarks,
             ]);
 
-        }else{
+        }elseif($students && !$this->isPractical){
+            $students->update([
+                'theoritical_grade' => $this->grade,
+            ]);
+        }
+        else{
 
             StudentReport::create([
                 'student_id' => $course->student_id,

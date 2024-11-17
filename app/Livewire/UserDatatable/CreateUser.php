@@ -2,6 +2,7 @@
 
 namespace App\Livewire\UserDatatable;
 
+use App\Models\Instructor;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -29,12 +30,12 @@ class CreateUser extends Component
  
      public function register_user()
      {
-         $validated = $this->validate([
-             'name' => ['required', 'string', 'max:255'],
-             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-             'password' => ['required', 'string', 'confirmed', Password::defaults()],
-             'role' => ['required', 'string', 'max:255'],
-         ]);
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
+            'role' => ['required', 'string', 'max:255'],
+        ]);
  
          $validated['password'] = Hash::make($validated['password']);
  

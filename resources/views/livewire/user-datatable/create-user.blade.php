@@ -78,36 +78,19 @@
                 </span>
             </div>
         </div>
-        @if ($user_role)
-            @if($user_role != 'student' && $user_role != 'instructor')
-                <div class="mb-6">
-                    <label class="mb-2.5 block font-medium text-black dark:text-white" for="role">
-                        Select Role
-                    </label>
-                    <x-elements.select wire:model="role" name="role" id="role">
-                        <option value="" class="text-body">Select user role</option>
-                        <option value="admin" class="text-body">Admin</option>
-                        <option value="employee" class="text-body">Employee</option>
-                    </x-elements.select>
-                    <x-elements.input-error :messages="$errors->get('role')" class="mt-2" />
-                </div>
-            @endif
-        @else
-            <div class="mb-6">
-                <label
-                class="mb-2.5 block font-medium text-black dark:text-white"
-                for="role"
-                >
-                Select Role
-                </label>
-                <x-elements.select wire:model="role" name="role" id="role">
-                    <option value="" class="text-body">Select user role</option>
-                    <option value="admin" class="text-body">Admin</option>
-                    <option value="instructor" class="text-body">Instructor</option>
-                </x-elements.select>
-                <x-elements.input-error :messages="$errors->get('role')" class="mt-2" />
-            </div>
-        @endif
+        <div class="mb-6">
+            <label
+            class="mb-2.5 block font-medium text-black dark:text-white"
+            for="role"
+            >
+            Select Role
+            </label>
+            <x-elements.select wire:model="role" name="role" id="role">
+                <option value="" class="text-body">Select User Role</option>
+                <option value="admin" class="text-body">Admin</option>
+            </x-elements.select>
+            <x-elements.input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
         <div class="mb-5">
         <input
             type="submit"

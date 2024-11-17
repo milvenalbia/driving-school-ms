@@ -103,7 +103,7 @@
         {{ $students->links() }}
     </div>
 
-    <x-elements.notification >
+    <x-elements.notification>
         <x-slot:svg>
             <x-icons.success class="text-[#06D001]" />
         </x-slot:svg>

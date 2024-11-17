@@ -44,12 +44,15 @@
         <tbody>
             @forelse($users as $user)
                 <tr wire:key="user-{{ $user->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                    <td class="py-3 px-4">{{ $user->user_id }}</td>
+                    <td class="py-3 px-4">{{ $user->user_id ? $user->user_id : '--' }}</td>
                     <td class="py-3 px-4">{{ $user->name }}</td>
                     <td class="py-3 px-4">{{ $user->email }}</td>
                     {{-- <td class="py-3 px-4">{{ $user->role ? $user->role : '--' }}</td> --}}
                     <td class="py-3 px-4 flex items-center">
-                        <button class="border-2 border-primary rounded-md py-1 px-2 text-blue-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="edit_user({{ $user->id }})">
+                        <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear @if($user->role !== 'admin') cursor-not-allowed @endif"
+                         wire:click="edit_user({{ $user->id }})"
+                         @disabled($user->role !== 'admin')
+                         >
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
@@ -81,7 +84,7 @@
         {{session('success')}}
     </x-elements.notification>
 
-    <x-elements.modal name="create-user">
+    <x-elements.modal name="create-user" maxWidth="40">
         <livewire:user-datatable.create-user />
     </x-elements.modal>
 
