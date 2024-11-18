@@ -82,7 +82,7 @@
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 ml-2 flex items-center hover:text-white hover:red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete student. |DELETE" wire:click="delete_student({{ $student->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 ml-2 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete student. |DELETE" wire:click="delete_student({{ $student->id }})">
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>

@@ -2,10 +2,12 @@
 
 namespace App\Livewire\ScheduleDatatable;
 
-use App\Models\CourseEnrolled;
-use App\Models\Schedules;
 use Livewire\Component;
+use App\Models\Schedules;
 use Livewire\WithPagination;
+use App\Models\CourseEnrolled;
+use App\Models\Instructor;
+use Illuminate\Support\Facades\Auth;
 
 class Datatable extends Component
 {
@@ -62,17 +64,37 @@ class Datatable extends Component
 
     public function render()
     {
-        $schedules = Schedules::query()
-            ->when($this->search, function ($query) {
-                    $query->where('name', 'like', '%' . $this->search . '%')
-                          ->orWhere('schedule_code', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate($this->perPage);
+        $user = Auth::user();
+
+        if($user->role === 'instructor'){
+
+            $intructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');
+            $schedules = Schedules::query()
+                ->whereIn('instructor', $intructor_id)
+                ->when($this->search, function ($query) {
+                        $query->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('schedule_code', 'like', '%' . $this->search . '%');
+                })
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->paginate($this->perPage);
+        
+            return view('livewire.schedule-datatable.datatable', [
+                'schedules' => $schedules,
+            ]);
+        }else{
+            $schedules = Schedules::query()
+                ->when($this->search, function ($query) {
+                        $query->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('schedule_code', 'like', '%' . $this->search . '%');
+                })
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->paginate($this->perPage);
     
-        return view('livewire.schedule-datatable.datatable', [
-            'schedules' => $schedules,
-        ]);
+            return view('livewire.schedule-datatable.datatable', [
+                'schedules' => $schedules,
+            ]);
+        }
+        
     }
 
     public function view_students($schedule_id){

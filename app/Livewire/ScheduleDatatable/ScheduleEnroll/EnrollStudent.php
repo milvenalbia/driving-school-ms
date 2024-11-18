@@ -38,7 +38,7 @@ class EnrollStudent extends Component
     {
         $user = Auth::user();
 
-        if($user){
+        if($user->role === "student"){
             $this->student_id = $user->user_id;
             $this->search = $user->user_id;
         }

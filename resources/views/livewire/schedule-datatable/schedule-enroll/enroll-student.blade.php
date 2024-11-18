@@ -11,7 +11,7 @@
     <form wire:submit.prevent="enroll_student" > 
         {{-- wire:submit.prevent="{{ $schedule_id ? 'update_schedule' : 'register_schedule' }}" --}}
 
-        @if(auth()->user()->role === 'admin')
+        @if(auth()->user()->role !== 'student')
         <div class="mb-4 relative">
             <label for="student" class="mb-2.5 block font-medium text-black dark:text-white">
                 Select Student

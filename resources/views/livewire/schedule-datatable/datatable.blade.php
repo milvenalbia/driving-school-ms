@@ -47,7 +47,7 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
-                    @if(auth()->user()->role === 'admin')
+                    @if(auth()->user()->role !== 'student')
                     <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     <livewire:datatable-component.th-cell field="" label="Schedule Code"/>
                     @endif
@@ -57,7 +57,7 @@
                     <livewire:datatable-component.th-cell field="" label="Instructor"/>
                     <livewire:datatable-component.th-cell field="" label="Amount" />
                     {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
-                    @if(auth()->user()->role === 'admin')<livewire:datatable-component.th-cell field="" label="Enrollees"/>@endif
+                    @if(auth()->user()->role !== 'student')<livewire:datatable-component.th-cell field="" label="Enrollees"/>@endif
                     <th class="py-3 px-4 flex items-center gap-1">
                         <span>Actions</span>
                     </th>
@@ -66,7 +66,7 @@
         <tbody>
             @forelse($schedules as $schedule)
             <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->role !== 'student')
                 <td class="py-3 px-4">{{ $schedule->id }}</td>
                 <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
                 @endif
@@ -77,7 +77,7 @@
                 <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
                 <td class="py-3 px-4">{{ $schedule->amount }}</td>
 
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->role !== 'student')
                 <td class="py-3 px-4">
                     <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
                             wire:click="view_students({{ $schedule->id }})">
