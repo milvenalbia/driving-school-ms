@@ -29,7 +29,7 @@ Route::view('profile', 'pages.profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'show']
     )->name('dashboard');
     
@@ -41,9 +41,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/students',[StudentController::class, 'show']
     )->name('students');
-
-    Route::get('/schedules',[ScheduleContronller::class, 'show']
-    )->name('schedules');
 
     Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
     )->name('student-reports');
@@ -57,7 +54,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments',[PaymentController::class, 'show']
     )->name('payments');
 
-    //students
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/schedules',[ScheduleContronller::class, 'show']
+    )->name('schedules');
+
     Route::get('/student-dashboard',[StudentInstructorPages::class, 'show']
     )->name('student-dashboard');
 });

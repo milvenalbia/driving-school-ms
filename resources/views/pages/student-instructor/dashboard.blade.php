@@ -3,7 +3,7 @@
             Dashboard
     </x-slot>
     <div
-    class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-2 2xl:gap-7.5"
+    class="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-2 xl:grid-cols-2 2xl:gap-2"
   >
     <div
     class="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"
@@ -19,9 +19,9 @@
         <h4
           class="text-title-md font-bold text-black dark:text-white"
         >
-          5
+          {{auth()->user()->role === 'student' ? $instructor_count : $student_count}}
         </h4>
-        <span class="text-sm font-medium">Total Instructors</span>
+        <span class="text-sm font-medium">{{auth()->user()->role === 'student' ? 'Instructors' : 'Students'}}</span>
       </div>
     </div>
   </div>
@@ -42,34 +42,33 @@
         <h4
           class="text-title-md font-bold text-black dark:text-white"
         >
-          10
+          {{$schedules}}
         </h4>
-        <span class="text-sm font-medium">Schedules</span>
+        <span class="text-sm font-medium">{{auth()->user()->role === 'student' ? 'Schedules' : 'Assigned Schedules'}}</span>
       </div>
     </div>
   </div>
   <!-- Card Item End -->
 </div>
 
+@if(auth()->user()->role === 'student')
 {{-- Table --}}
 <div class="rounded-sm border border-stroke bg-white px-5 pb-3 pt-8 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2 mt-8">
     <div>
         <header class="w-full flex justify-between items-center mb-8">
-            <h2 class="text-title-md font-bold text-black capitalize">{{$studentName}} Reports</h2>
-        </div>
-            
+            <h2 class="text-title-md font-bold text-black capitalize">{{$studentName}}</h2>     
         </header>
 
         <div class="max-w-full overflow-x-auto">
-            <table class="w-full table-auto">
-                <thead>
-                    <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
-                        <livewire:datatable-component.th-cell field="" label="Course Name"/>
-                        <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
-                        <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
-                        <livewire:datatable-component.th-cell field="" label="Instructor" />
-                        <livewire:datatable-component.th-cell field="" label="Remarks"/>
-                    </tr>
+          <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
+                    <livewire:datatable-component.th-cell field="" label="Course Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Instructor" />
+                    <livewire:datatable-component.th-cell field="" label="Remarks"/>
+                </tr>
             </thead>
             <tbody>
                 @forelse($students as $student)
@@ -99,5 +98,96 @@
 
     </div>
 </div>
+@else
+<div class="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-2 xl:grid-cols-2 2xl:gap-2" >
+  <div class="rounded-sm border border-stroke bg-white px-5 pb-3 pt-8 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2 mt-8">
+    <div>
+        <header class="w-full flex justify-between items-center mb-8">
+            <h2 class="text-title-md font-bold text-black capitalize">Theoretical Student List</h2>     
+        </header>
+
+        <div class="max-w-full overflow-x-auto">
+          <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
+                    <livewire:datatable-component.th-cell field="" label="Course Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Student"/>
+                    <livewire:datatable-component.th-cell field="" label="Attendance"/>
+                    <livewire:datatable-component.th-cell field="" label="Remarks"/>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($theoretical_students as $student)
+                    <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                        <td class="py-3 px-4">{{ $student->schedule->name }}</td>
+                        <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
+                        <td class="py-3 px-4">{{ $student->course_attendance }}</td>
+                        <td class="py-3 px-4">
+                            @if ($student->remarks === 1)
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                            @elseif($student->remarks === 0)
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            @endif
+                        </td>
+                    </tr>   
+                @empty
+                    <tr class="border-b border-stroke text-base">
+                        <td class="py-3 px-4 text-center" colspan="4">{{'No data available.'}}</td>
+                    </tr>
+                @endforelse
+            </tbody>
+          </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="rounded-sm border border-stroke bg-white px-5 pb-3 pt-8 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2 mt-8">
+  <div>
+      <header class="w-full flex justify-between items-center mb-8">
+          <h2 class="text-title-md font-bold text-black capitalize">Practical Student List</h2>     
+      </header>
+
+      <div class="max-w-full overflow-x-auto">
+        <table class="w-full table-auto">
+          <thead>
+              <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
+                  <livewire:datatable-component.th-cell field="" label="Course Name"/>
+                  <livewire:datatable-component.th-cell field="" label="Student"/>
+                  <livewire:datatable-component.th-cell field="" label="Start Date"/>
+                  <livewire:datatable-component.th-cell field="" label="Remarks"/>
+              </tr>
+          </thead>
+          <tbody>
+              @forelse($practical_students as $student)
+                  <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                      <td class="py-3 px-4">{{ $student->schedule->name }}</td>
+                      <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
+                      <td class="py-3 px-4">{{ $student->start_date }}</td>
+                      <td class="py-3 px-4">
+                          @if ($student->remarks === 1)
+                              <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                          @elseif($student->remarks === 0)
+                              <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                          @else
+                              <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                          @endif
+                      </td>
+                  </tr>   
+              @empty
+                  <tr class="border-b border-stroke text-base">
+                      <td class="py-3 px-4 text-center" colspan="4">{{'No data available.'}}</td>
+                  </tr>
+              @endforelse
+          </tbody>
+        </table>
+      </div>
+
+  </div>
+</div>
+</div>
+@endif
 
 </x-app-layout>
