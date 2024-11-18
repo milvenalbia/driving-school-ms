@@ -62,11 +62,11 @@ new class extends Component
         <h3 class="mb-4 ml-4 text-sm font-medium text-bodydark2">MENU</h3>
 
         <ul class="mb-6 flex flex-col gap-1.5">
-         
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black duration-300 ease-in-out hover:bg-primary hover:text-white dark:text-white"
-              href="{{ route('dashboard') }}" wire:navigate
+              href="{{ route('dashboard') }}"
               @click="loaded = true"
               :class="{ 'bg-primary text-white': (title === 'Dashboard') }"
             >
@@ -76,7 +76,25 @@ new class extends Component
               Dashboard
             </a>
           </li>
+          @endif
 
+          @if(auth()->user()->role !== 'admin')
+          <li>
+            <a
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black duration-300 ease-in-out hover:bg-primary hover:text-white dark:text-white"
+              href="{{ route('student-dashboard') }}"
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Dashboard') }"
+            >
+            <x-icons.dashboard-icon />
+            
+
+              Dashboard
+            </a>
+          </li>
+          @endif
+
+          @if(auth()->user()->role === 'admin' || auth()->user()->role === 'student')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -91,7 +109,9 @@ new class extends Component
               Schedule
             </a>
           </li>
+          @endif
 
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -106,7 +126,9 @@ new class extends Component
               Students
             </a>
           </li>
+          @endif
 
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -121,7 +143,9 @@ new class extends Component
               Instructors
             </a>
           </li>
+          @endif
 
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -136,7 +160,9 @@ new class extends Component
               Vehicles
             </a>
           </li>
+          @endif
 
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -151,10 +177,13 @@ new class extends Component
               Payments
             </a>
           </li>
+          @endif
+
         </ul>
       </div>
       {{-- Menu End --}}
 
+      @if(auth()->user()->role === 'admin')
       {{-- Reports Start --}}
       <div>
         <h3 class="mb-4 ml-4 text-sm font-medium text-bodydark2">REPORTS</h3>
@@ -194,9 +223,11 @@ new class extends Component
         </ul>
       </div>
       {{-- Reports End --}}
-      
+      @endif
+
       <div>
         <ul class="mb-6 flex flex-col gap-1.5">
+          @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -211,7 +242,8 @@ new class extends Component
               Users
             </a>
           </li>
-  
+          @endif
+
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"

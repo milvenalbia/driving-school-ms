@@ -2,11 +2,12 @@
 
 namespace App\Livewire\ScheduleDatatable\ScheduleEnroll;
 
-use App\Models\CourseEnrolled;
 use App\Models\Payment;
-use App\Models\Schedules;
-use App\Models\Students;
 use Livewire\Component;
+use App\Models\Students;
+use App\Models\Schedules;
+use App\Models\CourseEnrolled;
+use Illuminate\Support\Facades\Auth;
 
 class EnrollStudent extends Component
 {
@@ -35,6 +36,13 @@ class EnrollStudent extends Component
 
     public function update_schedule_id($schedule_id)
     {
+        $user = Auth::user();
+
+        if($user){
+            $this->student_id = $user->user_id;
+            $this->search = $user->user_id;
+        }
+        
         if($schedule_id){
             $this->schedule_id = $schedule_id;
 

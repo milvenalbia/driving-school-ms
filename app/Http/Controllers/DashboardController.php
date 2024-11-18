@@ -2,25 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CourseEnrolled;
-use App\Models\Instructor;
 use App\Models\Payment;
-use App\Models\Schedules;
-use App\Models\StudentReport;
 use App\Models\Students;
+use App\Models\Schedules;
 use Illuminate\View\View;
+use App\Models\Instructor;
 use Illuminate\Http\Request;
+use App\Models\StudentReport;
+use App\Models\CourseEnrolled;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function show(): View {
 
+        $user = Auth::user();
+        
         $data = [
             'sales' => 0,
             'students' => 0,
             'theoretical_students' => 0,
             'practical_students' => 0,
-            'graduated_students' => 0,
+            'passed_students' => 0,
+            'failed_students' => 0,
             'instructors' => 0,
             'schedules' => 0,
         ];
@@ -40,7 +44,8 @@ class DashboardController extends Controller
         ->with('schedule')
         ->count();
 
-        $data['graduated_students'] = StudentReport::select('remarks')->where('remarks', true)->count();
+        $data['passed_students'] = StudentReport::select('remarks')->where('remarks', true)->count();
+        $data['failed_students'] = StudentReport::select('remarks')->where('remarks', false)->count();
         $data['sales'] = Payment::sum('paid_amount');
 
         if ($data['sales'] >= 1000000000) {
@@ -54,6 +59,7 @@ class DashboardController extends Controller
         $data['sales'] = $formattedSales;
 
         return view('pages.dashboard', compact('data'));
+        
     }
 
 }

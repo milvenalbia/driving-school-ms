@@ -11,6 +11,7 @@
     <form wire:submit.prevent="enroll_student" > 
         {{-- wire:submit.prevent="{{ $schedule_id ? 'update_schedule' : 'register_schedule' }}" --}}
 
+        @if(auth()->user()->role === 'admin')
         <div class="mb-4 relative">
             <label for="student" class="mb-2.5 block font-medium text-black dark:text-white">
                 Select Student
@@ -21,7 +22,7 @@
                 wire:model.live.debounce.300ms="search"
                 x-model="selected"
                 @focus="suggestion = true" 
-                @blur="setTimeout(() => suggestion = false, 200)" 
+                @blur="setTimeout(() => suggestion = false, 200)"
             />
             <x-elements.input-error :messages="$errors->get('search')" class="mt-2" />
             <x-elements.text-input 
@@ -44,6 +45,31 @@
                 @endforelse
             </ul>
         </div>
+
+        @else
+
+        <div class="mb-4 relative">
+            <label for="student" class="mb-2.5 block font-medium text-black dark:text-white">
+                Select Student
+            </label>
+            
+            {{-- This input will display the user_id as the value, and it will be readonly --}}
+            <x-elements.text-input 
+                type="text" 
+                wire:model="search"
+                readonly
+            />
+            
+            <x-elements.input-error :messages="$errors->get('search')" class="mt-2" />
+            
+            {{-- Hidden input to keep the student_id in the background for Livewire --}}
+            <x-elements.text-input 
+                type="hidden"
+                wire:model="student_id"
+            />
+        </div>        
+
+        @endif
 
         @if($isPractical)
         <div class="mb-4 relative">

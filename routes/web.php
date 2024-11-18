@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
@@ -9,8 +10,20 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleContronller;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\StudentInstructorPages;
 
-Route::redirect('/', 'dashboard');
+Route::get('/', function () {
+    // Get the authenticated user
+    $user = Auth::user();
+    
+    // Check if the user is an admin
+    if ($user && $user->role === 'admin') {
+        return redirect('dashboard');
+    }
+
+    // If the user is not an admin, redirect to 'student-dashboard'
+    return redirect('student-dashboard');
+});
 
 Route::view('profile', 'pages.profile')
     ->middleware(['auth'])
@@ -43,6 +56,10 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/payments',[PaymentController::class, 'show']
     )->name('payments');
+
+    //students
+    Route::get('/student-dashboard',[StudentInstructorPages::class, 'show']
+    )->name('student-dashboard');
 });
 
 require __DIR__.'/auth.php';

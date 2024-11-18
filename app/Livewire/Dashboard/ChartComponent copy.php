@@ -127,7 +127,7 @@ class ChartComponent extends Component
     {
         $this->chartData = $this->getChartData();
         $this->labels = $this->getChartLabels();
-        
+
         return view('livewire.dashboard.chart-component', [
             'chartData' => $this->chartData,
             'labels' => $this->labels,

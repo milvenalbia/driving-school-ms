@@ -157,12 +157,35 @@ class="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:
     <h4
       class="text-title-md font-bold text-black dark:text-white"
     >
-      {{$data['graduated_students']}}
+      {{$data['passed_students']}}
     </h4>
-    <span class="text-sm font-medium">Graduated Students</span>
+    <span class="text-sm font-medium">Passed Students</span>
   </div>
 </div>
+</div> 
+<!-- Card Item End -->
+
+<!-- Card Item Start -->
+<div
+class="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+>
+<div
+  class="flex h-11.5 w-11.5 items-center justify-center text-primary rounded-full bg-meta-2 dark:bg-meta-4"
+>
+  <x-icons.warning />
 </div>
+
+<div class="mt-4 flex items-end justify-between">
+  <div>
+    <h4
+      class="text-title-md font-bold text-black dark:text-white"
+    >
+      {{$data['failed_students']}}
+    </h4>
+    <span class="text-sm font-medium">Failed Students</span>
+  </div>
+</div>
+</div> 
 <!-- Card Item End -->
 </div>
 
