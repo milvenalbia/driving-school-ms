@@ -7,6 +7,7 @@ use App\Models\Schedules;
 use Livewire\WithPagination;
 use App\Models\CourseEnrolled;
 use App\Models\Instructor;
+use App\Models\Students;
 use Illuminate\Support\Facades\Auth;
 
 class Datatable extends Component
@@ -21,6 +22,7 @@ class Datatable extends Component
 
     public $showNotification = false;
     public $showModal = false;
+    public $user_student_id = 0;
     protected $listeners = ['sortField', 'success_message', 'success_message_enroll'];
 
     protected $queryString = [
@@ -65,7 +67,7 @@ class Datatable extends Component
     public function render()
     {
         $user = Auth::user();
-
+        
         if($user->role === 'instructor'){
 
             $intructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');

@@ -26,7 +26,7 @@ Route::get('/', function () {
 });
 
 Route::view('profile', 'pages.profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'student'])
     ->name('profile');
 
 Route::middleware(['auth', 'admin'])->group(function () {

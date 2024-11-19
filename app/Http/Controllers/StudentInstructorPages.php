@@ -39,6 +39,24 @@ class StudentInstructorPages extends Controller
 
             $instructor_count = Instructor::count();
 
+            $theoretical_students = CourseEnrolled::select('student_id', 'schedule_id')
+                ->where('student_id', $current_user->id) // Use whereIn
+                ->whereHas('schedule', function ($q) {
+                    $q->where('isDone', false)
+                        ->where('type', 'theoretical');
+                })
+                ->with('student', 'schedule')
+                ->get();
+
+            $practical_students = CourseEnrolled::select('student_id', 'schedule_id', 'start_date')
+                ->where('student_id', $current_user->id) // Use whereIn
+                ->whereHas('schedule', function ($q) {
+                    $q->where('isDone', false)
+                        ->where('type', 'practical');
+                })
+                ->with('student', 'schedule')
+                ->get();
+
             $students = StudentReport::query()
             ->where('student_id', $current_user->id)
             ->with(['student', 'schedule'])

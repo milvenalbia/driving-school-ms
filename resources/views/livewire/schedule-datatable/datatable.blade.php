@@ -91,7 +91,7 @@
                     <div class="flex items-center gap-2">
                         <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="enroll_student({{ $schedule->id }})">
                             <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
-                            <span>Enroll</span>
+                            <span>Enrolle</span>
                         </button>
                         @if(auth()->user()->role === 'admin')
                         <button class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">

@@ -168,7 +168,7 @@ class CreateInstructor extends Component
                     }
         
                     // Check in 'students' table
-                    if (Instructor::where('email', $value)->exists() && $value !== $old_email) {
+                    if (Students::where('email', $value)->exists() && $value !== $old_email) {
                         $fail('The email has already been taken in the students table.');
                     }
                 }

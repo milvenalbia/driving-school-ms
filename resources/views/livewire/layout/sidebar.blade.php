@@ -109,6 +109,23 @@ new class extends Component
             </a>
           </li>
 
+          @if(auth()->user()->role === 'student')
+          <li>
+            <a
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
+              href="{{ route('profile') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Profile') }"
+            >
+            <x-icons.student />          
+            
+
+
+              Profile
+            </a>
+          </li>
+          @endif
+
           @if(auth()->user()->role === 'admin')
           <li>
             <a
