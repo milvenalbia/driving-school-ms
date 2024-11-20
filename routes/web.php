@@ -36,8 +36,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'show']
     )->name('dashboard');
     
-    Route::get('/users',[UserController::class, 'show']
-    )->name('users');
+    // Route::get('/users',[UserController::class, 'show']
+    // )->name('users');
 
     Route::get('/instructors',[InstructorController::class, 'show']
     )->name('instructors');

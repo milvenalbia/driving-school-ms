@@ -257,7 +257,7 @@ new class extends Component
 
       <div>
         <ul class="mb-6 flex flex-col gap-1.5">
-          @if(auth()->user()->role === 'admin')
+          {{-- @if(auth()->user()->role === 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -272,7 +272,7 @@ new class extends Component
               Users
             </a>
           </li>
-          @endif
+          @endif --}}
 
           <li>
             <a
