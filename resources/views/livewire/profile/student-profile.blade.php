@@ -126,41 +126,45 @@
                         <div class="sm:col-span-2">
                             <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
                             <x-elements.select wire:model.live="region" wire:change="changeRegion" id="region" class="!py-2 border-boxdark">
-                                <option value="">Select Region</option>
+                                <option value={{null}}>Select Region</option>
                                 @foreach ($regions as $region)
                                     <option value={{$region->id}}>{{$region->name}}</option>
                                 @endforeach
                             </x-elements.select>
+                            @error('region') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="province" class="block text-sm font-medium text-gray-700 mb-1">Province</label>
                             <x-elements.select wire:model.live="province" wire:change="changeProvince" id="province" class="!py-2 border-boxdark">
-                                <option value="">Select Province</option>
+                                <option value={{null}}>Select Province</option>
                                 @foreach ($provinces as $province)
                                     <option value={{$province->id}}>{{$province->name}}</option>
                                 @endforeach
                             </x-elements.select>
+                            @error('province') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="sm:col-span-2">
                             <label for="municipalilty" class="block text-sm font-medium text-gray-700 mb-1">City/Municipality</label>
                             <x-elements.select wire:model.live="municipality" wire:change="changeMunicipality" id="municipality" class="!py-2 border-boxdark">
-                                <option value="">Select Municipality</option>
+                                <option value={{null}}>Select Municipality</option>
                                 @foreach ($municipalities as $municipality)
                                     <option value={{$municipality->id}}>{{$municipality->name}}</option>
                                 @endforeach
                             </x-elements.select>
+                            @error('municipality') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
                         
                         <div class="sm:col-span-3">
                             <label for="barangay" class="block text-sm font-medium text-gray-700 mb-1">Barangay</label>
                             <x-elements.select wire:model="barangay" id="barangay" class="!py-2 border-boxdark">
-                                <option value="">Select Barangay</option>
+                                <option value={{null}}>Select Barangay</option>
                                 @foreach ($barangays as $barangay)
                                     <option value={{$barangay->id}}>{{$barangay->name}}</option>
                                 @endforeach
                             </x-elements.select>
+                            @error('barangay') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="sm:col-span-3">
@@ -186,7 +190,7 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Birth Information</h3>
                     </div>
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                        <div class="sm:col-span-3" x-data x-init="flatpickr($refs.inputDate, {dateFormat: 'Y-m-d', minDate: 'today'});">
+                        <div class="sm:col-span-3" x-data x-init="flatpickr($refs.inputDate, {dateFormat: 'Y-m-d'});">
                             <label for="birth_date" class="block text-sm font-medium text-gray-700 mb-1">Birth Date</label>
                             <div class="mt-1">
                                 <x-elements.text-input wire:model="birth_date" class="!py-2 border-boxdark" id="birth_date" x-ref="inputDate" type="text" name="birth_date" />
@@ -197,7 +201,7 @@
                         <div class="sm:col-span-3">
                             <label for="birth_palce" class="block text-sm font-medium text-gray-700 mb-1">Birth Place</label>
                             <div class="mt-1">
-                                <x-elements.text-input type="text" wire:model="birth_palce" id="birth_palce" class="!py-2 border-boxdark" />
+                                <x-elements.text-input type="text" wire:model="birth_place" id="birth_palce" class="!py-2 border-boxdark" />
                             </div>
                         </div>
                     </div>
@@ -209,7 +213,7 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Account</h3>
                     </div>
                     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                        <div class="sm:col-span-3">
+                        <div class="sm:col-span-2">
                             <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
                             <div class="mt-1">
                                 <x-elements.text-input type="password" wire:model="new_password" id="new_password" class="!py-2 border-boxdark" />
@@ -217,12 +221,19 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3">
+                        <div class="sm:col-span-2">
                             <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
                             <div class="mt-1">
-                                <x-elements.text-input type="password" wire:model="password_confirmation" id="password_confirmation" class="!py-2 border-boxdark" />
-                                @error('password_confirmation') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                <x-elements.text-input type="password" wire:model="new_password_confirmation" id="password_confirmation" class="!py-2 border-boxdark" />
+                                @error('new_password_confirmation') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="changePassword" class="block text-sm font-mediu mb-1 visible" style="visibility: hidden">Change Password</label>
+                            <button type="button" wire:click="changePassword" id="changePassword" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Change Password
+                            </button>
                         </div>
                     </div>
                 </div>

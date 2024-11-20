@@ -185,11 +185,14 @@ class CreateInstructor extends Component
         $image = $instructor->image_path;
         if($this->image_path)
         {
-            Storage::delete($instructor->image_path);
+            if(!empty($image)){
+                Storage::delete($instructor->image_path);
+            }
             $image = $this->image_path->store('public/photos');
         }else{
             $image = $instructor->image_path;
         }
+
 
         $instructor->update([
             'created_by' => Auth::id(),

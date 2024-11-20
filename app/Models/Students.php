@@ -22,7 +22,7 @@ class Students extends Model
         'street',
         'barangay',
         'district',
-        'municipalilty',
+        'municipality',
         'province',
         'region',
         'civil_status',

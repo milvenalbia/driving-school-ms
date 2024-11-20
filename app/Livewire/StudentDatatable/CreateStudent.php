@@ -175,9 +175,12 @@ class CreateStudent extends Component
         $student = Students::findOrFail($this->student_id);
 
         $image = $student->image_path;
+   
         if($this->image_path)
         {
-            Storage::delete($student->image_path);
+            if(!empty($image)){
+                Storage::delete($student->image_path);
+            }
             $image = $this->image_path->store('public/photos');
         }else{
             $image = $student->image_path;

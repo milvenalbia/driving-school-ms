@@ -23,7 +23,7 @@ new #[Layout('layouts.guest')] class extends Component
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            $this->redirect(route('dashboard'), navigate: true);
+            $this->redirect(route('dashboard'));
         } else {
             $this->redirect(route('student-dashboard'), navigate: true);
         }

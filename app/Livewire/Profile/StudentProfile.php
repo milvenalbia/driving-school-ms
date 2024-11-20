@@ -14,6 +14,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 
 class StudentProfile extends Component
 {
@@ -39,7 +40,7 @@ class StudentProfile extends Component
     public $province;
     public $region;
     public $civil_status;
-    public $birth_palce;
+    public $birth_place;
     public $image_path;
 
     public $barangays = [];
@@ -49,8 +50,57 @@ class StudentProfile extends Component
     
     // Course related fields
     public $new_password;
-    public $password_confirmation;
+    public $new_password_confirmation;
 
+    public function mount(){
+        $user = Auth::user();
+        $this->regions = Region::select('id','name')->get();
+    
+        $student = Students::where('user_id', $user->user_id)->first();
+    
+        if($student){
+            $this->firstname = $student->firstname;
+            $this->middle = $student->middle ?? '';
+            $this->lastname = $student->lastname;
+            $this->email = $student->email;
+            $this->old_email = $student->email;
+            $this->gender = $student->gender ?? '';
+            $this->civil_status = $student->civil_status ?? '';
+            $this->phone_number = $student->phone_number ?? '';
+            $this->region = $student->region ?? null;
+            $this->province = $student->province ?? null;
+            $this->municipality = $student->municipality ?? null;
+            $this->barangay = $student->barangay ?? null;
+            $this->district = $student->district ?? '';
+            $this->street = $student->street ?? '';
+            $this->birth_date = $student->birth_date ?? null;
+            $this->birth_place = $student->birth_palce ?? ''; //typo pero ayaw hilabti
+            $this->image_path = $student->image_path ?? '';
+    
+            // Populate the provinces if a region is selected
+            if ($this->region) {
+                $this->provinces = Province::select('id', 'name')
+                    ->where('region_id', $this->region)
+                    ->get();
+            }
+    
+            // Populate the municipalities if a province is selected
+            if ($this->province) {
+                $this->municipalities = Municipality::select('id', 'name')
+                    ->where('province_id', $this->province)
+                    ->get();
+            }
+    
+            // Populate the barangays if a municipality is selected
+            if ($this->municipality) {
+                $this->barangays = Barangay::select('id', 'name')
+                    ->where('municipality_id', $this->municipality)
+                    ->get();
+            }
+        }
+    }
+    
+    
     public function updatedRegion(){
 
         $this->provinces = Province::select('id', 'name')
@@ -74,9 +124,9 @@ class StudentProfile extends Component
 
     public function changeRegion(){
 
-            $this->province = 0;
-            $this->municipality = 0;
-            $this->barangay = 0;
+            $this->province = null;
+            $this->municipality = null;
+            $this->barangay = null;
 
             $this->municipalities = [];
             $this->barangays = [];
@@ -84,15 +134,15 @@ class StudentProfile extends Component
 
     public function changeProvince(){
 
-            $this->municipality = 0;
-            $this->barangay = 0;
+            $this->municipality = null;
+            $this->barangay = null;
 
             $this->barangays = [];
     }
 
     public function changeMunicipality(){
 
-            $this->barangay = 0;
+            $this->barangay = null;
        
     }
 
@@ -131,6 +181,10 @@ class StudentProfile extends Component
                 'size:11'
             ],
             'newImage' => 'nullable|image|max:2048',
+            'region' => 'required',
+            'province' => 'required',
+            'municipality' => 'required',
+            'barangay' => 'required',
         ]);
 
         $user = Auth::user();
@@ -138,24 +192,39 @@ class StudentProfile extends Component
         $student = Students::where('user_id', $user->user_id)->first();
 
         $image = $student->image_path;
+
         if($this->newImage)
         {
-            Storage::delete($student->image_path);
+            if(!empty($image)){
+                Storage::delete($student->image_path);
+            }
             $image = $this->newImage->store('public/photos');
         }else{
             $image = $student->image_path;
         }
 
+
+
         // Tiwasa ni tanan field sa student
         $student->update([
             'firstname' => $validated['firstname'],
+            'middle' => $this->middle,
             'lastname' => $validated['lastname'],
             'email' => $validated['email'],
             'phone_number' => $validated['phone_number'],
             'image_path' => $image,
+            'gender' => $this->gender,
+            'civil_status' => $this->civil_status,
+            'region' => $this->region,
+            'province' => $this->province,
+            'municipality' => $this->municipality,
+            'barangay' => $this->barangay,
+            'district' => $this->district,
+            'street' => $this->street,
+            'birth_date' => $this->birth_date,
+            'birth_palce' => $this->birth_place, //typo pero ayaw hilabti
         ]);
 
-        //lahi na function ang sa password
         if ($student) {
                 $name = $validated['firstname'] . ' ' . $validated['lastname'];
             
@@ -164,15 +233,35 @@ class StudentProfile extends Component
                 $user->update([
                     'name' => $name,
                     'email' => $validated['email'],
-                    'role' => 'student',
                 ]);
         }
 
-        session()->flash('success', 'Updated Successfully');
+        session()->flash('success', 'Infromations Updated Successfully');
 
         $this->showNotification = true;
 
-        $this->reset();
+    }
+
+    public function changePassword(){
+        $validated = $this->validate([
+            'new_password' => ['required', 'string', 'confirmed', Password::defaults()],
+        ]);
+
+        $validated['new_password'] = Hash::make($validated['new_password']);
+ 
+        $user = Auth::user();
+
+        $user = User::where('user_id', $user->user_id)->first();
+ 
+        $user->update([
+            'password' => $validated['new_password'],
+        ]);
+
+        session()->flash('success', 'Password Updated Successfully');
+ 
+        $this->showNotification = true;
+        
+        $this->reset('new_password', 'new_password_confirmation');
     }
 
     public function cancel(){
@@ -192,44 +281,20 @@ class StudentProfile extends Component
             $this->gender = $student->gender ?? '';
             $this->civil_status = $student->civil_status ?? '';
             $this->phone_number = $student->phone_number ?? '';
-            $this->region = $student->region ?? 0;
-            $this->province = $student->province ?? 0;
-            $this->municipality = $student->municipalilty ?? 0;
-            $this->barangay = $student->barangay ?? 0;
+            $this->region = $student->region ?? null;
+            $this->province = $student->province ?? null;
+            $this->municipality = $student->municipalilty ?? null;
+            $this->barangay = $student->barangay ?? null;
             $this->district = $student->district ?? '';
             $this->street = $student->street ?? '';
-            $this->birth_date = $student->birth_date ?? '';
-            $this->birth_palce = $student->birth_palce ?? '';
+            $this->birth_date = $student->birth_date ?? null;
+            $this->birth_place = $student->birth_palce ?? ''; //typo pero ayaw hilabti
             $this->image_path = $student->image_path ?? '';
         }
     }
 
     public function render()
     {
-        $user = Auth::user();
-        $this->regions = Region::select('id','name')->get();
-
-        $student = Students::where('user_id', $user->user_id)->first();
-
-        if($student){
-            $this->firstname = $student->firstname;
-            $this->middle = $student->middle ?? '';
-            $this->lastname = $student->lastname;
-            $this->email = $student->email;
-            $this->old_email = $student->email;
-            $this->gender = $student->gender ?? '';
-            $this->civil_status = $student->civil_status ?? '';
-            $this->phone_number = $student->phone_number ?? '';
-            $this->region = $student->region ?? 0;
-            $this->province = $student->province ?? 0;
-            $this->municipality = $student->municipalilty ?? 0;
-            $this->barangay = $student->barangay ?? 0;
-            $this->district = $student->district ?? '';
-            $this->street = $student->street ?? '';
-            $this->birth_date = $student->birth_date ?? '';
-            $this->birth_palce = $student->birth_palce ?? '';
-            $this->image_path = $student->image_path ?? '';
-        }
         return view('livewire.profile.student-profile');
     }
 }

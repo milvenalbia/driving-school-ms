@@ -153,9 +153,9 @@
                         <td class="py-3 px-4">{{ $student->practical_grade }}</td>
                         <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
                         <td class="py-3 px-4">
-                            @if ($student->remarks === 1)
+                            @if ($student->remarks === "passed")
                                 <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                            @elseif($student->remarks === 0)
+                            @elseif($student->remarks === "failed")
                                 <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
                             @else
                                 <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
@@ -200,9 +200,9 @@
                         <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
                         <td class="py-3 px-4">{{ $student->course_attendance }}</td>
                         <td class="py-3 px-4">
-                            @if ($student->remarks === 1)
+                            @if ($student->remarks === "passed")
                                 <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                            @elseif($student->remarks === 0)
+                            @elseif($student->remarks === "failed")
                                 <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
                             @else
                                 <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>

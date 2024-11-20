@@ -29,6 +29,9 @@ Route::view('profile', 'pages.profile')
     ->middleware(['auth', 'student'])
     ->name('profile');
 
+Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
+)->name('student-reports')->middleware(['auth', 'instructor']);
+
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'show']
     )->name('dashboard');
@@ -41,9 +44,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/students',[StudentController::class, 'show']
     )->name('students');
-
-    Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
-    )->name('student-reports');
 
     Route::get('/schedule-reports',[ReportsController::class, 'showScheduleReports']
     )->name('schedule-reports');

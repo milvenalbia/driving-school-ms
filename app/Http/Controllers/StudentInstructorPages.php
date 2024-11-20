@@ -85,14 +85,14 @@ class StudentInstructorPages extends Controller
             ->where('instructor', $current_user->id)
             ->count();
 
-            $theoretical_students = CourseEnrolled::select('student_id', 'schedule_id', 'course_attendance', 'created_at')
+            $theoretical_students = CourseEnrolled::select('student_id', 'schedule_id', 'course_attendance', 'remarks', 'created_at')
                 ->whereIn('schedule_id', $theoretical_schdeule_id) // Use whereIn
                 ->with('student', 'schedule')
                 ->take(5)
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $practical_students = CourseEnrolled::select('student_id', 'schedule_id', 'course_attendance', 'start_date', 'created_at')
+            $practical_students = CourseEnrolled::select('student_id', 'schedule_id', 'course_attendance', 'start_date', 'remarks','created_at')
                 ->whereIn('schedule_id', $practical_schdeule_id) // Use whereIn
                 ->with('student', 'schedule')
                 ->take(5)

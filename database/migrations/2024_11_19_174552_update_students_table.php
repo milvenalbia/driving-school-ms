@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('students', function (Blueprint $table) {
-            $table->dropColumn(['region']);
+            $table->dropColumn(['barangay', 'municipalilty', 'province','region']);
         
             // Adding nullable foreign key columns
             $table->foreignId('region')->nullable()->constrained('regions');

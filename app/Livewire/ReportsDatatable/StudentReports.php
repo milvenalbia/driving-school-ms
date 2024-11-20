@@ -2,10 +2,12 @@
 
 namespace App\Livewire\ReportsDatatable;
 
+use App\Models\Instructor;
 use Livewire\Component;
 use Barryvdh\DomPDF\Facade\PDF;
 use Livewire\WithPagination;
 use App\Models\StudentReport;
+use Illuminate\Support\Facades\Auth;
 
 class StudentReports extends Component
 {
@@ -63,6 +65,27 @@ class StudentReports extends Component
 
     private function getFilteredStudents()
     {
+        $user = Auth::user();
+
+        $instructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');
+
+        if($user->role === "instructor"){
+            return StudentReport::query()
+            ->whereHas('schedule', function ($q) use ($instructor_id){
+                $q->where('instructor', $instructor_id);
+            })
+            ->when($this->search, function ($query) {
+                $query->WhereHas('student', function ($query) {
+                        $query->where('firstname', 'like', '%' . $this->search . '%')
+                            ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                            ->orWhere('user_id', 'like', '%' .$this->search . '%')
+                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                    });
+            })
+            ->with(['student', 'schedule'])
+            ->orderBy($this->sortBy, $this->sortDirection);
+        }
+
         return StudentReport::query()
         ->when($this->search, function ($query) {
             $query->WhereHas('student', function ($query) {
