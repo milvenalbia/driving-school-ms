@@ -51,27 +51,27 @@ class ChartComponent extends Component
         $query = Payment::query();
 
         return $query->when($this->timeFilter === 'weekly', function($q) {
-            return $q->whereBetween('created_at', [
+            return $q->whereBetween('updated_at', [
                 now()->startOfWeek(),
                 now()->endOfWeek()
             ]);
         })->when($this->timeFilter === 'monthly', function($q) {
-            return $q->whereBetween('created_at', [
+            return $q->whereBetween('updated_at', [
                 now()->startOfMonth(),
                 now()->endOfMonth()
             ]);
         })->when($this->timeFilter === 'last_month', function($q) {
-            return $q->whereBetween('created_at', [
+            return $q->whereBetween('updated_at', [
                 now()->subMonth()->startOfMonth(),
                 now()->subMonth()->endOfMonth()
             ]);
         })->when($this->timeFilter === 'yearly', function($q) {
-            return $q->whereBetween('created_at', [
+            return $q->whereBetween('updated_at', [
                 now()->startOfYear(),
                 now()->endOfYear()
             ]);
         })->when($this->timeFilter === 'last_year', function($q) {
-            return $q->whereBetween('created_at', [
+            return $q->whereBetween('updated_at', [
                 now()->subYear()->startOfYear(),
                 now()->subYear()->endOfYear()
             ]);
@@ -81,17 +81,17 @@ class ChartComponent extends Component
     private function getSelectStatement()
     {
         if ($this->timeFilter === 'yearly') {
-            return 'MONTH(created_at) as month, SUM(paid_amount) as total';
+            return 'MONTH(updated_at) as month, SUM(paid_amount) as total';
         }
-        return 'DATE(created_at) as date, SUM(paid_amount) as total';
+        return 'DATE(updated_at) as date, SUM(paid_amount) as total';
     }
 
     private function getLabelSelectStatement()
     {
         if ($this->timeFilter === 'yearly') {
-            return 'MONTH(created_at) as month';
+            return 'MONTH(updated_at) as month';
         }
-        return 'DATE(created_at) as date';
+        return 'DATE(updated_at) as date';
     }
 
     private function getGroupByColumn()

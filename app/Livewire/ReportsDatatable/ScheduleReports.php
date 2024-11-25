@@ -82,28 +82,32 @@ class ScheduleReports extends Component
             return;
         }
 
-        $selectedSchedules = Schedules::whereIn('id', $this->schedule_id)
-        ->with('instructorBy')
-        ->get();
+        $schedule_ids = is_array( $this->schedule_id) ?  $this->schedule_id : [ $this->schedule_id];
 
-        $pdf = PDF::loadView('pdf.schedules', [
-            'schedules' => $selectedSchedules,
-        ]);
+        $this->dispatch('openScheduleInNewTab', route('generate-schedule-reports', ['ids' => $schedule_ids]));
 
-        // Set paper size and orientation
-        $pdf->setPaper('A4', 'portrait');
+        // $selectedSchedules = Schedules::whereIn('id', $this->schedule_id)
+        // ->with('instructorBy')
+        // ->get();
 
-        // Optional: Set other PDF properties
-        $pdf->setOption([
-            'dpi' => 150,
-            'defaultFont' => 'dejavu sans',
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true
-        ]);
+        // $pdf = PDF::loadView('pdf.schedules', [
+        //     'schedules' => $selectedSchedules,
+        // ]);
 
-        return response()->streamDownload(function() use ($pdf) {
-            echo $pdf->output();
-        }, 'course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
+        // // Set paper size and orientation
+        // $pdf->setPaper('A4', 'portrait');
+
+        // // Optional: Set other PDF properties
+        // $pdf->setOption([
+        //     'dpi' => 150,
+        //     'defaultFont' => 'dejavu sans',
+        //     'isHtml5ParserEnabled' => true,
+        //     'isRemoteEnabled' => true
+        // ]);
+
+        // return response()->streamDownload(function() use ($pdf) {
+        //     echo $pdf->output();
+        // }, 'course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
     }
 
     // public function generatePDF()

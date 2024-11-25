@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Download PDF</button>
+        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button>
        </div>
         
     </header>
@@ -69,6 +69,14 @@
         </x-slot:svg>
         {{session('error')}}
     </x-elements.notification>
+
+    @script
+        <script>
+            $wire.on('openScheduleInNewTab', (url) => {
+                window.open(url, '_blank');
+            });
+        </script>
+    @endscript
 
 </div>
 

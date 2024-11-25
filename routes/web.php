@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScheduleContronller;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\StudentInstructorPages;
+use App\Livewire\ReportsDatatable\StudentReports;
 
 Route::get('/', function () {
     // Get the authenticated user
@@ -32,6 +33,12 @@ Route::view('profile', 'pages.profile')
 Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
 )->name('student-reports')->middleware(['auth', 'instructor']);
 
+Route::get('/generate-student-reports',[ReportsController::class, 'student_pdf']
+)->name('generate-student-reports')->middleware(['auth', 'instructor']);
+
+Route::get('/generate-certificate/{user_id}/{id}',[ReportsController::class, 'generateCertificate']
+)->name('generate-certificate')->middleware(['auth', 'instructor']);
+
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'show']
     )->name('dashboard');
@@ -48,11 +55,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/schedule-reports',[ReportsController::class, 'showScheduleReports']
     )->name('schedule-reports');
 
+    Route::get('/generate-schedule-reports',[ReportsController::class, 'schedule_pdf'])
+    ->name('generate-schedule-reports');
+
     Route::get('/vehicles',[VehicleController::class, 'show']
     )->name('vehicles');
     
     Route::get('/payments',[PaymentController::class, 'show']
     )->name('payments');
+
+    Route::get('/generate-invoice',[ReportsController::class, 'invoice_pdf']
+)->name('generate-invoice');
 
 });
 

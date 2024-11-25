@@ -4,6 +4,7 @@ namespace App\Livewire\PaymentDatatable;
 
 use App\Models\Payment;
 use Livewire\Component;
+use Barryvdh\DomPDF\Facade\PDF;
 use Livewire\WithPagination;
 
 class Datatable extends Component
@@ -31,15 +32,26 @@ class Datatable extends Component
         $this->resetPage();
     }
 
-    public function success_message($message)
+    public function success_message($message, $amount, $paymentId, $status, $newBalance)
     {
+        // Flash the success message to the session
         session()->flash('success', $message);
 
+        // Dispatch to close the modal
         $this->dispatch('close-modal');
 
+        // Set notification visibility
         $this->showNotification = true;
 
+        // Dispatch to open the invoice in a new tab with the relevant data
+        $this->dispatch('openInvoiceInNewTab', route('generate-invoice', [
+            'paymentId' => $paymentId,
+            'balance' => $newBalance,
+            'amount' => $amount,
+            'status' => $status,
+        ]));
     }
+
 
     public function sortField($field, $direction)
     {

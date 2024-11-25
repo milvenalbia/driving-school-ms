@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Download PDF</button>
+        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button>
        </div>
         
     </header>
@@ -37,6 +37,7 @@
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
                     <livewire:datatable-component.th-cell field="" label="Hours"/>
                     <livewire:datatable-component.th-cell field="" label="Remarks"/>
+                    <livewire:datatable-component.th-cell field="" label="Action"/>
                 </tr>
         </thead>
         <tbody>
@@ -68,6 +69,11 @@
                             <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
                         @endif
                     </td>
+                    <td class="py-3 px-4">
+                        <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                            Certificate
+                        </a>
+                    </td>
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">
@@ -91,6 +97,13 @@
         {{session('error')}}
     </x-elements.notification>
 
+    @script
+        <script>
+            $wire.on('openInNewTab', (url) => {
+                window.open(url, '_blank');
+            });
+        </script>
+    @endscript
 </div>
 
 

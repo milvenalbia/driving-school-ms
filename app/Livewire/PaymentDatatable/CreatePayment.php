@@ -79,11 +79,21 @@ class CreatePayment extends Component
             'status' => $newBalance > 0 ? 'partial' : 'paid',
         ]);
 
-        $this->dispatch('success_message', 'Payment has been submitted successfully');
-
-        $paymentData = $this->payments;
+        $paymentId = $this->payment_id;
         $amount = $validated['amount'];
         $status = $newBalance > 0 ? 'partial' : 'paid';
+
+        $this->dispatch('success_message', 
+        'Payment has been submitted successfully', 
+        $amount, 
+        $paymentId,
+        $status,
+        $newBalance,
+        );
+
+        // $paymentData = $this->payments;
+        // $amount = $validated['amount'];
+        // $status = $newBalance > 0 ? 'partial' : 'paid';
 
         $this->reset();
 
@@ -96,20 +106,20 @@ class CreatePayment extends Component
         
         // return $pdf->stream('prime-driving-school-receipt.pdf');
         
-        return response()->stream(function () use ($amount, $paymentData, $status, $newBalance) {
-            $pdf = PDF::loadView('pdf.payment-receipt', [
-                'payment' => array_map(function ($value) {
-                    return mb_convert_encoding($value, 'UTF-8', 'UTF-8');
-                }, $paymentData),
-                'amount' => mb_convert_encoding($amount, 'UTF-8', 'UTF-8'),
-                'balance' => mb_convert_encoding($newBalance, 'UTF-8', 'UTF-8'),
-                'status' => mb_convert_encoding($status, 'UTF-8', 'UTF-8'),
-            ]);
-            echo $pdf->output();
-        }, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="prime-driving-school-receipt.pdf"'
-        ]);
+        // return response()->stream(function () use ($amount, $paymentData, $status, $newBalance) {
+        //     $pdf = PDF::loadView('pdf.payment-receipt', [
+        //         'payment' => array_map(function ($value) {
+        //             return mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+        //         }, $paymentData),
+        //         'amount' => mb_convert_encoding($amount, 'UTF-8', 'UTF-8'),
+        //         'balance' => mb_convert_encoding($newBalance, 'UTF-8', 'UTF-8'),
+        //         'status' => mb_convert_encoding($status, 'UTF-8', 'UTF-8'),
+        //     ]);
+        //     echo $pdf->output();
+        // }, 200, [
+        //     'Content-Type' => 'application/pdf',
+        //     'Content-Disposition' => 'inline; filename="prime-driving-school-receipt.pdf"'
+        // ]);
     }
 
     public function formClose(){

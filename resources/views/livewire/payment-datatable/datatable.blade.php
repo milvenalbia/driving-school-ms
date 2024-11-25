@@ -108,6 +108,14 @@
         </x-slot:svg>
         {{session('success')}}
     </x-elements.notification>
+
+    @script
+        <script>
+            $wire.on('openInvoiceInNewTab', (url) => {
+                window.open(url, '_blank');
+            });
+        </script>
+    @endscript
 </div>
 
 
