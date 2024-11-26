@@ -29,50 +29,42 @@
                     <th class="py-3 px-4">
                         <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="selectAll" />
                     </th>
-                    <livewire:datatable-component.th-cell field="" label="Student ID"  />
-                    <livewire:datatable-component.th-cell field="" label="Student Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Course Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
-                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
-                    <livewire:datatable-component.th-cell field="" label="Instructor" />
-                    <livewire:datatable-component.th-cell field="" label="Hours"/>
-                    <livewire:datatable-component.th-cell field="" label="Remarks"/>
-                    <livewire:datatable-component.th-cell field="" label="Action"/>
+                    <livewire:datatable-component.th-cell field="" label="ID" />
+                    <livewire:datatable-component.th-cell field="" label="Invoice Code"/>
+                    <livewire:datatable-component.th-cell field="" label="Student Name" />
+                    <livewire:datatable-component.th-cell field="" label="Amount" />
+                    <livewire:datatable-component.th-cell field="" label="Paid Amount" />
+                    <livewire:datatable-component.th-cell field="" label="Balance" />
+                    <livewire:datatable-component.th-cell field="" label="Status" />
                 </tr>
         </thead>
         <tbody>
-            @forelse($students as $student)
-                <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+            @forelse($payments as $payment)
+                <tr wire:key="payment-{{ $payment->id }}" class="border-b border-stroke text-base dark:border-bodydark">
                     <td class="py-3 px-4 ">
-                        <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="student_id" value="{{ $student->id }}" />
+                        <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="payment_id" value="{{ $payment->id }}" />
                     </td>
+                    <td class="py-3 px-4">{{ $payment->id }}</td>
+                    <td class="py-3 px-4">{{ $payment->invoice_code }}</td>
                     <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
-                        @if ($student->student->image_path)
-                            <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->student->image_path) }}" alt="profile" >
+                        @if ($payment->student->image_path)
+                            <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($payment->student->image_path) }}" alt="profile" >
                         @else
                             <img class="w-10 h-10 object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile" >
                         @endif
-                        <span>{{ $student->student->user_id }}</span>
+                        <span>{{ $payment->student->firstname }} {{ $payment->student->lastname }}</span>
                     </td>
-                    <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
-                    <td class="py-3 px-4">{{ $student->schedule->name }}</td>
-                    <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
-                    <td class="py-3 px-4">{{ $student->practical_grade }}</td>
-                    <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">{{ $student->hours }}</td>
+                    <td class="py-3 px-4">{{ $payment->schedule->amount }}</td>
+                    <td class="py-3 px-4">{{ $payment->paid_amount }}</td>
+                    <td class="py-3 px-4">{{ $payment->balance}}</td>
                     <td class="py-3 px-4">
-                        @if ($student->remarks === 1)
-                            <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                        @elseif($student->remarks === 0)
-                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                        @if ($payment->status === 'paid')
+                        <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Paid</span>
+                        @elseif($payment->status === 'partial')
+                            <span class="py-2 px-3 rounded-full bg-blue-400 text-white text-sm">Partial</span>
                         @else
-                            <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Unpaid</span>
                         @endif
-                    </td>
-                    <td class="py-3 px-4">
-                        <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
-                            Certificate
-                        </a>
                     </td>
                 </tr>
             @empty
@@ -87,7 +79,7 @@
     {{-- wire:confirm.prompt="Delete confirmation, type DELETE to delete user. |DELETE" --}}
 
     <div class="mt-4">
-        {{ $students->links() }}
+        {{ $payments->links() }}
     </div>
 
     <x-elements.notification class="bg-red-900" >
@@ -99,7 +91,7 @@
 
     @script
         <script>
-            $wire.on('openInNewTab', (url) => {
+            $wire.on('openPaymentInNewTab', (url) => {
                 window.open(url, '_blank');
             });
         </script>

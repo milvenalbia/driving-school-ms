@@ -21,6 +21,10 @@ class ReportsController extends Controller
         return view('pages.reports.schedule-reports');
     }
 
+    public function showPaymentReports(): View {
+        return view('pages.reports.payment-reports');
+    }
+
     public function generateCertificate($user_id, $id)
 {
     // Fetch the student report
@@ -76,6 +80,32 @@ class ReportsController extends Controller
     }
 
     public function schedule_pdf(Request $request){
+
+        $schedule_ids = $request->input('ids');
+
+        $selectedSchedules = Schedules::whereIn('id', $schedule_ids)
+        ->with('instructorBy')
+        ->get();
+
+        $pdf = PDF::loadView('pdf.schedules', [
+            'schedules' => $selectedSchedules,
+        ]);
+
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+
+        // Optional: Set other PDF properties
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'dejavu sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        return $pdf->stream('course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function payment_pdf(Request $request){
 
         $schedule_ids = $request->input('ids');
 

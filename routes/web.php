@@ -64,6 +64,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/payments',[PaymentController::class, 'show']
     )->name('payments');
 
+    Route::get('/payment-reports',[ReportsController::class, 'showPaymentReports']
+    )->name('payment-reports');
+
+    Route::get('/generate-payment-reports',[ReportsController::class, 'payment_pdf'])
+    ->name('generate-payment-reports');
+
     Route::get('/generate-invoice',[ReportsController::class, 'invoice_pdf']
 )->name('generate-invoice');
 

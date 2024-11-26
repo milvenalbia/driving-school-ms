@@ -63,7 +63,7 @@
         {{ $schedules->links() }}
     </div>
 
-    <x-elements.notification class="bg-red-800" >
+    <x-elements.notification class="bg-red-900" >
         <x-slot:svg>
             <x-icons.warning class="text-red-500" />
         </x-slot:svg>
