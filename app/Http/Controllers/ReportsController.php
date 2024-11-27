@@ -107,14 +107,14 @@ class ReportsController extends Controller
 
     public function payment_pdf(Request $request){
 
-        $schedule_ids = $request->input('ids');
+        $payment_ids = $request->input('ids');
 
-        $selectedSchedules = Schedules::whereIn('id', $schedule_ids)
-        ->with('instructorBy')
+        $selectedPayments = Payment::whereIn('id', $payment_ids)
+        ->where('status', 'paid')
         ->get();
 
-        $pdf = PDF::loadView('pdf.schedules', [
-            'schedules' => $selectedSchedules,
+        $pdf = PDF::loadView('pdf.payment', [
+            'payments' => $selectedPayments,
         ]);
 
         // Set paper size and orientation
@@ -128,7 +128,7 @@ class ReportsController extends Controller
             'isRemoteEnabled' => true
         ]);
 
-        return $pdf->stream('course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
+        return $pdf->stream('course_payment_report_' . now()->format('Y-m-d_His') . '.pdf');
     }
 
     public function invoice_pdf(Request $request){

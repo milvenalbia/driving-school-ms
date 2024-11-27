@@ -1,10 +1,9 @@
-<!-- resources/views/pdf/students.blade.php -->
+<!-- resources/views/pdf/schedules.blade.php -->
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="icon" href="{{ asset('build/assets/images/prime.jpg') }}" type="image/x-icon">
-    <title>Course Students Report</title>
+    <title>Payments Report</title>
     <style>
         /* Reset and base styles */
         * {
@@ -145,53 +144,50 @@
             <div class="text-right">REPORT ID: {{ strtoupper(uniqid('SCH')) }}</div>
             <div class="text-right" style="color: #6B7280; font-size: 12px;">Generated on: {{ now()->format('F d, Y - h:i A') }}</div>
         </div>
-        <h1 class="report-title">Students Report</h1>
-        <div class="report-subtitle">Total Records: {{ $students->count() }}</div>
+        <h1 class="report-title">Payments Report</h1>
+        <div class="report-subtitle">Academic Period: {{ now()->format('Y') }}</div>
+        <div class="report-subtitle">Total Records: {{ $payments->count() }}</div>
     </div>
 
     <!-- Summary Section -->
     <div class="summary-section">
         <div class="summary-grid" style="width: 44%">
             <div class="summary-label">Total Students</div>
-            <div class="summary-value">{{ $students->count() }}</div>
+            <div class="summary-value">{{ $payments->unique('student.id')->count() }}</div>
         </div>
         <div class="summary-grid" style="width: 44%">
-            <div class="summary-label">Total Schedules</div>
-            <div class="summary-value">{{ $students->unique('schedule.id')->count() }}</div>
+            <div class="summary-label">Total Enrolled Students</div>
+            <div class="summary-value">{{ $payments->sum('paid_amount') }}</div>
         </div>
         <div class="summary-grid">
-            <div class="summary-label">Passed Students</div>
-            <div class="summary-value">{{ $students->where('remarks', true)->count() }}</div>
+            <div class="summary-label">Total Schedule</div>
+            <div class="summary-value">{{ $payments->unique('schedule.id')->count() }}</div>
         </div>
     </div>
 
     <!-- Table Section -->
     <div class="table-section">
-        <h2 class="section-title">Student Details</h2>
+        <h2 class="section-title">Payment Details</h2>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 20%;">Student ID</th>
-                    <th style="width: 15%;">Name</th>
-                    <th style="width: 20%;">Course Name</th>
-                    <th style="width: 10%;">Theorectical</th>
-                    <th style="width: 10%;">Practical</th>
-                    <th style="width: 15%;">Instructor</th>
-                    <th style="width: 10%;">Hours</th>
-                    <th style="width: 10%;">Remarks</th>
+                    <th style="width: 12%;">Date</th>
+                    <th style="width: 15%;">Invoice Code</th>
+                    <th style="width: 25%;">Student Name</th>
+                    <th style="width: 13%;">Amount</th>
+                    <th style="width: 10%;">Paid Amount</th>
+                    <th style="width: 25%;">Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($students as $student)
+                @foreach($payments as $payment)
                     <tr>
-                        <td>{{ $student->student->user_id }}</td>
-                        <td class="font-bold text-primary">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
-                        <td class="capitalize">{{ $student->schedule->name }}</td>
-                        <td>{{ $student->theoritical_grade }}</td>
-                        <td>{{ $student->practical_grade }}</td>
-                        <td>{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
-                        <td>{{ $student->hours }}</td>
-                        <td class="capitalize">{{ $student->remarks ? ($student->remarks ? 'passed' : 'failed') : 'in progress' }}</td>
+                        <td>{{ $payment->updated_at->format('M d, Y') }}</td>
+                        <td class="uppercase">{{ $payment->invoice_code }}</td>
+                        <td class="capitalize font-bold text-primary">{{ $payment->student->firstname }} {{ $payment->student->lastname }}</td>
+                        <td>{{ $payment->schedule->amount }}</td>
+                        <td class="text-center">{{ $payment->paid_amount }}</td>
+                        <td>{{ $payment->status }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -70,9 +70,15 @@
                         @endif
                     </td>
                     <td class="py-3 px-4">
-                        <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
-                            Certificate
-                        </a>
+                        @if ($student->remarks === 1)
+                            <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                                Certificate
+                            </a>
+                        @else
+                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center cursor-not-allowed">
+                                Certificate
+                            </span>
+                        @endif
                     </td>
                 </tr>
             @empty

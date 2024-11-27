@@ -4,7 +4,7 @@
             <x-icons.search class="absolute top-3 left-2" />
             <input
             class="input w-full rounded-md px-8 py-2 border border-stroke focus:outline-none focus:border-blue-500 transition-all duration-300 shadow-md shadow-stroke dark:shadow-none dark:bg-transparent dark:border-bodydark"
-            placeholder="Search..."
+            placeholder="Search Invoice Code..."
             type="text"
             wire:model.live.debounce.300ms="search"
             />
@@ -82,7 +82,7 @@
         {{ $payments->links() }}
     </div>
 
-    <x-elements.notification class="bg-red-900" >
+    <x-elements.notification class="bg-red-800" >
         <x-slot:svg>
             <x-icons.warning class="text-red-500" />
         </x-slot:svg>

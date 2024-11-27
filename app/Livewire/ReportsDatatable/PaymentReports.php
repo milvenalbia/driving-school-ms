@@ -63,6 +63,7 @@ class PaymentReports extends Component
     private function getFilteredPayments()
     {
         return Payment::query()
+            ->where('status', 'paid')
             ->when($this->search, function ($query) {
                 $query->where('invoice_code', 'like', '%' . $this->search . '%');
             })
