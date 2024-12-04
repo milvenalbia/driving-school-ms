@@ -111,6 +111,7 @@ class ReportsController extends Controller
 
         $selectedPayments = Payment::whereIn('id', $payment_ids)
         ->where('status', 'paid')
+        ->with(['student', 'schedule'])
         ->get();
 
         $pdf = PDF::loadView('pdf.payment', [

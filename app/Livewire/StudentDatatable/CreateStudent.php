@@ -39,7 +39,7 @@ class CreateStudent extends Component
             'lastname' => ['required', 'string', 'max:255'],
             'email' => [
                 'required', 
-                'string', 
+                'string',
                 'email', 
                 'max:255', 
                 function ($attribute, $value, $fail) {
