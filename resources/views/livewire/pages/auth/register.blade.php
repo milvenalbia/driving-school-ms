@@ -1,17 +1,28 @@
 <?php
 
 use App\Models\User;
+use App\Models\Students;
+use App\Models\Instructor;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 new #[Layout('layouts.guest')] class extends Component
 {
-    public string $name = '';
+    use WithFileUploads;
+
+    public string $firstname = '';
+    public string $lastname = '';
+    public string $phoneNumber = '';
     public string $email = '';
+    public $image_path;
+    public $user_id;
     public string $password = '';
     public string $password_confirmation = '';
 
@@ -21,18 +32,84 @@ new #[Layout('layouts.guest')] class extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required', 
+                'string',
+                'email', 
+                'max:255', 
+                function ($attribute, $value, $fail) {
+                    if (User::where('email', $value)->exists() ||
+                        Students::where('email', $value)->exists() ||
+                        Instructor::where('email', $value)->exists()) {
+                        $fail('The email has already been taken in one of the records.');
+                    }
+                }
+            ],
+            'phoneNumber' => [
+                'required', 
+                'regex:/^09\d{9}$/',
+                'size:11'
+            ],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        if($this->image_path){
+            $validated['image_path'] = $this->image_path->store('public/photos');
+        }else{
+            $validated['image_path'] = null;
+        }
 
-        event(new Registered($user = User::create($validated)));
+        $userCount = Students::whereDate('created_at', now()->format('Y-m-d'))->count();
 
-        Auth::login($user);
+        $sequentialNumber = $userCount;
+            
+        $user_id = 'STUD-' . now()->format('mdY') . str_pad($sequentialNumber, 3, '0', STR_PAD_LEFT);
+ 
+        DB::beginTransaction();
+        
+        try {
+            $student = Students::create([
+                'user_id' => $user_id,
+                'firstname' => $validated['firstname'],
+                'lastname' => $validated['lastname'],
+                'email' => $validated['email'],
+                'phone_number' => $validated['phoneNumber'],
+                'image_path' => $validated['image_path'],
+            ]);
+        
+            if ($student) {
+   
+                $password = Hash::make($validated['password']);;
+            
+                // Create full name and email
+                $name = $validated['firstname'] . ' ' . $validated['lastname'];
+            
+                // Create the user
+                $user = User::create([
+                    'user_id' => $user_id,
+                    'name' => $name,
+                    'email' => $validated['email'],
+                    'password' => $password,
+                    'role' => 'student',
+                ]);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+                 // Fire the registered event (Laravel default behavior)
+                event(new Registered($user));
+
+                // Automatically log the user in after registration
+                Auth::login($user);
+
+                $this->redirect(route('student-dashboard', absolute: false), navigate: true);
+            }
+        
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack(); 
+            throw $e;
+        }
+    
     }
 }; ?>
 
@@ -42,14 +119,9 @@ new #[Layout('layouts.guest')] class extends Component
     <div class="hidden w-full xl:block xl:w-1/2">
         <div class="px-26 py-17.5 text-center">
         <a class="mb-5.5 inline-block" href="#">
-            {{-- <img
-            class="w-[200px] h-[150px] object-cover object-center"
-            src="{{ asset('build/assets/images/prime-logo.png') }}"
-            alt="Logo"
-            /> --}}
             <img
             class="w-[200px] h-[150px] object-cover object-center"
-            src="data:image/jpeg;base64,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"
+            src="{{ asset('build/assets/images/prime-logo.png') }}"
             alt="Logo"
             />
         </a>
@@ -71,25 +143,64 @@ new #[Layout('layouts.guest')] class extends Component
         class="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2"
     >
         <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
-        <span class="mb-1.5 block font-medium">Start for free</span>
-        <h2 class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-            Sign Up to Project Name
+        <span class="mb-1.5 block font-medium">Student Registration</span>
+        <h2 class="mb-9 text-xl font-bold text-black dark:text-white sm:text-2xl">
+            Sign Up to Prime Driving School
         </h2>
 
         <form wire:submit="register">
-            <div class="mb-4">
-            <label for="name" class="mb-2.5 block font-medium text-black dark:text-white">
-                Name
-            </label>
-            <div class="relative">
-                <x-elements.text-input wire:model="name" id="name" type="text" name="name" placeholder="Enter your full name" required autofocus autocomplete="name" />
-                <x-elements.input-error :messages="$errors->get('name')" class="mt-2" />
-                <span class="absolute right-4 top-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                      </svg>                      
-                </span>
+            <center>
+                <div class="h-[150px] w-[150px] mb-8 relative">
+                    @if ($image_path)
+                        <img class="w-full h-full object-cover rounded-full" src="{{ $image_path->temporaryUrl() }}" alt="profile" >
+                    @else
+                        <img class="w-full h-full object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile" >
+                    @endif
+                    <label for="profile" class="absolute bottom-0 right-2 cursor-pointer w-12 h-12 bg-primary flex items-center justify-center text-white rounded-full">
+                        <x-icons.camera />
+                    </label>
+                    <input type="file" id="profile" accept="image/png, image/jpeg, image/jpg" class="hidden" wire:model.live="image_path">
+                </div>
+               </center>
+            <div class="mb-4 flex items-center justify-between gap-4">
+                <div class="w-full">
+                    <label for="s-firstname" class="mb-2.5 block font-medium text-black dark:text-white">
+                        Firstname
+                    </label>
+                    <div class="relative">
+                        <x-elements.text-input wire:model="firstname" id="s-firstname" type="text" name="firstname" placeholder="First Name" autofocus autocomplete="firstname" />
+                        <x-elements.input-error :messages="$errors->get('firstname')" class="mt-2" />
+                        <span class="absolute right-4 top-4">
+                            <x-icons.instructor />                     
+                        </span>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <label for="s-lastname" class="mb-2.5 block font-medium text-black dark:text-white">
+                        Lastname
+                    </label>
+                    <div class="relative">
+                        <x-elements.text-input wire:model="lastname" id="s-lastname" type="text" name="lastname" placeholder="Last Name" autofocus autocomplete="lastname" />
+                        <x-elements.input-error :messages="$errors->get('lastname')" class="mt-2" />
+                        <span class="absolute right-4 top-4">
+                            <x-icons.instructor />                     
+                        </span>
+                    </div>
+                </div>
             </div>
+    
+            <div x-data="{ phoneNumber: @entangle('phoneNumber'), minLength: 11 }" class="mb-4">
+                <label for="studNumber" class="mb-2.5 block font-medium text-black dark:text-white">
+                    Phone Number
+                </label>
+                <div class="relative">
+                    <x-elements.text-input x-model="phoneNumber" wire:model="phoneNumber" id="studNumber" type="text" name="phoneNumber" placeholder="Phone Number" autofocus autocomplete="phone_number" @input="phoneNumber = phoneNumber.replace(/[^0-9]/g, '')"
+                    @keydown="if (phoneNumber.length >= minLength && event.keyCode !== 8 && event.keyCode !== 46) event.preventDefault()" />
+                    <x-elements.input-error :messages="$errors->get('phoneNumber')" class="mt-2" />
+                    <span class="absolute right-4 top-4">
+                        <x-icons.contact />                     
+                    </span>
+                </div>
             </div>
 
             <div class="mb-4">
@@ -97,7 +208,7 @@ new #[Layout('layouts.guest')] class extends Component
                 Email
             </label>
             <div class="relative">
-                <x-elements.text-input wire:model="email" placeholder="Enter your email" id="email" type="email" name="email" required autocomplete="username" />
+                <x-elements.text-input wire:model="email" placeholder="Enter your email" id="email" type="email" name="email"  autocomplete="username" />
                 <x-elements.input-error :messages="$errors->get('email')" class="mt-2" />
 
                 <span class="absolute right-4 top-4">
@@ -117,7 +228,7 @@ new #[Layout('layouts.guest')] class extends Component
                         type="password"
                         name="password"
                         placeholder="Enter your password"
-                        required autocomplete="new-password" />
+                        autocomplete="new-password" />
 
                 <x-elements.input-error :messages="$errors->get('password')" class="mt-2" />
 
@@ -137,7 +248,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <x-elements.text-input wire:model="password_confirmation" id="password_confirmation"
                         type="password"
                         placeholder="Confirm your password"
-                        name="password_confirmation" required autocomplete="new-password" />
+                        name="password_confirmation" autocomplete="new-password" />
 
                 <x-elements.input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
 

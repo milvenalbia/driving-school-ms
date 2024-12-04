@@ -72,11 +72,11 @@ new #[Layout('layouts.guest')] class extends Component
             class="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2"
         >
             <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <span class="mb-1.5 block font-medium">Start for free</span>
+            <span class="mb-1.5 block font-medium">Start Now</span>
             <h2
-                class="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2"
+                class="mb-9 text-xl font-bold text-black dark:text-white sm:text-2xl"
             >
-            Sign In to Project Name
+            Sign In to Prime Driving School
             </h2>
 
             <form wire:submit="login">
@@ -129,12 +129,12 @@ new #[Layout('layouts.guest')] class extends Component
                 />
                 </div>
 
-                {{-- <div class="mt-6 text-center">
+                <div class="mt-6 text-center">
                 <p class="font-medium">
                     Don’t have any account?
-                    <a href={{ route('register') }} wire:navigate class="text-primary">Sign Up</a>
+                    <a href={{ route('register') }} class="text-primary">Sign Up</a>
                 </p>
-                </div> --}}
+                </div>
             </form>
             </div>
         </div>
