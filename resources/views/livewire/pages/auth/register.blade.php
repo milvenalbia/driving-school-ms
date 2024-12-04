@@ -101,7 +101,7 @@ new #[Layout('layouts.guest')] class extends Component
                 // Automatically log the user in after registration
                 Auth::login($user);
 
-                $this->redirect(route('student-dashboard', absolute: false), navigate: true);
+                $this->redirect(route('student-dashboard', absolute: false));
             }
         
             DB::commit();
@@ -271,7 +271,7 @@ new #[Layout('layouts.guest')] class extends Component
             <div class="mt-6 text-center">
             <p class="font-medium">
                 Already have an account?
-                <a href={{ route('login') }} wire:navigate class="text-primary">Sign in</a>
+                <a href={{ route('login') }} class="text-primary">Sign in</a>
             </p>
             </div>
         </form>
