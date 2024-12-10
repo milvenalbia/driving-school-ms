@@ -7,9 +7,10 @@ use App\Models\Vehicle;
 use Livewire\Component;
 use App\Models\Students;
 use App\Models\Schedules;
-use App\Models\CourseEnrolled;
 use App\Models\StudentReport;
+use App\Models\CourseEnrolled;
 use App\Models\VehicleScheduling;
+use Illuminate\Support\Facades\Auth;
 
 class EditEnroll extends Component
 {
@@ -40,6 +41,9 @@ class EditEnroll extends Component
 
     public function update_enrollee($enrollee_id)
     {
+
+        $user = Auth::user();
+        
         if(!$enrollee_id){
             return;
         }
@@ -63,7 +67,12 @@ class EditEnroll extends Component
         $this->schedule_id = $enrollee->schedule_id ?? 0;
         $this->filterVehicles('');
 
-        $this->dispatch('open-modal', name: 'edit-enroll-student');
+        if($user->role === 'instructor'){
+            $this->dispatch('open-modal', name: 'edit-enroll-students');
+        }else{
+            $this->dispatch('open-modal', name: 'edit-enroll-student');
+        }
+        
         
     }
 

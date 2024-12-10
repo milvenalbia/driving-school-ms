@@ -6,9 +6,11 @@ use App\Models\Vehicle;
 use Livewire\Component;
 use App\Models\Students;
 use App\Models\Schedules;
+use App\Models\Instructor;
 use Livewire\WithPagination;
 use App\Models\CourseEnrolled;
 use App\Models\VehicleScheduling;
+use Illuminate\Support\Facades\Auth;
 
 class Datatable extends Component
 {
@@ -79,23 +81,70 @@ class Datatable extends Component
     public function render()
     {
 
-        $enrollees = CourseEnrolled::query()
-            ->where('schedule_id', $this->schedule_id)
-            ->when($this->search, function ($query) {
-                $query->where('user_id', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('student', function ($query) {
-                        $query->where('firstname', 'like', '%' . $this->search . '%')
-                            ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
-                    });
-            })
-            ->with(['student', 'schedule','payments'])
-            ->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate($this->perPage);
+        $user = Auth::user();
 
-        return view('livewire.schedule-datatable.schedule-enroll.datatable', [
-            'enrollees' => $enrollees,
-        ]);
+        if($user->role === 'instructor'){
+            
+            $intructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');
+
+
+            $schedule = Schedules::where('instructor', $intructor_id)
+            ->where('isDone', false)
+            ->first();
+
+            $this->type = $schedule->type;
+
+            $enrollees = CourseEnrolled::query()
+                ->where('schedule_id', $schedule->id)
+                ->when($this->search, function ($query) {
+                    $query->where('user_id', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('student', function ($query) {
+                            $query->where('firstname', 'like', '%' . $this->search . '%')
+                                ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                        });
+                })
+                ->with(['student', 'schedule','payments'])
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->paginate($this->perPage);
+
+            return view('livewire.schedule-datatable.schedule-enroll.datatable', [
+                'enrollees' => $enrollees,
+            ]);
+
+        }elseif($user->role === 'student'){
+        
+            $student_id = Students::where('user_id', $user->user_id)->pluck('id');
+
+            $enrollees = CourseEnrolled::query()
+                ->where('student_id', $student_id)
+                ->with(['student', 'schedule','payments'])
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->get();
+
+            return view('livewire.schedule-datatable.schedule-enroll.datatable', [
+                'enrollees' => $enrollees,
+            ]);
+
+        }else{
+            $enrollees = CourseEnrolled::query()
+                ->where('schedule_id', $this->schedule_id)
+                ->when($this->search, function ($query) {
+                    $query->where('user_id', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('student', function ($query) {
+                            $query->where('firstname', 'like', '%' . $this->search . '%')
+                                ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                        });
+                })
+                ->with(['student', 'schedule','payments'])
+                ->orderBy($this->sortBy, $this->sortDirection)
+                ->paginate($this->perPage);
+
+            return view('livewire.schedule-datatable.schedule-enroll.datatable', [
+                'enrollees' => $enrollees,
+            ]);
+        }
     }
 
     public function reset_schedId(){
@@ -141,10 +190,19 @@ class Datatable extends Component
     }
     
     public function edit_enrollee($enrollee_id){
-        if($enrollee_id){
-            $this->dispatch('close-modal', name: 'view_students');
 
-            $this->dispatch('update_enrollee', $enrollee_id);
+        $user = Auth::user();
+
+        if($enrollee_id){
+
+            if($user->role === 'instructor'){
+                $this->dispatch('update_enrollee', $enrollee_id);
+            }else{
+                $this->dispatch('close-modal', name: 'view_students');
+
+                $this->dispatch('update_enrollee', $enrollee_id);
+            }
+                
         }
     }
 

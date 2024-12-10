@@ -156,7 +156,7 @@
             <div class="summary-value">{{ $payments->unique('student.id')->count() }}</div>
         </div>
         <div class="summary-grid" style="width: 44%">
-            <div class="summary-label">Total Enrolled Students</div>
+            <div class="summary-label">Total Amount</div>
             <div class="summary-value">{{ $payments->sum('paid_amount') }}</div>
         </div>
         <div class="summary-grid">
