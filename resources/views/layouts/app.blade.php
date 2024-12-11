@@ -13,8 +13,8 @@
 
         @yield('custom-styles')
 
-        {{-- <link rel="icon" href="{{ asset('build/assets/images/prime.jpg') }}" type="image/jpg"> --}}
-        <link rel="icon" href="{{ asset('build/assets/images/prime.jpg') }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset('build/assets/images/prime.jpg') }}" type="image/jpg">
+        <!-- <link rel="icon" href="{{ asset('build/assets/images/prime.jpg') }}" type="image/x-icon"> -->
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
