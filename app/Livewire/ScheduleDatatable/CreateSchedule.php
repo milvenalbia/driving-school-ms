@@ -17,13 +17,17 @@ class CreateSchedule extends Component
     public int $slots = 0;
     public string $type = '';
     public int $amount;
+    public $oldInstructor;
 
     protected $listeners = ['edit_schedule'];
 
     public function render()
     {
+    
+        
         $instructors = Instructor::query()
-        ->get(['id', 'firstname', 'lastname']);
+            ->get(['id', 'firstname', 'lastname']);
+        
 
         $this->instructors = $instructors;
 
@@ -46,7 +50,7 @@ class CreateSchedule extends Component
             
         $schedule_code = 'SCHD-' . now()->format('mdY') . str_pad($sequentialNumber, 3, '0', STR_PAD_LEFT);
 
-        Schedules::create([
+        $schedule = Schedules::create([
             'schedule_code' => $schedule_code,
             'created_by' => Auth::id(),
             'name' => $validated['name'],
@@ -56,6 +60,14 @@ class CreateSchedule extends Component
             'slots' => 0,
             'amount' => $validated['amount'],
         ]);
+
+        $instructor = Instructor::where('id', $schedule->instructor)->first();
+
+            $instructor->update(
+                [
+                    'hasSchedule' => true,
+                ]
+            );
  
          $this->dispatch('success_message', 'Schedule Has Been Created Successfully');
  
@@ -75,11 +87,28 @@ class CreateSchedule extends Component
             $this->slots = $schedule->slots;
             $this->instructor = $schedule->instructor;
             $this->amount = $schedule->amount;
+            $this->oldInstructor = $schedule->instructor;
 
             $this->dispatch('open-modal', name: 'create-schedule');
         }
 
         
+    }
+
+    public function updatedInstructor(){
+
+        $instructor = Instructor::where('id', $this->instructor)->first();
+        if($this->instructor === $this->oldInstructor){
+
+            $this->resetValidation('instructor');
+            
+        }elseif($this->instructor !== $this->oldInstructor){
+            if($instructor->hasSchedule){
+                $this->addError('instructor', "The instructor is not available");
+            }else{
+                $this->resetValidation('instructor');
+            }
+        }
     }
 
      public function update_schedule()
@@ -103,6 +132,21 @@ class CreateSchedule extends Component
             'slots' => 0,
             'amount' => $validated['amount'],
         ]);
+
+        if($this->oldInstructor !== $schedule->instructor){
+            Instructor::where('id', $this->oldInstructor)->update(['hasSchedule' => false]);
+
+            // Mark new instructor
+            Instructor::where('id', $schedule->instructor)->update(['hasSchedule' => true]);
+        }else{
+            $instructor = Instructor::where('id', $schedule->instructor)->first();
+
+            $instructor->update(
+                [
+                    'hasSchedule' => true,
+                ]
+            );
+        }
  
          $this->dispatch('success_message', 'Schedule Has Been Updated Successfully');
  

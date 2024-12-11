@@ -84,18 +84,9 @@ class Datatable extends Component
         $user = Auth::user();
 
         if($user->role === 'instructor'){
-            
-            $intructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');
-
-
-            $schedule = Schedules::where('instructor', $intructor_id)
-            ->where('isDone', false)
-            ->first();
-
-            $this->type = $schedule->type;
 
             $enrollees = CourseEnrolled::query()
-                ->where('schedule_id', $schedule->id)
+                ->where('schedule_id', $this->schedule_id)
                 ->when($this->search, function ($query) {
                     $query->where('user_id', 'like', '%' . $this->search . '%')
                         ->orWhereHas('student', function ($query) {

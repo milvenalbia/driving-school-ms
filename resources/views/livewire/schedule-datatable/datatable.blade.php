@@ -51,72 +51,118 @@
                     <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     <livewire:datatable-component.th-cell field="" label="Schedule Code"/>
                     @endif
+                    
                     <livewire:datatable-component.th-cell field="" label="Schedule Name" />
                     <livewire:datatable-component.th-cell field="" label="Schedule Date"/>
                     <livewire:datatable-component.th-cell field="" label="Type"/>
                     <livewire:datatable-component.th-cell field="" label="Instructor"/>
                     <livewire:datatable-component.th-cell field="" label="Amount" />
-                    {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
-                    @if(auth()->user()->role !== 'student')<livewire:datatable-component.th-cell field="" label="Enrollees"/>@endif
+                    
+                    @if(auth()->user()->role !== 'student')
+                    <livewire:datatable-component.th-cell field="" label="Enrollees"/>
+                    @endif
+                    
+                    <livewire:datatable-component.th-cell field="" label="Mark as Done" />
+                    
                     @if(auth()->user()->role === 'admin')
                     <th class="py-3 px-4 flex items-center gap-1">
                         <span>Actions</span>
                     </th>
                     @endif
                 </tr>
-        </thead>
-        <tbody>
-            @forelse($schedules as $schedule)
-            <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                @if(auth()->user()->role !== 'student')
-                <td class="py-3 px-4">{{ $schedule->id }}</td>
-                <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
-                @endif
-                
-                <td class="py-3 px-4">{{ $schedule->name }}</td>
-                <td class="py-3 px-4">{{ $schedule->date }}</td>
-                <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
-                <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
-                <td class="py-3 px-4">{{ $schedule->amount }}</td>
-
-                @if(auth()->user()->role !== 'student')
-                <td class="py-3 px-4">
-                    <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
-                            wire:click="view_students({{ $schedule->id }})">
-                        <x-icons.eye />
-                        <span> View {{ $schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student' }} </span>
-                    </button>
-                </td>
-                @endif
-
-                @if(auth()->user()->role === 'admin')
-                <td class="py-3 px-4">
-                    <div class="flex items-center gap-2">
-                        <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="enroll_student({{ $schedule->id }})">
-                            <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
-                            <span>Enroll</span>
+            </thead>
+            <tbody>
+                @forelse($schedules as $schedule)
+                <tr wire:key="schedule-{{ $schedule->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                    @if(auth()->user()->role !== 'student')
+                    <td class="py-3 px-4">{{ $schedule->id }}</td>
+                    <td class="py-3 px-4">{{ $schedule->schedule_code }}</td>
+                    @endif
+                    
+                    <td class="py-3 px-4">{{ $schedule->name }}</td>
+                    <td class="py-3 px-4">{{ $schedule->date }}</td>
+                    <td class="py-3 px-4 capitalize">{{ $schedule->type }}</td>
+                    <td class="py-3 px-4">{{ $schedule->instructorBy->firstname }} {{ $schedule->instructorBy->lastname }}</td>
+                    <td class="py-3 px-4">{{ $schedule->amount }}</td>
+                    
+                    @if(auth()->user()->role !== 'student')
+                    <td class="py-3 px-4">
+                        <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
+                                wire:click="view_students({{ $schedule->id }})">
+                            <x-icons.eye />
+                            <span> View {{ $schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student' }} </span>
                         </button>
-                        <button class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
-                            <x-icons.edit />
-                            <span>Edit</span>
-                        </button>
-                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})"
+                    </td>
+                    @endif
+
+                    @if(auth()->user()->role === 'instructor')
+                        <td class="py-3 px-4">
+                            {{ $schedule->isDone ? 'Done' : 'Ongoing' }}
+                        </td>
+                    @endif
+    
+                    @if(auth()->user()->role === 'admin')
+                        <td class="py-3 px-4">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input 
+                                type="checkbox" 
+                                wire:model="schedules.{{ $schedule->id }}.is_done"
+                                wire:change="toggleScheduleDone({{ $schedule->id }})"
+                                @checked($schedule->isDone)
+                                class="sr-only peer" 
                             >
-                            <x-icons.delete />
-                            <span>Delete</span>
-                        </button>
-                       
-                    </div>
-                </td>
-                @endif
-            </tr>
-        @empty
-            <tr class="border-b border-stroke text-base">
-                <td class="py-3 px-4 text-center" colspan="9">No data available.</td>
-            </tr>
-        @endforelse
-        </tbody>
-    </table>
+                                <div class="relative w-11 h-6 bg-gray peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    {{ $schedule->isDone ? 'Done' : 'Ongoing' }}
+                                </span>
+                            </label>
+                        </td>
+                    @endif
+                    
+                    @if(auth()->user()->role === 'admin')
+                    <td class="py-3 px-4">
+                        @if(!$schedule->isDone)
+                        <div class="flex items-center gap-2">
+                            <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="enroll_student({{ $schedule->id }})">
+                                <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
+                                <span>Enroll</span>
+                            </button>
+                            <button class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
+                                <x-icons.edit />
+                                <span>Edit</span>
+                            </button>
+                            <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})"
+                                >
+                                <x-icons.delete />
+                                <span>Delete</span>
+                            </button>
+                        </div>
+                        @else
+                        <div class="flex items-center gap-2">
+                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center">
+                                <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
+                                <span>Enroll</span>
+                            </span>
+                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center">
+                                <x-icons.edit />
+                                <span>Edit</span>
+                            </span>
+                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center">
+                                <x-icons.delete />
+                                <span>Delete</span>
+                            </span>
+                        </div>
+                        @endif
+                    </td>
+                    @endif
+                </tr>
+            @empty
+                <tr class="border-b border-stroke text-base">
+                    <td class="py-3 px-4 text-center" colspan="9">No data available.</td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
     </div>
 
     {{-- wire:confirm.prompt="Delete confirmation, type DELETE to delete user. |DELETE" --}}

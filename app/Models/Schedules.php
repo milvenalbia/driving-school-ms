@@ -19,6 +19,7 @@ class Schedules extends Model
         'enrolled_student',
         'slots',
         'amount',
+        'isDone',
     ];
 
     public function instructorBy(){

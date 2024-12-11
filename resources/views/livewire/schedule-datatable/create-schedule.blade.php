@@ -54,16 +54,18 @@
              </div>
          </div>
      
-        <div class="mb-4">
+         <div class="mb-4">
             <label for="instr" class="mb-2.5 block font-medium text-black dark:text-white">
                 Assigned Instructor
             </label>
             <div class="relative">
-                <x-elements.select wire:model="instructor" id="instr">
-                <option value="">Select Instructor</option>
-                @foreach ($instructors as $instructor)
-                    <option value={{$instructor->id}}>{{$instructor->firstname}} {{$instructor->lastname}}</option>
-                @endforeach
+                <x-elements.select wire:model.live="instructor" id="instr">
+                    <option value="">Select Instructor</option>
+                    @foreach ($instructors as $instructor)
+                        <option value="{{ $instructor->id }}" @if($schedule_id && $instructor->id == $oldInstructor) selected @endif>
+                            {{ $instructor->firstname }} {{ $instructor->lastname }}
+                        </option>
+                    @endforeach
                 </x-elements.select>
                 <x-elements.input-error :messages="$errors->get('instructor')" class="mt-2" />
             </div>

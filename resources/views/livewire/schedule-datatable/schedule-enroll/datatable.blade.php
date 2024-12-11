@@ -156,9 +156,8 @@
                                     <span>Edit</span>
                                 </button> --}}
                                 <button 
-                                    class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear @if($enrollee->payments->status !== 'paid') cursor-not-allowed @endif" 
+                                    class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" 
                                     wire:click="edit_enrollee({{ $enrollee->id }})"
-                                    @if($enrollee->payments->status !== 'paid') title="Unpaid student, proceed payment" disabled @endif
                                    >
                                     <x-icons.edit />
                                     <span>Edit</span>

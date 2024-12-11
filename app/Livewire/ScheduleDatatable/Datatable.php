@@ -101,6 +101,26 @@ class Datatable extends Component
         
     }
 
+    public function toggleScheduleDone($scheduleId)
+        {
+            $schedule = Schedules::findOrFail($scheduleId);
+            $schedule->update([
+                'isDone' => !$schedule->isDone,
+            ]);
+
+            $instructor = Instructor::where('id', $schedule->instructor)->first();
+
+            $instructor->update(
+                [
+                    'hasSchedule' => $schedule->isDone ? false : true,
+                ]
+            );
+            
+            session()->flash('success', 'Updated Successfully');
+
+            $this->showNotification = true;
+        }
+
     public function view_students($schedule_id){
         $this->dispatch('view_students', $schedule_id);
     }
@@ -119,6 +139,14 @@ class Datatable extends Component
         $schedule = Schedules::where('id', $schedule_id)->first();
 
         if ($schedule) {
+
+            $instructor = Instructor::where('id', $schedule->instructor)->first();
+
+            $instructor->update(
+                [
+                    'hasSchedule' => false,
+                ]
+            );
             
             $enrolledStudents = CourseEnrolled::where('schedule_id', $schedule->id)->count();
 
