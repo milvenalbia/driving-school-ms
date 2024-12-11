@@ -51,7 +51,7 @@ new class extends Component
   <!-- SIDEBAR HEADER -->
 
   <div
-    class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear h-full"
+    class="flex flex-col overflow-y-hidden hover:overflow-y-auto duration-300 ease-linear h-full"
   >
     <!-- Sidebar Menu -->
     <nav

@@ -3,14 +3,21 @@
     <div class="w-full p-4 sm:p-12.5 xl:p-10">
     <div class="flex items-center justify-between mb-6 ">
         <h2 class="text-2xl font-bold text-black dark:text-white sm:text-title-xl2 capitalize" >
-            Student List ({{$type}})
+            @if(auth()->user()->role !== "student")
+                Student List ({{$type}})
+            @else
+                Schedules Information
+            @endif
         </h2>
+        @if(auth()->user()->role !== "student")
         <button @click="show = false" class="hover:text-red-500" wire:click="reset_schedId"> 
             <x-icons.close />
         </button>
+        @endif
     </div>
 
     <div>
+        @if(auth()->user()->role !== "student")
         <header class="w-full flex justify-between items-center mb-8">
             <div class="relative w-full">
                 <x-icons.search class="absolute top-3 left-2" />
@@ -32,18 +39,27 @@
            </div>
             
         </header>
+        @endif
     
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">
                 <thead>
                     <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
+                        @if(auth()->user()->role !== "student")
                         <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                         <livewire:datatable-component.th-cell field="" label="Student Id"/>
                         <livewire:datatable-component.th-cell field="" label="Student Name" />
+                        @endif
                         <livewire:datatable-component.th-cell field="" label="Course Name" />
                         <livewire:datatable-component.th-cell field="" label="Instructor" />
                         <livewire:datatable-component.th-cell field="" label="Date"/>
                         <livewire:datatable-component.th-cell field="" label="Amount" />
+                        @if(auth()->user()->role === "student")
+                            <livewire:datatable-component.th-cell field="" label="Type" />
+                            <livewire:datatable-component.th-cell field="" label="Description" />
+                        @endif
+
+                        @if(auth()->user()->role !== "student")
                         @if($type === 'theoretical')
                             <livewire:datatable-component.th-cell field="" label="Day Attended" />
                         @endif
@@ -52,11 +68,13 @@
                         <th class="py-3 px-4">
                             <span>Actions</span>
                         </th>
+                        @endif
                     </tr>
             </thead>
             <tbody>
                 @forelse($enrollees as $enrollee)
                     <tr wire:key="enrollee-{{ $enrollee->id }}" class="border-b border-stroke text-base dark:border-bodydark">
+                        @if(auth()->user()->role !== "student")
                         <td class="py-3 px-4">{{ $enrollee->id }}</td>
                         <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
                             @if ($enrollee->student->image_path)
@@ -67,6 +85,7 @@
                             <span>{{ $enrollee->student->user_id }}</span>
                         </td>
                         <td class="py-3 px-4">{{ $enrollee->student->firstname }} {{ $enrollee->student->lastname }}</td>
+                        @endif
                         <td class="py-3 px-4">{{ $enrollee->schedule->name }}</td>
                         <td class="py-3 px-4">{{ $enrollee->schedule->instructorBy->firstname }} {{ $enrollee->schedule->instructorBy->lastname }}</td>
                         <td class="py-3 px-4">
@@ -75,7 +94,12 @@
                             </div>
                         </td>
                         <td class="py-3 px-4">{{ $enrollee->schedule->amount }}</td>
-                        @if($type === 'theoretical')
+                        @if(auth()->user()->role === "student")
+                        <td class="py-3 px-4 capitalize">{{ $enrollee->schedule->type }}</td>
+                        <td class="py-3 px-4">{{$enrollee->schedule->type === 'practical' ? '--' : 'You are required to complete the 3 days theoretical classes in order to proceed in practical driving lesson'}}</td>
+                        @endif
+
+                        @if($type === 'theoretical' && auth()->user()->role !== "student")
                         <td class="py-3 px-4">
                             <div class="flex rounded-md overflow-hidden shadow-sm" wire:key="day-{{$enrollee->id}}">
                                 <button 
@@ -102,6 +126,8 @@
                             </div>
                         </td>
                         @endif
+
+                        @if(auth()->user()->role !== "student")
                         <td class="py-3 px-4">
                             @if ($enrollee->grade && $enrollee->grade > 74)
                                 <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
@@ -122,19 +148,30 @@
                         </td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
-                                <button 
+                                {{-- <button 
                                     class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear @if($enrollee->payments->status !== 'paid') cursor-not-allowed @endif" 
                                     wire:click="edit_enrollee({{ $enrollee->id }})" 
                                     @disabled($enrollee->payments->status !== 'paid')>
                                     <x-icons.edit />
                                     <span>Edit</span>
+                                </button> --}}
+                                <button 
+                                    class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear @if($enrollee->payments->status !== 'paid') cursor-not-allowed @endif" 
+                                    wire:click="edit_enrollee({{ $enrollee->id }})"
+                                    @if($enrollee->payments->status !== 'paid') title="Unpaid student, proceed payment" disabled @endif
+                                   >
+                                    <x-icons.edit />
+                                    <span>Edit</span>
                                 </button>
-                                <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" wire:click="delete_enrollee({{ $enrollee->id }})">
-                                    <x-icons.delete />
-                                    <span>Remove</span>
-                                </button>
+                                @if(auth()->user()->role === "admin")
+                                    <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" wire:click="delete_enrollee({{ $enrollee->id }})">
+                                        <x-icons.delete />
+                                        <span>Remove</span>
+                                    </button>
+                                @endif
                             </div>
                         </td>
+                        @endif
                     </tr>
                 @empty
                     <tr class="border-b border-stroke text-base">
@@ -147,11 +184,18 @@
     
         {{-- wire:confirm.prompt="Delete confirmation, type DELETE to delete user. |DELETE" --}}
     
-        <div class="mt-4">
-            {{ $enrollees->links() }}
-        </div>
+        @if(auth()->user()->role !== "student")
+            <div class="mt-4">
+                {{ $enrollees->links() }}
+            </div>
+        @endif
+    </div>
     
-    </div> 
+    {{-- @if(auth()->user()->role === "instructor")
+    <x-elements.modal name="edit-enroll-students">
+        <livewire:schedule-datatable.schedule-enroll.edit-enroll />
+    </x-elements.modal>
+    @endif --}}
     
     <x-elements.notification >
         <x-slot:svg>

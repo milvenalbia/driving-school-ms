@@ -127,8 +127,7 @@ new #[Layout('layouts.guest')] class extends Component
         </a>
 
         <p class="font-medium 2xl:px-20">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit
-            suspendisse.
+            "Prime Driving School: Empowering You to Drive with Confidence and Excellence"
         </p>
 
         <span class="mt-15 inline-block">

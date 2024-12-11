@@ -182,11 +182,11 @@ new class extends Component
                         : \App\Models\Instructor::where('user_id', $id)->first();
           
                 // Determine the image path
-                $image = $user->image_path ?? asset('build/assets/images/profile.avif');
+                $image = $user->image_path ?? '';
               @endphp
           
               <!-- Display image -->
-              <img class="w-full h-full object-cover rounded-full" src="{{ $image ? Storage::url($image) : $image }}" alt="profile">
+              <img class="w-full h-full object-cover rounded-full" src="{{ $image ? Storage::url($image) : asset('build/assets/images/profile.avif') }}" alt="profile">
             @else
               <img class="w-full h-full object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile">
             @endif

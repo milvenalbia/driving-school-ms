@@ -5,6 +5,7 @@ namespace App\Livewire\InstructorDatatable;
 use App\Models\User;
 use Livewire\Component;
 use App\Models\Instructor;
+use App\Models\Schedules;
 use Livewire\WithPagination;
 
 class Datatable extends Component
@@ -73,6 +74,14 @@ class Datatable extends Component
         $instructor = Instructor::where('id', $instructor_id)->first();
 
         $user = User::where('user_id', $instructor->user_id)->first();
+
+        $relatedSchedule = Schedules::where('instructor', $instructor_id)->exists();
+
+        if ($relatedSchedule) {
+            session()->flash('error', 'Cannot be deleted, the instrutor has beed assigned to a schedule.');
+            $this->showNotification = true;
+            return;
+        }
 
         if($user){
             $user->delete();

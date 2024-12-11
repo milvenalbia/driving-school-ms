@@ -31,13 +31,4 @@ class StudentReport extends Model
         return $this->belongsTo(Instructor::class, 'instructor_id');
     }
 
-    public function schedules(){
-        return $this->hasMany(Schedules::class);
-    }
-
-    public function students(){
-        return $this->hasMany(Students::class);
-    }
-
-
 }

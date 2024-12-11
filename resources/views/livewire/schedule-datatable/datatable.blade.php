@@ -51,16 +51,18 @@
                     <livewire:datatable-component.th-cell field="id" label="ID" :sortBy="$sortBy" :sortDirection="$sortDirection" />
                     <livewire:datatable-component.th-cell field="" label="Schedule Code"/>
                     @endif
-                    <livewire:datatable-component.th-cell field="" label="Name" />
+                    <livewire:datatable-component.th-cell field="" label="Schedule Name" />
                     <livewire:datatable-component.th-cell field="" label="Schedule Date"/>
                     <livewire:datatable-component.th-cell field="" label="Type"/>
                     <livewire:datatable-component.th-cell field="" label="Instructor"/>
                     <livewire:datatable-component.th-cell field="" label="Amount" />
                     {{-- <livewire:datatable-component.th-cell field="role" label="Role" :sortBy="$sortBy" :sortDirection="$sortDirection" /> --}}
                     @if(auth()->user()->role !== 'student')<livewire:datatable-component.th-cell field="" label="Enrollees"/>@endif
+                    @if(auth()->user()->role === 'admin')
                     <th class="py-3 px-4 flex items-center gap-1">
                         <span>Actions</span>
                     </th>
+                    @endif
                 </tr>
         </thead>
         <tbody>
@@ -82,29 +84,31 @@
                     <button class="text-white text-sm bg-emerald-400 flex items-center rounded-md hover:bg-emerald-500 transition ease-linear py-2 px-3"
                             wire:click="view_students({{ $schedule->id }})">
                         <x-icons.eye />
-                        <span>View {{ $schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student' }} </span>
+                        <span> View {{ $schedule->enrolled_student > 1 ? $schedule->enrolled_student .' Students' : $schedule->enrolled_student . ' Student' }} </span>
                     </button>
                 </td>
                 @endif
 
+                @if(auth()->user()->role === 'admin')
                 <td class="py-3 px-4">
                     <div class="flex items-center gap-2">
                         <button class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear" wire:click="enroll_student({{ $schedule->id }})">
                             <x-icons.bookmark style="height: 1.25rem; width: 1.25rem"/>
                             <span>Enroll</span>
                         </button>
-                        @if(auth()->user()->role === 'admin')
                         <button class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear" wire:click="edit_schedule({{ $schedule->id }})">
                             <x-icons.edit />
                             <span>Edit</span>
                         </button>
-                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})">
+                        <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Delete confirmation, type DELETE to delete schedule. |DELETE" wire:click="delete_schedule({{ $schedule->id }})"
+                            >
                             <x-icons.delete />
                             <span>Delete</span>
                         </button>
-                        @endif
+                       
                     </div>
                 </td>
+                @endif
             </tr>
         @empty
             <tr class="border-b border-stroke text-base">
@@ -137,12 +141,24 @@
         <livewire:schedule-datatable.schedule-enroll.enroll-student />
     </x-elements.modal>
 
-    <x-elements.notification >
-        <x-slot:svg>
-            <x-icons.success class="text-[#06D001]" />
-        </x-slot:svg>
-        {{session('success')}}
-    </x-elements.notification>
+    @if(session('success'))
+        <x-elements.notification >
+            <x-slot:svg>
+                <x-icons.success class="text-[#06D001]" />
+            </x-slot:svg>
+            {{ session('success') }}
+        </x-elements.notification>
+    @endif
+
+
+    @if(session('error'))
+        <x-elements.notification class="!bg-red-500">
+            <x-slot:svg>
+                <x-icons.warning class="text-[#ffffff]" />
+            </x-slot:svg>
+            {{ session('error') }}
+        </x-elements.notification>
+    @endif
 
 </div>
 

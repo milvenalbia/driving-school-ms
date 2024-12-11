@@ -32,10 +32,11 @@
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
                     <livewire:datatable-component.th-cell field="" label="Student Name"/>
                     <livewire:datatable-component.th-cell field="" label="Course Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
-                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Type"/>
+                    {{-- <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/> --}}
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
-                    <livewire:datatable-component.th-cell field="" label="Hours"/>
+                    {{-- <livewire:datatable-component.th-cell field="" label="Hours"/> --}}
                     <livewire:datatable-component.th-cell field="" label="Remarks"/>
                     <livewire:datatable-component.th-cell field="" label="Action"/>
                 </tr>
@@ -56,28 +57,51 @@
                     </td>
                     <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
                     <td class="py-3 px-4">{{ $student->schedule->name }}</td>
-                    <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
-                    <td class="py-3 px-4">{{ $student->practical_grade }}</td>
+                    <td class="py-3 px-4 capitalize">{{ $student->schedule->type }}</td>
+                    {{-- <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
+                    <td class="py-3 px-4">{{ $student->practical_grade }}</td> --}}
                     <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
-                    <td class="py-3 px-4">{{ $student->hours }}</td>
+                    {{-- <td class="py-3 px-4">{{ $student->hours }}</td> --}}
                     <td class="py-3 px-4">
-                        @if ($student->remarks === 1)
-                            <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                        @elseif($student->remarks === 0)
-                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                        @if($student->schedule->type === 'theoretical')
+                            @if ($student->student->theoretical_test === 1)
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                            @elseif($student->student->theoretical_test === 0)
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            @endif
                         @else
-                            <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            @if ($student->student->practical_test === 1)
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                            @elseif($student->student->practical_test === 0)
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                            @endif
                         @endif
                     </td>
                     <td class="py-3 px-4">
-                        @if ($student->remarks === 1)
-                            <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
-                                Certificate
-                            </a>
+                        @if($student->schedule->type === 'theoretical')
+                            @if ($student->student->theoretical_test === 1)
+                                <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                                    Certificate
+                                </a>
+                            @else
+                                <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center cursor-not-allowed">
+                                    Certificate
+                                </span>
+                            @endif
                         @else
-                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center cursor-not-allowed">
-                                Certificate
-                            </span>
+                            @if ($student->student->practical_test === 1)
+                                <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                                    Certificate
+                                </a>
+                            @else
+                                <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center cursor-not-allowed">
+                                    Certificate
+                                </span>
+                            @endif
                         @endif
                     </td>
                 </tr>
