@@ -29,6 +29,7 @@ class EnrollStudent extends Component
     {
 
         $this->suggestions = Students::where('user_id', 'like', '%' . $this->search . '%')
+                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%'])
                                 ->where('enroll_status', false)
                                 ->get(['user_id', 'firstname', 'lastname']);
     }

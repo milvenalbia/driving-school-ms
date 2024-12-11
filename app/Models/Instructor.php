@@ -23,6 +23,7 @@ class Instructor extends Model
         'address',
         'image_path',
         'deleted_at',
+        'hasSchedule',
     ];
 
     public function students(){

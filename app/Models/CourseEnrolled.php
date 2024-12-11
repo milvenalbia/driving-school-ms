@@ -45,4 +45,11 @@ class CourseEnrolled extends Model
     public function payments(){
         return $this->hasOne(Payment::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($courseEnrolled) {
+            $courseEnrolled->payments()->delete();
+        });
+    }
 }

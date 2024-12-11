@@ -3,11 +3,13 @@
 namespace App\Livewire\ScheduleDatatable;
 
 use Livewire\Component;
-use App\Models\Schedules;
-use Livewire\WithPagination;
-use App\Models\CourseEnrolled;
-use App\Models\Instructor;
 use App\Models\Students;
+use App\Models\Schedules;
+use App\Models\Instructor;
+use Livewire\WithPagination;
+use App\Models\StudentReport;
+use App\Models\CourseEnrolled;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
 class Datatable extends Component
@@ -118,8 +120,15 @@ class Datatable extends Component
 
         if ($schedule) {
             
-            CourseEnrolled::where('schedule_id', $schedule->id)->delete();
+            $enrolledStudents = CourseEnrolled::where('schedule_id', $schedule->id)->count();
 
+            if ($enrolledStudents > 0) {
+                // Notify the user that there are students enrolled and ask for confirmation
+                session()->flash('error', 'This schedule has enrolled students. Preventing deletion of record.');
+                $this->showNotification = true;
+                return;
+            }
+            
             $schedule->delete();
 
             session()->flash('success', 'Schedule has been deleted successfully');

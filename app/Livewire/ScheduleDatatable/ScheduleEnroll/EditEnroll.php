@@ -67,11 +67,14 @@ class EditEnroll extends Component
         $this->schedule_id = $enrollee->schedule_id ?? 0;
         $this->filterVehicles('');
 
-        if($user->role === 'instructor'){
-            $this->dispatch('open-modal', name: 'edit-enroll-students');
-        }else{
-            $this->dispatch('open-modal', name: 'edit-enroll-student');
-        }
+        $this->dispatch('open-modal', name: 'edit-enroll-student');
+        
+
+        // if($user->role === 'instructor'){
+        //     $this->dispatch('open-modal', name: 'edit-enroll-students');
+        // }else{
+        //     $this->dispatch('open-modal', name: 'edit-enroll-student');
+        // }
         
         
     }

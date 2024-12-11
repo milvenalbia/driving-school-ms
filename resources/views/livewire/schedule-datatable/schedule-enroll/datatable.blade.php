@@ -9,7 +9,7 @@
                 Schedules Information
             @endif
         </h2>
-        @if(auth()->user()->role === "admin")
+        @if(auth()->user()->role !== "student")
         <button @click="show = false" class="hover:text-red-500" wire:click="reset_schedId"> 
             <x-icons.close />
         </button>
@@ -148,14 +148,21 @@
                         </td>
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-2">
-                                <button 
+                                {{-- <button 
                                     class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear @if($enrollee->payments->status !== 'paid') cursor-not-allowed @endif" 
                                     wire:click="edit_enrollee({{ $enrollee->id }})" 
                                     @disabled($enrollee->payments->status !== 'paid')>
                                     <x-icons.edit />
                                     <span>Edit</span>
+                                </button> --}}
+                                <button 
+                                    class="border-2 border-secondary rounded-md py-1 px-2 text-secondary flex items-center hover:text-white hover:bg-secondary transition ease-linear @if($enrollee->payments->status !== 'paid') cursor-not-allowed @endif" 
+                                    wire:click="edit_enrollee({{ $enrollee->id }})"
+                                    @if($enrollee->payments->status !== 'paid') title="Unpaid student, proceed payment" disabled @endif
+                                   >
+                                    <x-icons.edit />
+                                    <span>Edit</span>
                                 </button>
-                                
                                 @if(auth()->user()->role === "admin")
                                     <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" wire:click="delete_enrollee({{ $enrollee->id }})">
                                         <x-icons.delete />
@@ -184,11 +191,11 @@
         @endif
     </div>
     
-    @if(auth()->user()->role === "instructor")
+    {{-- @if(auth()->user()->role === "instructor")
     <x-elements.modal name="edit-enroll-students">
         <livewire:schedule-datatable.schedule-enroll.edit-enroll />
     </x-elements.modal>
-    @endif
+    @endif --}}
     
     <x-elements.notification >
         <x-slot:svg>

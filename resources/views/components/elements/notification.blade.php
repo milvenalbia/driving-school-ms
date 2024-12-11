@@ -51,4 +51,13 @@ x-data="{ show: false }"
 >
     <span class="ml-2 p-1 rounded-md bg-white/75">{{ $svg }}</span>
     <span class="text-white text-sm font-semibold">{{ $slot }}</span>
+    
+    <!-- Close Button -->
+    <button 
+        @click="show = false" 
+        class="ml-3 text-white text-4xl hover:text-gray-300 focus:outline-none"
+    >
+        &times;
+    </button>
 </div>
+

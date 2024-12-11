@@ -24,4 +24,19 @@ class Schedules extends Model
     public function instructorBy(){
         return $this->belongsTo(Instructor::class, 'instructor');
     }
+
+    public function studentReports()
+    {
+        return $this->hasMany(StudentReport::class, 'schedule_id');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($schedules) {
+            if ($schedules->studentReports()->exists()) {
+                // Only delete if there are related student reports
+                $schedules->studentReports()->delete();
+            }
+        });
+    }
 }

@@ -195,13 +195,17 @@ class Datatable extends Component
 
         if($enrollee_id){
 
-            if($user->role === 'instructor'){
-                $this->dispatch('update_enrollee', $enrollee_id);
-            }else{
                 $this->dispatch('close-modal', name: 'view_students');
 
                 $this->dispatch('update_enrollee', $enrollee_id);
-            }
+
+            // if($user->role === 'instructor'){
+            //     $this->dispatch('update_enrollee', $enrollee_id);
+            // }else{
+            //     $this->dispatch('close-modal', name: 'view_students');
+
+            //     $this->dispatch('update_enrollee', $enrollee_id);
+            // }
                 
         }
     }

@@ -103,12 +103,23 @@
         {{ $students->links() }}
     </div>
 
-    <x-elements.notification>
-        <x-slot:svg>
-            <x-icons.success class="text-[#06D001]" />
-        </x-slot:svg>
-        {{session('success')}}
-    </x-elements.notification>
+    @if(session('success'))
+        <x-elements.notification >
+            <x-slot:svg>
+                <x-icons.success class="text-[#06D001]" />
+            </x-slot:svg>
+            {{ session('success') }}
+        </x-elements.notification>
+    @endif
+
+    @if(session('error'))
+        <x-elements.notification class="!bg-red-500">
+            <x-slot:svg>
+                <x-icons.warning class="text-[#ffffff]" />
+            </x-slot:svg>
+            {{ session('error') }}
+        </x-elements.notification>
+    @endif
 
 
     <x-elements.modal name="create-student">

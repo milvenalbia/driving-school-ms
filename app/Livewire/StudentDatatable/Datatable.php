@@ -2,6 +2,9 @@
 
 namespace App\Livewire\StudentDatatable;
 
+use App\Models\CourseEnrolled;
+use App\Models\Payment;
+use App\Models\StudentReport;
 use App\Models\User;
 use Livewire\Component;
 use App\Models\Students;
@@ -69,8 +72,22 @@ class Datatable extends Component
 
     public function delete_student($student_id)
     {
- 
+
         $student = Students::where('id', $student_id)->first();
+
+        $relatedPayments = Payment::where('student_id', $student_id)->exists();
+        $relatedCourse = CourseEnrolled::where('student_id', $student_id)->exists();
+        $relatedReports = StudentReport::where('student_id', $student_id)->exists();
+
+        if ($relatedPayments || $relatedCourse) {
+            session()->flash('error', 'Cannot delete student because there are related records.');
+            $this->showNotification = true;
+            return;
+        }
+
+        if($relatedReports){
+            StudentReport::where('student_id', $student_id)->delete();
+        }
 
         $user = User::where('user_id', $student->user_id)->first();
 
