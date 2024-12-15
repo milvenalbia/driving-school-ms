@@ -110,6 +110,23 @@ new class extends Component
           </li>
 
           @if(auth()->user()->role === 'student')
+
+          <li>
+            <a
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black duration-300 ease-in-out hover:bg-primary hover:text-white dark:text-white"
+              href="{{ route('student-page-reports') }}"
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Student Reports') }"
+            >
+            <x-icons.student-report />
+            
+
+              Reports
+            </a>
+          </li>
+        @endif
+
+        @if(auth()->user()->role !== 'admin')
           <li>
             <a
               class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
@@ -124,7 +141,7 @@ new class extends Component
               Profile
             </a>
           </li>
-          @endif
+        @endif
 
           @if(auth()->user()->role === 'admin')
           <li>
@@ -262,6 +279,21 @@ new class extends Component
             
 
               Payment Records
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black hover:text-white duration-300 ease-in-out hover:bg-primary dark:text-white"
+              href="{{ route('student-certificates') }}" wire:navigate
+              @click="loaded = true"
+              :class="{ 'bg-primary text-white': (title === 'Student Certificates') }"
+            >
+            <x-icons.student-report />
+            
+            
+
+              Student Certificates
             </a>
           </li>
 

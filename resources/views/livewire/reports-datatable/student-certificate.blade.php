@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button>
+        {{-- <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button> --}}
        </div>
         
     </header>
@@ -26,35 +26,25 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
-                    <th class="py-3 px-4">
+                    {{-- <th class="py-3 px-4">
                         <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="selectAll" />
-                    </th>
+                    </th> --}}
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
                     <livewire:datatable-component.th-cell field="" label="Student Name"/>
                     <livewire:datatable-component.th-cell field="" label="Course Name"/>
                     <livewire:datatable-component.th-cell field="" label="Type"/>
-                    @if(auth()->user()->role === "admin")
-                    <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
-                    <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
-                    @endif
-
-                    @if(auth()->user()->role === "instructor")
                     <livewire:datatable-component.th-cell field="" label="Grade"/>
-                    @endif
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
-                    {{-- <livewire:datatable-component.th-cell field="" label="Hours"/> --}}
                     <livewire:datatable-component.th-cell field="" label="Remarks"/>
-                    @if(auth()->user()->role === "admin")
                     <livewire:datatable-component.th-cell field="" label="Action"/>
-                    @endif
                 </tr>
         </thead>
         <tbody>
             @forelse($students as $student)
                 <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                    <td class="py-3 px-4 ">
+                    {{-- <td class="py-3 px-4 ">
                         <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="student_id" value="{{ $student->id }}" />
-                    </td>
+                    </td> --}}
                     <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
                         @if ($student->student->image_path)
                             <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->student->image_path) }}" alt="profile" >
@@ -66,51 +56,20 @@
                     <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
                     <td class="py-3 px-4">{{ $student->schedule->name }}</td>
                     <td class="py-3 px-4 capitalize">{{ $student->schedule->type }}</td>
-
-                    @if(auth()->user()->role === "admin")
-                        <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
-                        <td class="py-3 px-4">{{ $student->practical_grade }}</td>
-                    @else
-                        <td class="py-3 px-4">{{ $student->grade }}</td>
-                    @endif
-
+                    <td class="py-3 px-4">{{ $student->grade }}</td>
                     <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
-                    {{-- <td class="py-3 px-4">{{ $student->hours }}</td> --}}
-                    @if(auth()->user()->role === "admin")
-                        <td class="py-3 px-4">
-                            @if($student->schedule->type === 'theoretical')
-                                @if ($student->student->theoretical_test === 1)
-                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                                @elseif($student->student->theoretical_test === 0)
-                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
-                                @else
-                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
-                                @endif
-                            @else
-                                @if ($student->student->practical_test === 1)
-                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                                @elseif($student->student->practical_test === 0)
-                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
-                                @else
-                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
-                                @endif
-                            @endif
-                        </td>
-                    @else
-                        <td class="py-3 px-4">
-                            @if ($student->remarks === 1)
-                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                            @elseif($student->remarks === 0)
-                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
-                            @else
-                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
-                            @endif
-                        </td>
-                    @endif
-                    @if(auth()->user()->role === "admin")
+                    <td class="py-3 px-4">
+                        @if ($student->remarks === 1)
+                            <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                        @elseif($student->remarks === 0)
+                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                        @else
+                            <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                        @endif
+                    </td>
                     <td class="py-3 px-4">
                         @if($student->remarks === 1)
-                            <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                            <a href="{{ url('/generate-student-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
                                 Certificate
                             </a>
                         @else
@@ -119,7 +78,6 @@
                             </span>
                         @endif
                     </td>
-                    @endif
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">
@@ -145,7 +103,7 @@
 
     @script
         <script>
-            $wire.on('openInNewTab', (url) => {
+            $wire.on('openInNewTabCert', (url) => {
                 window.open(url, '_blank');
             });
         </script>

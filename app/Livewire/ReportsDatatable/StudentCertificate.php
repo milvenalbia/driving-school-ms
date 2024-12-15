@@ -2,18 +2,11 @@
 
 namespace App\Livewire\ReportsDatatable;
 
-use Carbon\Carbon;
 use Livewire\Component;
-use App\Models\Instructor;
-use App\Models\Schedules;
-use App\Models\StudentRecord;
 use Livewire\WithPagination;
-use App\Models\StudentReport;
-use Barryvdh\DomPDF\Facade\PDF;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+use App\Models\StudentRecord;
 
-class StudentReports extends Component
+class StudentCertificate extends Component
 {
 
     use WithPagination;
@@ -69,44 +62,21 @@ class StudentReports extends Component
 
     private function getFilteredStudents()
     {
-        $user = Auth::user();
 
-        if($user->role === "instructor"){
+        return StudentRecord::query()
+        ->whereNotNull('remarks')
+        ->when($this->search, function ($query) {
+            $query->WhereHas('student', function ($query) {
+                    $query->where('firstname', 'like', '%' . $this->search . '%')
+                        ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                        ->orWhere('user_id', 'like', '%' .$this->search . '%')
+                        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                });
+        })
+        ->with(['student', 'schedule'])
+        ->orderBy($this->sortBy, $this->sortDirection);
 
-            $instructor_id = Instructor::where('user_id', $user->user_id)->pluck('id');
-
-            $schedule_id = Schedules::where('instructor', $instructor_id)->pluck('id');
-
-            return StudentRecord::query()
-            ->whereNotNull('remarks')
-            ->whereIn('schedule_id', $schedule_id)
-            ->when($this->search, function ($query) {
-                $query->WhereHas('student', function ($query) {
-                        $query->where('firstname', 'like', '%' . $this->search . '%')
-                            ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                            ->orWhere('user_id', 'like', '%' .$this->search . '%')
-                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
-                    });
-            })
-            ->with(['student', 'schedule'])
-            ->orderBy($this->sortBy, $this->sortDirection);
-
-        }else{
-
-            return StudentReport::query()
-            ->whereNotNull('remarks')
-            ->when($this->search, function ($query) {
-                $query->WhereHas('student', function ($query) {
-                        $query->where('firstname', 'like', '%' . $this->search . '%')
-                            ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                            ->orWhere('user_id', 'like', '%' .$this->search . '%')
-                            ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
-                    });
-            })
-            ->with(['student', 'schedule'])
-            ->orderBy($this->sortBy, $this->sortDirection);
-
-        }
+        
     
     }
 
@@ -122,7 +92,7 @@ class StudentReports extends Component
 
         $student_ids = is_array($this->student_id) ? $this->student_id : [$this->student_id];
 
-        $this->dispatch('openInNewTab', route('generate-student-reports', ['ids' => $student_ids]));
+        $this->dispatch('openInNewTabCert', route('generate-student-certificate', ['ids' => $student_ids]));
         // return redirect()->route('generate-student-reports', ['ids' => $student_ids]);
 
         // $selectedStudents = StudentReport::whereIn('id', $this->student_id)
@@ -156,7 +126,7 @@ class StudentReports extends Component
     {
         $students = $this->getFilteredStudents()->paginate($this->perPage);
     
-        return view('livewire.reports-datatable.student-reports', [
+        return view('livewire.reports-datatable.student-certificate', [
             'students' => $students,
         ]);
     }

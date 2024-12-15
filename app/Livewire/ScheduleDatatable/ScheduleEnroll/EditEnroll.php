@@ -9,6 +9,7 @@ use App\Models\Students;
 use App\Models\Schedules;
 use App\Models\StudentReport;
 use App\Models\CourseEnrolled;
+use App\Models\StudentRecord;
 use App\Models\VehicleScheduling;
 use Illuminate\Support\Facades\Auth;
 
@@ -251,11 +252,23 @@ class EditEnroll extends Component
 
     public function updateStudentReports(){
 
-        $course = CourseEnrolled::where('student_id', $this->student_id)->first();
+        $course = CourseEnrolled::where('student_id', $this->student_id)
+        ->where('schedule_id', $this->schedule_id)
+        ->first();
 
         $students = StudentReport::query()
                 ->where('student_id', $this->student_id)
                 ->first();
+        
+        $student = StudentRecord::query()
+        ->whereHas('schedule', function ($query) {
+            $query->where('isDone', false);
+        })
+        ->where('student_id', $this->student_id)
+        ->where('schedule_id', $this->schedule_id)
+        ->where('type', $course->schedule->type)
+        ->with('schedule')
+        ->first();
 
         if($students && $this->isPractical){
 
@@ -280,7 +293,26 @@ class EditEnroll extends Component
                 'instructor_id' => $course->schedule->instructor,
                 'theoritical_grade' => $this->grade,
             ]);
-        
+        }
+
+        if($student){
+            $remarks = $this->grade > 74 ? true : false;
+            
+            $student->update([
+                'grade' => $this->grade,
+                'remarks' => $remarks,
+            ]);
+        }else{
+            $student_remarks = $this->grade > 74 ? true : false;
+
+            StudentRecord::create([
+                'student_id' => $course->student_id,
+                'schedule_id' => $course->schedule_id,
+                'instructor_id' => $course->schedule->instructor,
+                'type' => $course->schedule->type,
+                'grade' => $this->grade,
+                'remarks' => $student_remarks,
+            ]);
         }
     }
 

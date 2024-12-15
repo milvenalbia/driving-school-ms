@@ -132,10 +132,10 @@
     </table>
 
     <table class="amount-table">
-        <tr>
+        {{-- <tr>
             <td>Amount</td>
-            <td>₱{{ number_format($payment['course_amount'] ?? 0, 2) }}</td>
-        </tr>
+            <td>₱{{ number_format($payment['paid_amount'] ?? 0, 2) }}</td>
+        </tr> --}}
         <tr>
             <td>VAT</td>
             <td>₱{{ number_format($payment['vat'] ?? 0, 2) }}</td>
@@ -146,11 +146,11 @@
         </tr>
         <tr>
             <td>Cash</td>
-            <td>₱{{ number_format($payment['course_amount'] ?? 0, 2) }}</td>
+            <td>₱{{ number_format($payment['paid_amount'] ?? 0, 2) }}</td>
         </tr>
         <tr>
             <td>Balance</td>
-            <td>₱{{ number_format($balance ?? 0, 2) }}</td>
+            <td>₱{{ number_format($payment['balance'] ?? 0, 2) }}</td>
         </tr>
         <tr>
             <td>Status</td>

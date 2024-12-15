@@ -26,8 +26,11 @@ Route::get('/', function () {
     return redirect('student-dashboard');
 });
 
+Route::get('/student-page-reports', [StudentInstructorPages::class, 'showStudentReports']
+)->name('student-page-reports')->middleware(['auth', 'student']);
+
 Route::view('profile', 'pages.profile')
-    ->middleware(['auth', 'student'])
+    ->middleware(['auth', 'studentInstructor'])
     ->name('profile');
 
 Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
@@ -35,9 +38,6 @@ Route::get('/student-reports',[ReportsController::class, 'showStudentReports']
 
 Route::get('/generate-student-reports',[ReportsController::class, 'student_pdf']
 )->name('generate-student-reports')->middleware(['auth', 'instructor']);
-
-Route::get('/generate-certificate/{user_id}/{id}',[ReportsController::class, 'generateCertificate']
-)->name('generate-certificate')->middleware(['auth', 'instructor']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'show']
@@ -70,8 +70,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/generate-payment-reports',[ReportsController::class, 'payment_pdf'])
     ->name('generate-payment-reports');
 
+    Route::get('/generate-certificate/{user_id}/{id}',[ReportsController::class, 'generateCertificate']
+)->name('generate-certificate');
+
     Route::get('/generate-invoice',[ReportsController::class, 'invoice_pdf']
 )->name('generate-invoice');
+
+Route::get('/student-certificates',[ReportsController::class, 'showStudentCertificate']
+)->name('student-certificates');
+
+Route::get('/generate-student-certificate/{user_id}/{id}',[ReportsController::class, 'studentCertificate']
+)->name('generate-student-certificate');
 
 });
 

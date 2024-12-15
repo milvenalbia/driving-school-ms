@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use Carbon\Carbon;
 use App\Models\Schedules;
+use App\Models\StudentRecord;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\StudentReport;
@@ -24,6 +25,38 @@ class ReportsController extends Controller
     public function showPaymentReports(): View {
         return view('pages.reports.payment-reports');
     }
+
+    public function showStudentCertificate(): View {
+        return view('pages.reports.student-certificate');
+    }
+
+    public function studentCertificate($user_id, $id)
+{
+    // Fetch the student report
+    $student = StudentRecord::where('id', $id)->first();
+
+    if(!$student){
+        return; // Handle the case when no student is found
+    }
+
+    // Get student ID and name
+    $student_id = $student->student->user_id;
+
+    // Format the updated date for the certificate
+    $date = Carbon::parse($student->updated_at)->format('M d, Y');
+
+    // Prepare the data to pass to the PDF view
+    // $data = [
+    //     'name' => $student->student->firstname . ' ' . $student->student->lastname,
+    //     'date' => $date,  // You can pass other relevant data if needed
+    // ];
+
+    // Generate the PDF using the view
+    $pdf = PDF::loadView('pdf.student-certificate', compact('student', 'date'))->setPaper([0, 0, 1200, 800]);
+
+    // Stream or download the generated PDF
+    return $pdf->stream($student_id . '_certificate.pdf');
+}
 
     public function generateCertificate($user_id, $id)
 {
@@ -47,7 +80,7 @@ class ReportsController extends Controller
     // ];
 
     // Generate the PDF using the view
-    $pdf = PDF::loadView('pdf.certificate', compact('student'))->setPaper([0, 0, 1200, 800]);
+    $pdf = PDF::loadView('pdf.certificate', compact('student', 'date'))->setPaper([0, 0, 1200, 800]);
 
     // Stream or download the generated PDF
     return $pdf->stream($student_id . '_certificate.pdf');
@@ -150,6 +183,7 @@ class ReportsController extends Controller
                 'course_amount' => $payment->schedule->amount,
                 'course_code' => $payment->schedule->schedule_code,
                 'paid_amount' => $payment->paid_amount,
+                'balance' => $payment->balance,
                 'vat' =>  0,
             ];
         }

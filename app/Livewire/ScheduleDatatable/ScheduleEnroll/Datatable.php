@@ -88,12 +88,14 @@ class Datatable extends Component
             $enrollees = CourseEnrolled::query()
                 ->where('schedule_id', $this->schedule_id)
                 ->when($this->search, function ($query) {
-                    $query->where('user_id', 'like', '%' . $this->search . '%')
-                        ->orWhereHas('student', function ($query) {
-                            $query->where('firstname', 'like', '%' . $this->search . '%')
-                                ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
-                        });
+                    $query->where(function ($query) {
+                            $query->orWhereHas('student', function ($query) {
+                                $query->where('user_id', 'like', '%' . $this->search . '%')
+                                    ->orWhere('firstname', 'like', '%' . $this->search . '%')
+                                    ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                                    ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                            });
+                    });
                 })
                 ->with(['student', 'schedule','payments'])
                 ->orderBy($this->sortBy, $this->sortDirection)
@@ -118,17 +120,20 @@ class Datatable extends Component
             ]);
 
         }else{
+
             $enrollees = CourseEnrolled::query()
-                ->where('schedule_id', $this->schedule_id)
+                ->where('schedule_id', $this->schedule_id) 
                 ->when($this->search, function ($query) {
-                    $query->where('user_id', 'like', '%' . $this->search . '%')
-                        ->orWhereHas('student', function ($query) {
-                            $query->where('firstname', 'like', '%' . $this->search . '%')
-                                ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
-                        });
+                    $query->where(function ($query) {
+                            $query->orWhereHas('student', function ($query) {
+                                $query->where('user_id', 'like', '%' . $this->search . '%')
+                                    ->orWhere('firstname', 'like', '%' . $this->search . '%')
+                                    ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                                    ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                            });
+                    });
                 })
-                ->with(['student', 'schedule','payments'])
+                ->with(['student', 'schedule', 'payments'])
                 ->orderBy($this->sortBy, $this->sortDirection)
                 ->paginate($this->perPage);
 

@@ -7,6 +7,12 @@
     </x-slot>
 
     <div class="py-12">
+        @if(auth()->user()->role === 'student')
             <livewire:profile.student-profile />
+        @endif
+
+        @if(auth()->user()->role === 'instructor')
+            <livewire:profile.instructor-profile />
+        @endif
     </div>
 </x-app-layout>

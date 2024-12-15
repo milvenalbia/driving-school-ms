@@ -45,6 +45,7 @@
             color: #1a3d6b;
             font-weight: bold;
             margin-bottom: 10pt;
+            text-transform: uppercase;
         }
 
         .certificate-title {
@@ -87,6 +88,7 @@
         }
 
         .certificate-text {
+            text-align: center;
             font-size: 18pt;
             color: #333333;
             line-height: 1.6;
@@ -176,7 +178,7 @@
     <div class="certificate-container">
         <div class="certificate-border">
             <div class="header-section">
-                <div class="logo-text">PRIME DRIVING SCHOOL</div>
+                <div class="logo-text">{{$student->type}}</div>
                 <div class="certificate-title">Certificate of Completion</div>
             </div>
 
@@ -184,10 +186,15 @@
                 <div class="presentation-text">This is to certify that</div>
                 <div class="recipient-name">{{ $student->student->firstname }} {{ $student->student->lastname }}</div>
                 <div class="certificate-text">
-                    has successfully completed all required courses and practical training<br>
-                    in accordance with the Prime Driving School Program.<br>
-                    This certification validates proficiency in both theoretical knowledge<br>
-                    and practical driving skills as required by state regulations.
+                    @if ($student->type === 'theoretical')
+                        has successfully completed the theoretical driving lesson,<br>
+                        demonstrating a solid understanding of road safety rules and traffic regulations.<br>
+                        This certificate attests to their proficiency in theoretical knowledge <br> as outlined in the Prime Driving School Program.
+                    @else
+                        has successfully completed the practical driving lesson,<br>
+                        exhibiting skilled vehicle operation and safe driving techniques.<br>
+                        This certificate validates their competence in practical driving <br> as per the standards of the Prime Driving School Program.
+                    @endif
                 </div>
             </div>
 

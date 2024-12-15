@@ -117,7 +117,22 @@ class CreateSchedule extends Component
             'name' => ['required', 'string', 'max:255'],
             'date' => 'required',
             'type' => ['required', 'string', 'max:255'],
-            'instructor' => 'required',
+            'instructor' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    // Ignore if the instructor is the same as the old instructor
+                    if ($this->instructor === $this->oldInstructor) {
+                        return;
+                    }
+
+                    // If the instructor has changed, check if they have a schedule
+                    $instructor = Instructor::where('id', $value)->first();
+                    if ($instructor && $instructor->hasSchedule) {
+                        // Add an error if the instructor is not available
+                        $fail('The instructor is not available');
+                    }
+                }
+            ],
             'amount' => ['required', 'integer']
         ]);
 

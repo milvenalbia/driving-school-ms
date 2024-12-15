@@ -83,11 +83,6 @@ class EnrollStudent extends Component
                 $this->addError('search', 'The selected student already completed the theoretical exam.');
                 return; 
             }
-            
-            if (!$student->theoretical_test && $schedule->type === 'practical') {
-                $this->addError('search', 'The selected student has not passed the theoretical test.');
-                return; 
-            }
 
             if ($student->practical_test && $schedule->type === 'practical') {
                 $this->addError('search', 'The selected student already completed the practical exam.');
@@ -129,11 +124,11 @@ class EnrollStudent extends Component
                 ]);
             }
 
-            if($this->isPractical){
-                $student->update([
-                    'assigned_instructor' => $schedule->instructor,
-                ]);
-            }
+            // if($this->isPractical){
+            //     $student->update([
+            //         'assigned_instructor' => $schedule->instructor,
+            //     ]);
+            // }
     
     
             $this->dispatch('success_message', 'Student Has Been Enrolled Successfully');

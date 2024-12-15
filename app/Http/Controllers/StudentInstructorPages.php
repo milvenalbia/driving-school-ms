@@ -81,8 +81,7 @@ class StudentInstructorPages extends Controller
 
             $student_count = CourseEnrolled::whereIn('schedule_id', $schdeule_id)->count();
 
-            $schedules = Schedules::where('isDone', false)
-            ->where('instructor', $current_user->id)
+            $schedules = Schedules::where('instructor', $current_user->id)
             ->count();
 
             $theoretical_students = CourseEnrolled::select('student_id', 'schedule_id', 'course_attendance', 'remarks', 'created_at')
@@ -105,4 +104,26 @@ class StudentInstructorPages extends Controller
 
         return view('pages.student-instructor.dashboard', compact('students', 'studentName', 'instructor_count', 'student_count', 'theoretical_students', 'practical_students','schedules'));
     }
+
+    public function showStudentReports(): View {
+
+        $user = Auth::user();
+        $students = [];
+        
+        if(!$user){
+            abort(404, 'Resource not found.');
+        }
+
+        $current_user = Students::where('user_id', $user->user_id)->first();
+
+
+        $students = StudentReport::query()
+        ->select('schedule_id', 'theoritical_grade', 'practical_grade', 'remarks')
+        ->where('student_id', $current_user->id)
+        ->with(['schedule'])
+        ->get();
+
+        return view('pages.student-instructor.student-reports', compact('students'));
+    }
+
 }
