@@ -240,6 +240,31 @@ class EditEnroll extends Component
                 ]);
             }
 
+            if($this->isPractical && $this->grade){
+                
+                $vehicles_schedule = VehicleScheduling::where('course_enrolled_id', $this->enrollee_id)
+                ->first();
+
+                $vehicles_schedule->update([
+                    'use_status' => 'done_use'
+                ]);
+                
+                $vehicleCheck = Vehicle::whereHas('vehicleSchedules', function($q) {
+                    $q->where('use_status', 'new_use');
+                })
+                ->where('id', $this->vehicle_id)
+                ->exists();
+
+                if(!$vehicleCheck){
+                    $vehicle = Vehicle::where('id', $this->vehicle_id)
+                    ->first();
+
+                    $vehicle->update([
+                        'status' => 'good',
+                    ]);
+                }
+            }
+
             if($this->grade){
                 $this->updateStudentReports();
             }
