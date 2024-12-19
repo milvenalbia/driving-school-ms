@@ -70,17 +70,29 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/generate-payment-reports',[ReportsController::class, 'payment_pdf'])
     ->name('generate-payment-reports');
 
+    Route::get('/student-list',[ReportsController::class, 'showStudentList']
+    )->name('student-list');
+
+    Route::get('/generate-student-list-reports',[ReportsController::class, 'student_list_pdf'])
+    ->name('generate-student-list-reports');
+
     Route::get('/generate-certificate/{user_id}/{id}',[ReportsController::class, 'generateCertificate']
-)->name('generate-certificate');
+    )->name('generate-certificate');
 
     Route::get('/generate-invoice',[ReportsController::class, 'invoice_pdf']
-)->name('generate-invoice');
+    )->name('generate-invoice');
 
-Route::get('/student-certificates',[ReportsController::class, 'showStudentCertificate']
-)->name('student-certificates');
+    Route::get('/student-certificates',[ReportsController::class, 'showStudentCertificate']
+    )->name('student-certificates');
 
-Route::get('/generate-student-certificate/{user_id}/{id}',[ReportsController::class, 'studentCertificate']
-)->name('generate-student-certificate');
+    Route::get('/generate-student-certificate/{user_id}/{id}',[ReportsController::class, 'studentCertificate']
+    )->name('generate-student-certificate');
+
+    Route::get('/daily-sales',[ReportsController::class, 'showDailySales']
+    )->name('daily-sales');
+
+    Route::get('/generate-daily-sales-reports',[ReportsController::class, 'daily_sales_pdf'])
+    ->name('generate-daily-sales-reports');
 
 });
 

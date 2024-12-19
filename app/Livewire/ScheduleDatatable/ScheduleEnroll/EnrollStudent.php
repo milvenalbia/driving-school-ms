@@ -6,6 +6,8 @@ use App\Models\Payment;
 use Livewire\Component;
 use App\Models\Students;
 use App\Models\Schedules;
+use App\Models\StudentRecord;
+use App\Models\StudentReport;
 use App\Models\CourseEnrolled;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,6 +22,7 @@ class EnrollStudent extends Component
     public $suggestions = [];
     public $schedule_id;
     public $student_id;
+    public $student_user_id;
     public $isPractical = false;
     public int $sessions = 0;
 
@@ -29,9 +32,11 @@ class EnrollStudent extends Component
     {
 
         $this->suggestions = Students::where('user_id', 'like', '%' . $this->search . '%')
-                                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%'])
+        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%'])
                                 ->where('enroll_status', false)
-                                ->get(['user_id', 'firstname', 'lastname']);
+                                ->get(['id','user_id', 'firstname', 'lastname']);
+                                
+                                // ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%'])
     }
 
     public function update_schedule_id($schedule_id)
@@ -99,6 +104,8 @@ class EnrollStudent extends Component
 
     
             if($course){
+
+                $this->student_user_id = $student->id;
                 $schedule->update([
                     'enrolled_student' => $schedule->enrolled_student + 1,
                 ]);
@@ -122,6 +129,8 @@ class EnrollStudent extends Component
                     'balance' => $schedule->amount,
                     'status' => 'unpaid',
                 ]);
+
+                $this->updateStudentReports();
             }
 
             // if($this->isPractical){
@@ -137,6 +146,43 @@ class EnrollStudent extends Component
 
             $this->isPractical = false;
        
+    }
+
+    public function updateStudentReports(){
+
+        $course = CourseEnrolled::where('student_id', $this->student_user_id)
+        ->where('schedule_id', $this->schedule_id)
+        ->first();
+
+        if(!$this->isPractical){
+
+            StudentReport::create([
+                'student_id' => $course->student_id,
+                'schedule_id' => $course->schedule_id,
+                'instructor_id' => $course->schedule->instructor,
+            ]);
+        }else{
+            $students = StudentReport::query()
+            ->whereHas('schedule', function ($query) {
+                $query->where('isDone', false);
+            })
+            ->where('student_id', $this->student_user_id)
+            ->whereNotNull('theoritical_grade')
+            ->whereNotNull('practical_grade')
+            ->with('schedule')
+            ->first();
+
+            if(!$students){
+                StudentReport::create([
+                    'student_id' => $course->student_id,
+                    'schedule_id' => $course->schedule_id,
+                    'instructor_id' => $course->schedule->instructor,
+                ]);
+            }
+        }
+       
+        
+        
     }
 
     public function formClose(){

@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use Carbon\Carbon;
+use App\Models\Payment;
+use App\Models\Students;
 use App\Models\Schedules;
-use App\Models\StudentRecord;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Models\StudentRecord;
 use App\Models\StudentReport;
+use App\Models\CourseEnrolled;
 use Barryvdh\DomPDF\Facade\PDF;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -28,6 +31,14 @@ class ReportsController extends Controller
 
     public function showStudentCertificate(): View {
         return view('pages.reports.student-certificate');
+    }
+
+    public function showStudentList(): View {
+        return view('pages.reports.student-list');
+    }
+
+    public function showDailySales(): View {
+        return view('pages.reports.daily-sales');
     }
 
     public function studentCertificate($user_id, $id)
@@ -86,6 +97,52 @@ class ReportsController extends Controller
     return $pdf->stream($student_id . '_certificate.pdf');
 }
 
+    public function daily_sales_pdf(Request $request){
+
+        $dates = $request->input('dates');
+
+        $minDate = min($dates);  // Get the first date (earliest)
+        $maxDate = max($dates);    // Get the last date (latest)
+
+        $startDate = Carbon::parse(min($dates))->startOfDay();
+        $endDate = Carbon::parse(max($dates))->endOfDay();
+
+        $sales = CourseEnrolled::query()
+            ->whereBetween('course_enrolleds.created_at', [$startDate, $endDate])
+            ->whereHas('payments', function ($q) {
+                $q->where('status', 'paid')
+                    ->orWhere('status', 'partial');
+            })
+            ->select(
+                DB::raw('DATE(payments.created_at) AS date'),
+                DB::raw('COUNT(DISTINCT course_enrolleds.schedule_id) AS total_schedule'),
+                DB::raw('COUNT(course_enrolleds.student_id) AS total_student'),
+                DB::raw('COUNT(CASE WHEN schedules.type = "theoretical" THEN course_enrolleds.student_id END) AS theoretical_student'),
+                DB::raw('COUNT(CASE WHEN schedules.type = "practical" THEN course_enrolleds.student_id END) AS practical_student'),
+                DB::raw('COALESCE(SUM(payments.paid_amount), 0) as total_sales')
+            )
+            ->leftJoin('schedules', 'course_enrolleds.schedule_id', '=', 'schedules.id')
+            ->leftJoin('payments', 'course_enrolleds.id', '=', 'payments.course_enrolled_id')
+            ->with('payments')
+            ->groupBy(DB::raw('DATE(payments.created_at)'))
+            ->get();
+
+        $pdf = PDF::loadView('pdf.daily-sales', compact('sales', 'minDate', 'maxDate'));
+
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+
+        // Optional: Set other PDF properties
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'dejavu sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        return $pdf->stream('daily_sales_report_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
     public function student_pdf(Request $request){
 
         $student_ids = $request->input('ids');
@@ -138,12 +195,41 @@ class ReportsController extends Controller
         return $pdf->stream('course_schedules_report_' . now()->format('Y-m-d_His') . '.pdf');
     }
 
+    public function student_list_pdf(Request $request){
+
+        $student_ids = $request->input('ids');
+
+        $selectedStudents = Students::select('id', 'user_id', 'firstname', 'lastname', 'email', 'phone_number', 'gender', 'civil_status')
+        ->whereIn('id', $student_ids)
+        ->get();
+
+        $pdf = PDF::loadView('pdf.student-list', [
+            'students' => $selectedStudents,
+        ]);
+
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+
+        // Optional: Set other PDF properties
+        $pdf->setOption([
+            'dpi' => 150,
+            'defaultFont' => 'dejavu sans',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        return $pdf->stream('student_list_report_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
     public function payment_pdf(Request $request){
 
         $payment_ids = $request->input('ids');
 
         $selectedPayments = Payment::whereIn('id', $payment_ids)
-        ->where('status', 'paid')
+        ->where(function ($q) {
+            $q->where('status', 'paid')
+            ->orWhere('status', 'partial');
+        })
         ->with(['student', 'schedule'])
         ->get();
 

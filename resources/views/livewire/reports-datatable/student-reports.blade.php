@@ -32,7 +32,6 @@
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
                     <livewire:datatable-component.th-cell field="" label="Student Name"/>
                     <livewire:datatable-component.th-cell field="" label="Course Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Type"/>
                     @if(auth()->user()->role === "admin")
                     <livewire:datatable-component.th-cell field="" label="Theoretical Grade"/>
                     <livewire:datatable-component.th-cell field="" label="Practical Grade"/>
@@ -44,9 +43,9 @@
                     <livewire:datatable-component.th-cell field="" label="Instructor" />
                     {{-- <livewire:datatable-component.th-cell field="" label="Hours"/> --}}
                     <livewire:datatable-component.th-cell field="" label="Remarks"/>
-                    @if(auth()->user()->role === "admin")
+                    {{-- @if(auth()->user()->role === "admin")
                     <livewire:datatable-component.th-cell field="" label="Action"/>
-                    @endif
+                    @endif --}}
                 </tr>
         </thead>
         <tbody>
@@ -65,7 +64,6 @@
                     </td>
                     <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
                     <td class="py-3 px-4">{{ $student->schedule->name }}</td>
-                    <td class="py-3 px-4 capitalize">{{ $student->schedule->type }}</td>
 
                     @if(auth()->user()->role === "admin")
                         <td class="py-3 px-4">{{ $student->theoritical_grade }}</td>
@@ -78,22 +76,12 @@
                     {{-- <td class="py-3 px-4">{{ $student->hours }}</td> --}}
                     @if(auth()->user()->role === "admin")
                         <td class="py-3 px-4">
-                            @if($student->schedule->type === 'theoretical')
-                                @if ($student->student->theoretical_test === 1)
-                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                                @elseif($student->student->theoretical_test === 0)
-                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
-                                @else
-                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
-                                @endif
+                            @if ($student->remarks === 1)
+                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                            @elseif($student->remarks === 0)
+                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
                             @else
-                                @if ($student->student->practical_test === 1)
-                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                                @elseif($student->student->practical_test === 0)
-                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
-                                @else
-                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
-                                @endif
+                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
                             @endif
                         </td>
                     @else
@@ -107,7 +95,7 @@
                             @endif
                         </td>
                     @endif
-                    @if(auth()->user()->role === "admin")
+                    {{-- @if(auth()->user()->role === "admin")
                     <td class="py-3 px-4">
                         @if($student->remarks === 1)
                             <a href="{{ url('/generate-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
@@ -119,7 +107,7 @@
                             </span>
                         @endif
                     </td>
-                    @endif
+                    @endif --}}
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">

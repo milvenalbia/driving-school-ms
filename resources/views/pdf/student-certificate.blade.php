@@ -212,7 +212,6 @@
                         <div class="signature-title">Academy Director</div>
                     </div>
                 </div>
-
             </div>
 
             <div class="certificate-seal">

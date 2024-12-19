@@ -16,19 +16,20 @@
             <label for="student" class="mb-2.5 block font-medium text-black dark:text-white">
                 Select Student
             </label>
-            <x-elements.text-input 
-                type="text" 
-                placeholder="Search Student ID or Name..." 
+            <x-elements.text-input
+                type="text"
+                placeholder="Search Student ID or Name..."
                 wire:model.live.debounce.300ms="search"
                 x-model="selected"
-                @focus="suggestion = true" 
+                @focus="suggestion = true"
                 @blur="setTimeout(() => suggestion = false, 200)"
             />
             <x-elements.input-error :messages="$errors->get('search')" class="mt-2" />
-            <x-elements.text-input 
+            
+            <!-- Hidden input to store student_id in Livewire -->
+            <x-elements.text-input
                 type="hidden"
                 wire:model="student_id"
-                x-model="selected"
                 x-init="$watch('selected', value => $wire.set('student_id', value))"
             />
         
@@ -36,7 +37,8 @@
             <ul x-show="suggestion" class="absolute z-10 shadow-md rounded-md top-22 border border-blue-300 bg-white mt-1 w-full h-auto max-h-[250px] overflow-auto py-3 px-4">
                 @forelse($suggestions as $suggestion)
                     <li class="p-2 cursor-pointer hover:bg-blue-400 hover:text-white ease-linear"
-                    @click="selected = '{{ $suggestion->user_id }}'; suggestion = false"
+                        wire:key="students-{{ $suggestion->id }}"
+                        @click="selected = '{{ $suggestion->user_id }}'; $nextTick(() => $wire.set('student_id', '{{ $suggestion->user_id }}')); suggestion = false"
                     >
                         {{ $suggestion->user_id }} ({{ $suggestion->firstname }} {{ $suggestion->lastname }})
                     </li>
@@ -45,6 +47,7 @@
                 @endforelse
             </ul>
         </div>
+        
 
         @else
 

@@ -258,6 +258,7 @@ class EditEnroll extends Component
 
         $students = StudentReport::query()
                 ->where('student_id', $this->student_id)
+                ->where('schedule_id', $this->schedule_id)
                 ->first();
         
         $student = StudentRecord::query()
