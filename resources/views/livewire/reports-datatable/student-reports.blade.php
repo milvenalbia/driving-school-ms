@@ -76,12 +76,22 @@
                     {{-- <td class="py-3 px-4">{{ $student->hours }}</td> --}}
                     @if(auth()->user()->role === "admin")
                         <td class="py-3 px-4">
-                            @if ($student->remarks === 1)
-                                <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                            @elseif($student->remarks === 0)
-                                <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                            @if(!$student->theoritical_grade && $student->practical_grade)
+                                @if ($student->practical_grade > 74)
+                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                                @elseif($student->practical_grade < 75)
+                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                                @else
+                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                                @endif
                             @else
-                                <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                                @if ($student->remarks === 1)
+                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                                @elseif($student->remarks === 0)
+                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                                @else
+                                    <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
+                                @endif
                             @endif
                         </td>
                     @else
