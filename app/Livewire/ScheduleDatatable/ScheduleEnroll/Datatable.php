@@ -8,6 +8,7 @@ use App\Models\Students;
 use App\Models\Schedules;
 use App\Models\Instructor;
 use Livewire\WithPagination;
+use App\Models\StudentReport;
 use App\Models\CourseEnrolled;
 use App\Models\VehicleScheduling;
 use Illuminate\Support\Facades\Auth;
@@ -211,6 +212,12 @@ class Datatable extends Component
 
         if ($enrollee) {
 
+
+            $studentReports = StudentReport::query()
+                ->where('student_id', $enrollee->student_id)
+                ->where('schedule_id', $enrollee->schedule_id)
+                ->first();
+            
             $schedule = Schedules::where('id', $enrollee->schedule_id)->first();
 
             $student = Students::where('id', $enrollee->student_id)->first();
@@ -219,6 +226,10 @@ class Datatable extends Component
 
             if($vehicle_schedule ){
                 $vehicle_schedule->delete();
+            }
+
+            if($studentReports){
+                $studentReports->delete();
             }
 
             if($enrollee->vehicle_id){

@@ -163,7 +163,7 @@
                                     <span>Edit</span>
                                 </button>
                                 @if(auth()->user()->role === "admin")
-                                    <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" wire:click="delete_enrollee({{ $enrollee->id }})">
+                                    <button class="border-2 border-red-500 rounded-md py-1 px-2 text-red-500 flex items-center hover:text-white hover:bg-red-500 transition ease-linear" @if($enrollee->grade) wire:confirm.prompt="The selected student already has a grade. Are you sure you want to proceed with deletion? Type REMOVE to confirm student removal. |REMOVE" @else wire:confirm.prompt="Remove confirmation, type REMOVE to remove student. |REMOVE" @endif wire:click="delete_enrollee({{ $enrollee->id }})">
                                         <x-icons.delete />
                                         <span>Remove</span>
                                     </button>

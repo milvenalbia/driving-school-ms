@@ -31,8 +31,10 @@ class EnrollStudent extends Component
     public function updatedSearch()
     {
 
-        $this->suggestions = Students::where('user_id', 'like', '%' . $this->search . '%')
-        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%'])
+        $this->suggestions = Students::where(function ($query) {
+                            $query->where('user_id', 'like', '%' . $this->search . '%')
+                                    ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                                })
                                 ->where('enroll_status', false)
                                 ->get(['id','user_id', 'firstname', 'lastname']);
                                 
@@ -78,7 +80,8 @@ class EnrollStudent extends Component
         
             $student = Students::where('user_id', $student_id)->first();
             $schedule = Schedules::where('id', $this->schedule_id)->first();
-    
+
+
             if (!$student) {
                 $this->addError('search', 'The selected student does not exist.');
                 return;
