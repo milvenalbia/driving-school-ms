@@ -84,6 +84,11 @@
                 </span>
             </div>
         </div>
+
+        <div class="mb-4 flex gap-2 items-center">
+            <input type="checkbox" id="theoretical-test" class="w-4 h-4 cursor-pointer" wire:model.live="isDoneTheoretical" />
+            <label for="theoretical-test">Check if the student has completed the theoretical class.</label>
+        </div>
         
         <div class="mb-5">
         <input

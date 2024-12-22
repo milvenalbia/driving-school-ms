@@ -26,11 +26,16 @@ class CreateStudent extends Component
     public string $phoneNumber = '';
     public $image_path;
     public $old_image;
+    public $isDoneTheoretical = false;
 
      public $student_id = 0;
      public $user_id;
 
      protected $listeners = ['edit_student'];
+
+     public function updatedIsDoneTheortical(){
+        $this->isDoneTheoretical = !$this->isDoneTheoretical;
+    }
  
      public function register_student()
      {
@@ -80,6 +85,7 @@ class CreateStudent extends Component
                 'email' => $validated['email'],
                 'phone_number' => $validated['phoneNumber'],
                 'image_path' => $validated['image_path'],
+                'theoretical_test' => $this->isDoneTheoretical ? true : null,
             ]);
         
             if ($student) {
@@ -100,6 +106,10 @@ class CreateStudent extends Component
                     'password' => $password,
                     'role' => 'student',
                 ]);
+
+                if($this->isDoneTheoretical){
+                    $this->isDoneTheoretical = false;
+                }
             }
         
             DB::commit();
@@ -125,6 +135,7 @@ class CreateStudent extends Component
             $this->email = $student->email;
             $this->phoneNumber = $student->phone_number;
             $this->old_image = $student->image_path;
+            $this->isDoneTheoretical = (bool) $student->theoretical_test;
 
             $this->old_email = $this->email;
             $this->user_id = $student->user_id;
@@ -192,6 +203,7 @@ class CreateStudent extends Component
             'email' => $validated['email'],
             'phone_number' => $validated['phoneNumber'],
             'image_path' => $image,
+            'theoretical_test' => $this->isDoneTheoretical ? true : null,
         ]);
 
         if ($student) {
@@ -221,6 +233,10 @@ class CreateStudent extends Component
         $this->student_id = 0;
 
         $this->user_id = '';
+
+        if($this->isDoneTheoretical){
+            $this->isDoneTheoretical = false;
+        }
     }
 
      public function formClose(){
@@ -230,6 +246,10 @@ class CreateStudent extends Component
         if($this->student_id){
             $this->student_id = 0;
             $this->user_id = '';
+        }
+
+        if($this->isDoneTheoretical){
+            $this->isDoneTheoretical = false;
         }
      }
 }

@@ -29,6 +29,7 @@ class Datatable extends Component
     public $day1_status = 'absent';
     public $day2_status = 'absent';
     public $day3_status = 'absent';
+    public $day4_status = 'absent';
     public $type = '';
 
     public $showNotification = false;
@@ -178,8 +179,9 @@ class Datatable extends Component
         $day1 = (($course->day1_status ?? 'absent') === 'present') ? 1 : 0;
         $day2 = (($course->day2_status ?? 'absent') === 'present') ? 1 : 0;
         $day3 = (($course->day3_status ?? 'absent') === 'present') ? 1 : 0;
+        $day4 = (($course->day4_status ?? 'absent') === 'present') ? 1 : 0;
 
-        $day = $day1 + $day2 + $day3;
+        $day = $day1 + $day2 + $day3 + $day4;
 
         $course->update([
             'course_attendance' => $day,

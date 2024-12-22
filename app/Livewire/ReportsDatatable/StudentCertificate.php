@@ -75,7 +75,6 @@ class StudentCertificate extends Component
         })
         ->with(['student', 'schedule'])
         ->orderBy($this->sortBy, $this->sortDirection);
-
         
     
     }

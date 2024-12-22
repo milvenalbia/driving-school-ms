@@ -56,13 +56,11 @@
                         <livewire:datatable-component.th-cell field="" label="Amount" />
                         @if(auth()->user()->role === "student")
                             <livewire:datatable-component.th-cell field="" label="Type" />
+                            <livewire:datatable-component.th-cell field="" label="Day Attended" />
                             <livewire:datatable-component.th-cell field="" label="Description" />
                         @endif
-
                         @if(auth()->user()->role !== "student")
-                        @if($type === 'theoretical')
-                            <livewire:datatable-component.th-cell field="" label="Day Attended" />
-                        @endif
+                        <livewire:datatable-component.th-cell field="" label="Day Attended" />
                         <livewire:datatable-component.th-cell field="" label="Status" />
                         <livewire:datatable-component.th-cell field="" label="Pay Status" />
                         <th class="py-3 px-4">
@@ -96,11 +94,104 @@
                         <td class="py-3 px-4">{{ $enrollee->schedule->amount }}</td>
                         @if(auth()->user()->role === "student")
                         <td class="py-3 px-4 capitalize">{{ $enrollee->schedule->type }}</td>
+                        <td class="py-3 px-4">
+                            @if($enrollee->schedule->type === 'theoretical')
+                            <div class="flex rounded-md overflow-hidden shadow-sm" wire:key="day-{{$enrollee->id}}">
+                                <button 
+                                    class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                    {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                >
+                                    Day 1
+                                </button>
+                                <button
+                                    class="px-2 py-1 text-sm text-nowrap border border-gray-200 border-r-0 transition-colors duration-200 
+                                    {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                >
+                                    Day 2
+                                </button>
+                                <button 
+                                    class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                    {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                >
+                                    Day 3
+                                </button>
+                            </div>
+                            @else
+                            <div class="flex rounded-md overflow-hidden shadow-sm" wire:key="day-{{$enrollee->id}}">
+                                @if($enrollee->sessions === 1)
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                @elseif($enrollee->sessions === 2)
+                                    <button 
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                @elseif($enrollee->sessions === 3)
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 3
+                                    </button>
+                                @else
+                                    <button 
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 3
+                                    </button>
+                                    <button
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 4
+                                    </button>
+                                @endif
+                            </div>    
+                            @endif
+                        </td>
                         <td class="py-3 px-4">{{$enrollee->schedule->type === 'practical' ? '--' : 'You are required to complete the 3 days theoretical classes in order to proceed in practical driving lesson'}}</td>
                         @endif
 
-                        @if($type === 'theoretical' && auth()->user()->role !== "student")
+                        @if(auth()->user()->role !== "student")
                         <td class="py-3 px-4">
+                            @if($enrollee->schedule->type === 'theoretical')
                             <div class="flex rounded-md overflow-hidden shadow-sm" wire:key="day-{{$enrollee->id}}">
                                 <button 
                                     wire:click="setAttendance({{ $enrollee->id }}, 1)"
@@ -124,6 +215,85 @@
                                     Day 3
                                 </button>
                             </div>
+                            @else
+                            <div class="flex rounded-md overflow-hidden shadow-sm" wire:key="day-{{$enrollee->id}}">
+                                @if($enrollee->sessions === 1)
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 1)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                @elseif($enrollee->sessions === 2)
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 1)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 2)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                @elseif($enrollee->sessions === 3)
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 1)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 2)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 3)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 3
+                                    </button>
+                                @else
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 1)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-l-md border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day1_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 1
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 2)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 border-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day2_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 2
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 3)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-0 transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 3
+                                    </button>
+                                    <button 
+                                        wire:click="setAttendance({{ $enrollee->id }}, 4)"
+                                        class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
+                                        {{ $enrollee->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                    >
+                                        Day 4
+                                    </button>
+                                @endif
+                            </div>  
+                            @endif    
                         </td>
                         @endif
 

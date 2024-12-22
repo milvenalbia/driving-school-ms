@@ -144,9 +144,15 @@
             <td>Total</td>
             <td>₱{{ number_format(($payment['course_amount'] ?? 0) + ($payment['vat'] ?? 0), 2) }}</td>
         </tr>
+        @if($partial)
+        <tr>
+            <td>Partial</td>
+            <td>₱{{ number_format($partial ?? 0, 2) }}</td>
+        </tr>
+        @endif
         <tr>
             <td>Cash</td>
-            <td>₱{{ number_format($payment['paid_amount'] ?? 0, 2) }}</td>
+            <td>₱{{ number_format($amount ?? 0, 2) }}</td>
         </tr>
         <tr>
             <td>Balance</td>

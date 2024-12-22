@@ -67,7 +67,7 @@ class EnrollStudent extends Component
             if($this->isPractical){
                 $validated = $this->validate([
                     'search' => ['required', 'string', 'max:255'],
-                    'sessions' => ['required']
+                    'sessions' => ['required', 'integer', 'max:4', 'min:1']
                 ]);
             }else{
                 $validated = $this->validate([
@@ -75,7 +75,6 @@ class EnrollStudent extends Component
                 ]);
             }
             
-    
             $student_id = $this->student_id;
         
             $student = Students::where('user_id', $student_id)->first();
@@ -92,11 +91,15 @@ class EnrollStudent extends Component
                 return; 
             }
 
+            if (!$student->theoretical_test && $schedule->type === 'practical') {
+                $this->addError('search', 'The selected student has not completed theoretical classes.');
+                return; 
+            }
+
             if ($student->practical_test && $schedule->type === 'practical') {
                 $this->addError('search', 'The selected student already completed the practical exam.');
                 return; 
             }
-
            
             $course = CourseEnrolled::create([
                 'student_id' => $student->id,
@@ -105,7 +108,6 @@ class EnrollStudent extends Component
                 'sessions' => $this->sessions ?? 0,
             ]);
 
-    
             if($course){
 
                 $this->student_user_id = $student->id;

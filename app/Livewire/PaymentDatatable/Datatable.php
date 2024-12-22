@@ -32,7 +32,7 @@ class Datatable extends Component
         $this->resetPage();
     }
 
-    public function success_message($message, $amount, $paymentId, $status, $newBalance)
+    public function success_message($message, $amount, $paymentId, $status, $newBalance, $partial)
     {
         // Flash the success message to the session
         session()->flash('success', $message);
@@ -49,9 +49,9 @@ class Datatable extends Component
             'balance' => $newBalance,
             'amount' => $amount,
             'status' => $status,
+            'partial' => $partial,
         ]));
     }
-
 
     public function sortField($field, $direction)
     {

@@ -85,7 +85,7 @@
                 <button type="button" class="text-white bg-black-2 py-2 px-5" @click="session_count++"><x-icons.plus /></button>
             </div>
             <x-elements.text-input type="hidden" x-model="session_count" wire:model="sessions" x-init="$watch('session_count', value => $wire.set('sessions', value))" />
-            <x-elements.input-error class="mt-2" :messa"ges="$errors->get('sessions')"/>
+            <x-elements.input-error :messages="$errors->get('sessions')" class="mt-2" />
         </div>
         @endif
          

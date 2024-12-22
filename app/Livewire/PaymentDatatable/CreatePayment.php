@@ -73,6 +73,11 @@ class CreatePayment extends Component
 
         $newBalance = $payment->balance - $validated['amount'];
 
+        $partial = 0;
+        if($payment->paid_amount && $payment->balance){
+            $partial = $payment->paid_amount;
+        }
+
         $payment->update([
             'paid_amount' => $payment->paid_amount + $validated['amount'],
             'balance' => $newBalance,
@@ -89,6 +94,7 @@ class CreatePayment extends Component
         $paymentId,
         $status,
         $newBalance,
+        $partial,
         );
 
         // $paymentData = $this->payments;

@@ -257,6 +257,7 @@ class ReportsController extends Controller
         $newBalance = $request->input('newBalance');
         $amount = $request->input('amount');
         $status = $request->input('status');
+        $partial =$request->input('partial');
 
         $payment = Payment::where('id', $paymentId)->first();
 
@@ -279,6 +280,7 @@ class ReportsController extends Controller
             'balance' => $newBalance,
             'amount' => $amount,
             'status' => $status,
+            'partial' => $partial,
         ]);
 
         // Set paper size and orientation
