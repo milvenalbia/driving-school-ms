@@ -41,6 +41,14 @@ class ReportsController extends Controller
         return view('pages.reports.daily-sales');
     }
 
+    public function showTheoreticalStudents(): View {
+        return view('pages.reports.theoretical-students');
+    }
+
+    public function showPracticalStudents(): View {
+        return view('pages.reports.practical-students');
+    }
+
     public function studentCertificate($user_id, $id)
 {
     // Fetch the student report
@@ -107,24 +115,33 @@ class ReportsController extends Controller
         $startDate = Carbon::parse(min($dates))->startOfDay();
         $endDate = Carbon::parse(max($dates))->endOfDay();
 
+        // $sales = CourseEnrolled::query()
+        //     ->whereBetween('course_enrolleds.created_at', [$startDate, $endDate])
+        //     ->whereHas('payments', function ($q) {
+        //         $q->where('status', 'paid')
+        //             ->orWhere('status', 'partial');
+        //     })
+        //     ->select(
+        //         DB::raw('DATE(payments.created_at) AS date'),
+        //         DB::raw('COUNT(DISTINCT course_enrolleds.schedule_id) AS total_schedule'),
+        //         DB::raw('COUNT(course_enrolleds.student_id) AS total_student'),
+        //         DB::raw('COUNT(CASE WHEN schedules.type = "theoretical" THEN course_enrolleds.student_id END) AS theoretical_student'),
+        //         DB::raw('COUNT(CASE WHEN schedules.type = "practical" THEN course_enrolleds.student_id END) AS practical_student'),
+        //         DB::raw('COALESCE(SUM(payments.paid_amount), 0) as total_sales')
+        //     )
+        //     ->leftJoin('schedules', 'course_enrolleds.schedule_id', '=', 'schedules.id')
+        //     ->leftJoin('payments', 'course_enrolleds.id', '=', 'payments.course_enrolled_id')
+        //     ->with('payments')
+        //     ->groupBy(DB::raw('DATE(payments.created_at)'))
+        //     ->get();
+
         $sales = CourseEnrolled::query()
-            ->whereBetween('course_enrolleds.created_at', [$startDate, $endDate])
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->whereHas('payments', function ($q) {
                 $q->where('status', 'paid')
                     ->orWhere('status', 'partial');
             })
-            ->select(
-                DB::raw('DATE(payments.created_at) AS date'),
-                DB::raw('COUNT(DISTINCT course_enrolleds.schedule_id) AS total_schedule'),
-                DB::raw('COUNT(course_enrolleds.student_id) AS total_student'),
-                DB::raw('COUNT(CASE WHEN schedules.type = "theoretical" THEN course_enrolleds.student_id END) AS theoretical_student'),
-                DB::raw('COUNT(CASE WHEN schedules.type = "practical" THEN course_enrolleds.student_id END) AS practical_student'),
-                DB::raw('COALESCE(SUM(payments.paid_amount), 0) as total_sales')
-            )
-            ->leftJoin('schedules', 'course_enrolleds.schedule_id', '=', 'schedules.id')
-            ->leftJoin('payments', 'course_enrolleds.id', '=', 'payments.course_enrolled_id')
             ->with('payments')
-            ->groupBy(DB::raw('DATE(payments.created_at)'))
             ->get();
 
         $pdf = PDF::loadView('pdf.daily-sales', compact('sales', 'minDate', 'maxDate'));
@@ -147,7 +164,7 @@ class ReportsController extends Controller
 
         $student_ids = $request->input('ids');
 
-        $selectedStudents = StudentReport::whereIn('id', $student_ids)
+        $selectedStudents = StudentRecord::whereIn('id', $student_ids)
         ->with(['student', 'schedule'])
         ->get();
 

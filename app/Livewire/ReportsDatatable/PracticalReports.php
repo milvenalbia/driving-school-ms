@@ -2,17 +2,16 @@
 
 namespace App\Livewire\ReportsDatatable;
 
-use App\Models\Students;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\StudentRecord;
 
-class StudentList extends Component
+class PracticalReports extends Component
 {
-
     use WithPagination;
 
     public $sortBy = 'id';
-    public $sortDirection = 'desc';
+    public $sortDirection = 'asc';
     public $search = '';
     public $perPage = 10;
 
@@ -26,7 +25,7 @@ class StudentList extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'sortBy' => ['except' => 'id'],
-        'sortDirection' => ['except' => 'desc'],
+        'sortDirection' => ['except' => 'asc'],
     ];
 
     public function updatingSearch()
@@ -63,15 +62,20 @@ class StudentList extends Component
     private function getFilteredStudents()
     {
 
-        return Students::select('id', 'user_id', 'firstname', 'lastname', 'email', 'phone_number', 'gender', 'civil_status', 'image_path', 'theoretical_test', 'practical_test')
+        return StudentRecord::query()
+        ->where('type', 'practical')
         ->when($this->search, function ($query) {
-            $query->where('firstname', 'like', '%' . $this->search . '%')
-                ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                ->orWhere('user_id', 'like', '%' .$this->search . '%')
-                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']
-            );
+            $query->WhereHas('student', function ($query) {
+                    $query->where('firstname', 'like', '%' . $this->search . '%')
+                        ->orWhere('lastname', 'like', '%' . $this->search . '%')
+                        ->orWhere('user_id', 'like', '%' .$this->search . '%')
+                        ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']);
+                });
         })
+        ->with(['student', 'schedule', 'course'])
         ->orderBy($this->sortBy, $this->sortDirection);
+        
+    
     }
 
     public function generatePDF()
@@ -86,7 +90,7 @@ class StudentList extends Component
 
         $student_ids = is_array($this->student_id) ? $this->student_id : [$this->student_id];
 
-        $this->dispatch('openStudentListNewTab', route('generate-student-list-reports', ['ids' => $student_ids]));
+        $this->dispatch('openInNewTabCert', route('generate-student-certificate', ['ids' => $student_ids]));
         // return redirect()->route('generate-student-reports', ['ids' => $student_ids]);
 
         // $selectedStudents = StudentReport::whereIn('id', $this->student_id)
@@ -118,12 +122,10 @@ class StudentList extends Component
 
     public function render()
     {
-
         $students = $this->getFilteredStudents()->paginate($this->perPage);
     
-        return view('livewire.reports-datatable.student-list', [
+        return view('livewire.reports-datatable.practical-reports', [
             'students' => $students,
         ]);
-        
     }
 }

@@ -66,7 +66,7 @@ class DailySales extends Component
 
     public function updatedSaleDate($value)
     {
-        $this->selectAll = count($this->sale_date) === $this->getFilteredSales()->count();
+        $this->selectAll = count($this->sale_date) === $this->getFilteredSales()->get()->count();
     }
 
     // Helper method to get filtered sales query

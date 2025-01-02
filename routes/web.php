@@ -82,6 +82,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/generate-invoice',[ReportsController::class, 'invoice_pdf']
     )->name('generate-invoice');
 
+    Route::get('/theoretical-records',[ReportsController::class, 'showTheoreticalStudents']
+    )->name('theoretical-records');
+
+    Route::get('/practical-records',[ReportsController::class, 'showPracticalStudents']
+    )->name('practical-records');
+
     Route::get('/student-certificates',[ReportsController::class, 'showStudentCertificate']
     )->name('student-certificates');
 

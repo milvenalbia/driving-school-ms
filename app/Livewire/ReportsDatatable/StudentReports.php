@@ -92,7 +92,7 @@ class StudentReports extends Component
 
         }else{
 
-            return StudentReport::query()
+            return StudentRecord::query()
             ->when($this->search, function ($query) {
                 $query->WhereHas('student', function ($query) {
                         $query->where('firstname', 'like', '%' . $this->search . '%')

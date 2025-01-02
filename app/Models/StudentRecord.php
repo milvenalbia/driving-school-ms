@@ -13,6 +13,7 @@ class StudentRecord extends Model
         'student_id',
         'schedule_id',
         'instructor_id',
+        'course_enrolled_id',
         'type',
         'grade',
         'remarks',
@@ -24,6 +25,10 @@ class StudentRecord extends Model
 
     public function student(){
         return $this->belongsTo(Students::class, 'student_id');
+    }
+
+    public function course(){
+        return $this->belongsTo(CourseEnrolled::class, 'course_enrolled_id');
     }
 
     public function instructor(){

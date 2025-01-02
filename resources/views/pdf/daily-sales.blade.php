@@ -153,16 +153,16 @@
     <div class="summary-section">
         <div class="summary-grid" style="width: 44%">
             <div class="summary-label">Total Sales</div>
-            <div class="summary-value">{{ number_format($sales->sum('total_sales')) }}</div>
+            <div class="summary-value">{{ number_format($sales->sum('schedule.amount')) }}</div>
         </div>
-        {{-- <div class="summary-grid" style="width: 44%">
-            <div class="summary-label">Total Enrolled Students</div>
-            <div class="summary-value">{{ $schedules->sum('enrolled_student') }}</div>
+        <div class="summary-grid" style="width: 44%">
+            <div class="summary-label">Total Schedule</div>
+            <div class="summary-value">{{ $sales->unique('schedule_id')->count() }}</div>
         </div>
         <div class="summary-grid">
-            <div class="summary-label">Active Instructors</div>
-            <div class="summary-value">{{ $schedules->unique('instructorBy.id')->count() }}</div>
-        </div> --}}
+            <div class="summary-label">Totla Students</div>
+            <div class="summary-value">{{ $sales->unique('student_id')->count() }}</div>
+        </div>
     </div>
 
     <!-- Table Section -->
@@ -172,22 +172,24 @@
             <thead>
                 <tr>
                     <th style="width: 15%;">Date</th>
-                    <th style="width: 15%;">Schedules</th>
-                    <th style="width: 15%;">Students</th>
-                    <th style="width: 20%;">Theoretical Students</th>
-                    <th style="width: 20%;">Practical Students</th>
-                    <th style="width: 15%;">Total Sales</th>
+                    <th style="width: 20%;">Schedule</th>
+                    <th style="width: 20%;">Student</th>
+                    <th style="width: 15%;">Type</th>
+                    <th style="width: 10%;">Paid Amount</th>
+                    <th style="width: 10%;">Balance</th>
+                    <th style="width: 10%;">Total Amount</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($sales as $sales)
                     <tr>
-                        <td>{{ $sales->date }}</td>
-                        <td >{{ $sales->total_schedule }}</td>
-                        <td >{{ $sales->total_student }}</td>
-                        <td >{{ $sales->theoretical_student }}</td>
-                        <td >{{ $sales->practical_student }}</td>
-                        <td >{{ number_format($sales->total_sales) }}</td>
+                        <td>{{ $sales->created_at->format('M d, Y') }}</td>
+                        <td class="capitalize font-bold text-primary">{{ $sales->schedule->name }}</td>
+                        <td class="capitalize">{{ $sales->student->firstname }} {{ $sales->student->lastname }}</td>
+                        <td class="capitalize">{{ $sales->schedule->type }}</td>
+                        <td>{{ $sales->payments->paid_amount }}</td>
+                        <td>{{ $sales->payments->balance }}</td>
+                        <td>{{ $sales->schedule->amount }}</td>
                     </tr>
                 @endforeach
             </tbody>

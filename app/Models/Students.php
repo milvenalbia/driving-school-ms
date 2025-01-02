@@ -40,4 +40,9 @@ class Students extends Model
         return $this->belongsTo(Instructor::class, 'assigned_instructor');
     }
 
+    public function course()
+    {
+        return $this->hasMany(CourseEnrolled::class);
+    }
+
 }

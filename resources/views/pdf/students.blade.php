@@ -136,6 +136,26 @@
         .font-bold { font-weight: bold; }
         .uppercase { text-transform: uppercase; }
         .capitalize { text-transform: capitalize; }
+        .button-container {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .day-btn {
+            display: inline-block;
+            padding: 2px 3px;
+            font-size: 11px;
+            border: 1px solid #d4d4d4;
+            background-color: #ffffff;
+            text-align: center;
+        }
+
+        /* Present state */
+        .present {
+            background-color: #4477ff;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -171,13 +191,13 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 20%;">Student ID</th>
+                    <th style="width: 15%;">Student ID</th>
                     <th style="width: 15%;">Name</th>
-                    <th style="width: 20%;">Course Name</th>
-                    <th style="width: 10%;">Theorectical</th>
-                    <th style="width: 10%;">Practical</th>
+                    <th style="width: 15%;">Course Name</th>
+                    <th style="width: 10%;">Type</th>
+                    <th style="width: 10%;">Attendance</th>
+                    <th style="width: 10%;">Grade</th>
                     <th style="width: 15%;">Instructor</th>
-                    <th style="width: 10%;">Hours</th>
                     <th style="width: 10%;">Remarks</th>
                 </tr>
             </thead>
@@ -187,10 +207,62 @@
                         <td>{{ $student->student->user_id }}</td>
                         <td class="font-bold text-primary">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
                         <td class="capitalize">{{ $student->schedule->name }}</td>
-                        <td>{{ $student->theoritical_grade }}</td>
-                        <td>{{ $student->practical_grade }}</td>
+                        <td class="capitalize">{{ $student->type }}</td>
+                        <td class="capitalize">
+                            @if($student->type === 'theoretical')
+                            <div class="button-container">
+                                <div class="day-btn day-btn-first <?php echo ($student->course->day1_status === 'present' ? 'present' : ''); ?>">
+                                    D-1
+                                </div>
+                                <div class="day-btn day-btn-middle <?php echo ($student->course->day2_status === 'present' ? 'present' : ''); ?>">
+                                    D-2
+                                </div>
+                                <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
+                                    D-3
+                                </div>
+                            </div>
+                            @else
+                            <div class="button-container">
+                                @if($student->course->sessions === 1)
+                                    <div class="day-btn day-btn-first <?php echo ($student->course->day1_status === 'present' ? 'present' : ''); ?>">
+                                        D-1
+                                    </div>
+                                @elseif($student->course->sessions === 2)
+                                    <div class="day-btn day-btn-first <?php echo ($student->course->day1_status === 'present' ? 'present' : ''); ?>">
+                                        D-1
+                                    </div>
+                                    <div class="day-btn day-btn-middle <?php echo ($student->course->day2_status === 'present' ? 'present' : ''); ?>">
+                                        D-2
+                                    </div>
+                                @elseif($student->course->sessions === 3)
+                                    <div class="day-btn day-btn-first <?php echo ($student->course->day1_status === 'present' ? 'present' : ''); ?>">
+                                        D-1
+                                    </div>
+                                    <div class="day-btn day-btn-middle <?php echo ($student->course->day2_status === 'present' ? 'present' : ''); ?>">
+                                        D-2
+                                    </div>
+                                    <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
+                                        D-3
+                                    </div>
+                                @else
+                                    <div class="day-btn day-btn-first <?php echo ($student->course->day1_status === 'present' ? 'present' : ''); ?>">
+                                        D-1
+                                    </div>
+                                    <div class="day-btn day-btn-middle <?php echo ($student->course->day2_status === 'present' ? 'present' : ''); ?>">
+                                        D-2
+                                    </div>
+                                    <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
+                                        D-3
+                                    </div>
+                                    <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
+                                        D-4
+                                    </div>
+                                @endif
+                            </div>   
+                            @endif
+                        </td>
+                        <td>{{ $student->grade }}</td>
                         <td>{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
-                        <td>{{ $student->hours }}</td>
                         <td class="capitalize">{{ $student->remarks ? ($student->remarks ? 'passed' : 'failed') : 'in progress' }}</td>
                     </tr>
                 @endforeach

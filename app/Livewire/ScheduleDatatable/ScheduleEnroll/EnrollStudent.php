@@ -159,6 +159,16 @@ class EnrollStudent extends Component
         ->where('schedule_id', $this->schedule_id)
         ->first();
 
+        if($course){
+            StudentRecord::create([
+                'student_id' => $course->student_id,
+                'schedule_id' => $course->schedule_id,
+                'instructor_id' => $course->schedule->instructor,
+                'course_enrolled_id' => $course->id,
+                'type' => $course->schedule->type,
+            ]);
+        }
+
         if(!$this->isPractical){
 
             StudentReport::create([

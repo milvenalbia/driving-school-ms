@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CourseEnrolled;
-use App\Models\Instructor;
-use App\Models\Schedules;
 use App\Models\Students;
+use App\Models\Schedules;
 use Illuminate\View\View;
+use App\Models\Instructor;
 use Illuminate\Http\Request;
+use App\Models\StudentRecord;
 use App\Models\StudentReport;
+use App\Models\CourseEnrolled;
 use Illuminate\Support\Facades\Auth;
 
 class StudentInstructorPages extends Controller
@@ -117,8 +118,8 @@ class StudentInstructorPages extends Controller
         $current_user = Students::where('user_id', $user->user_id)->first();
 
 
-        $students = StudentReport::query()
-        ->select('schedule_id', 'theoritical_grade', 'practical_grade', 'remarks')
+        $students = StudentRecord::query()
+        ->select('schedule_id', 'grade', 'type', 'course_enrolled_id', 'remarks')
         ->where('student_id', $current_user->id)
         ->with(['schedule'])
         ->get();

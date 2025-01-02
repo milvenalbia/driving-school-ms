@@ -17,7 +17,7 @@
             <option value="25">25 per page</option>
             <option value="50">50 per page</option>
         </select>
-        <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button>
+        {{-- <button class="bg-primary py-2 px-4 text-white rounded-md" wire:click="generatePDF">Generate PDF</button> --}}
        </div>
         
     </header>
@@ -26,55 +26,60 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="bg-gray-2 text-left dark:bg-meta-4 border-b border-gray dark:border-bodydark">
-                    <th class="py-3 px-4">
+                    {{-- <th class="py-3 px-4">
                         <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="selectAll" />
-                    </th>
+                    </th> --}}
                     <livewire:datatable-component.th-cell field="" label="Student ID"  />
-                    <livewire:datatable-component.th-cell field="" label="Full Name"/>
-                    <livewire:datatable-component.th-cell field="" label="Email"/>
-                    <livewire:datatable-component.th-cell field="" label="Contact No."/>
-                    <livewire:datatable-component.th-cell field="" label="Gender"/>
-                    <livewire:datatable-component.th-cell field="" label="Civil Status"/>
-                    <livewire:datatable-component.th-cell field="" label="Theoretical"/>
-                    <livewire:datatable-component.th-cell field="" label="Practical"/>
+                    <livewire:datatable-component.th-cell field="" label="Student Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Course Name"/>
+                    <livewire:datatable-component.th-cell field="" label="Type"/>
+                    <livewire:datatable-component.th-cell field="" label="Grade"/>
+                    <livewire:datatable-component.th-cell field="" label="Instructor" />
+                    <livewire:datatable-component.th-cell field="" label="Remarks"/>
+                    <livewire:datatable-component.th-cell field="" label="Action"/>
                 </tr>
         </thead>
         <tbody>
             @forelse($students as $student)
                 <tr wire:key="student-{{ $student->id }}" class="border-b border-stroke text-base dark:border-bodydark">
-                    <td class="py-3 px-4 ">
+                    {{-- <td class="py-3 px-4 ">
                         <input type="checkbox" class="w-4 h-4 cursor-pointer" wire:model.live="student_id" value="{{ $student->id }}" />
-                    </td>
-                    <td class="py-3 px-4 flex items-center gap-2">
-                        @if ($student->image_path)
-                            <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->image_path) }}" alt="profile" >
+                    </td> --}}
+                    <td class="py-3 px-4 flex items-center gap-2 w-[250px]">
+                        @if ($student->student->image_path)
+                            <img class="w-10 h-10 object-cover rounded-full" src="{{ Storage::url($student->student->image_path) }}" alt="profile" >
                         @else
                             <img class="w-10 h-10 object-cover rounded-full" src="{{ asset('build/assets/images/profile.avif') }}" alt="profile" >
                         @endif
-                        <span>{{ $student->user_id }}</span>
+                        <span>{{ $student->student->user_id }}</span>
                     </td>
-                    <td class="py-3 px-4 ">{{$student->firstname}} {{$student->lastname}}</td>
-                    <td class="py-3 px-4 ">{{$student->email}}</td>
-                    <td class="py-3 px-4 ">{{$student->phone_number}}</td>
-                    <td class="py-3 px-4 ">{{$student->gender ?? '--'}}</td>
-                    <td class="py-3 px-4 ">{{$student->civil_status ?? '--'}}</td>
+                    <td class="py-3 px-4">{{ $student->student->firstname }} {{ $student->student->lastname }}</td>
+                    <td class="py-3 px-4">{{ $student->schedule->name }}</td>
+                    <td class="py-3 px-4 capitalize">{{ $student->schedule->type }}</td>
+                    <td class="py-3 px-4">{{ $student->grade ?? '--'}}</td>
+                    <td class="py-3 px-4">{{ $student->schedule->instructorBy->firstname }} {{ $student->schedule->instructorBy->lastname }}</td>
                     <td class="py-3 px-4">
-                        @if ($student->theoretical_test === 1)
+                        @if ($student->remarks === 1)
                             <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                        @elseif($student->theoretical_test === 0)
+                        @elseif($student->remarks === 0)
                             <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
                         @else
-                            --
+                            <span class="py-2 px-3 rounded-full bg-yellow-400 text-white text-sm text-nowrap">In Progress</span>
                         @endif
                     </td>
                     <td class="py-3 px-4">
-                        @if ($student->practical_test === 1)
-                            <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
-                        @elseif($student->practical_test === 0)
-                            <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                        @if($student->course->payments->status === 'paid')
+                            <a href="{{ url('/generate-student-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                                Certificate
+                            </a>
                         @else
-                            --
+                            <span class="border-2 border-gray-400 rounded-md py-1 px-2 text-gray-400 flex items-center cursor-not-allowed">
+                                Certificate
+                            </span>
                         @endif
+                        {{-- <a href="{{ url('/generate-student-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
+                            Certificate
+                        </a> --}}
                     </td>
                 </tr>
             @empty
@@ -98,14 +103,7 @@
         </x-slot:svg>
         {{session('error')}}
     </x-elements.notification>
-
-    @script
-        <script>
-            $wire.on('openStudentListNewTab', (url) => {
-                window.open(url, '_blank');
-            });
-        </script>
-    @endscript
 </div>
+
 
 
