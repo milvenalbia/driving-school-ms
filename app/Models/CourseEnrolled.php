@@ -19,6 +19,7 @@ class CourseEnrolled extends Model
         'day1_status',
         'day2_status',
         'day3_status',
+        'day4_status',
         'sessions',
         'start_date',
         'remarks',

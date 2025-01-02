@@ -254,7 +254,7 @@
                                     <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
                                         D-3
                                     </div>
-                                    <div class="day-btn <?php echo ($student->course->day3_status === 'present' ? 'present' : ''); ?>">
+                                    <div class="day-btn <?php echo ($student->course->day4_status === 'present' ? 'present' : ''); ?>">
                                         D-4
                                     </div>
                                 @endif

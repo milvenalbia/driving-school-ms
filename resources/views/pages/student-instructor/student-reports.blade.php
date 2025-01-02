@@ -110,7 +110,7 @@
                                         </button>
                                         <button
                                             class="px-2 py-1 text-sm text-nowrap border border-gray-200 rounded-r-md transition-colors duration-200 
-                                            {{ $student->course->day3_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
+                                            {{ $student->course->day4_status === 'present' ? 'bg-blue-600 text-white hover:bg-blue-700' : '' }}"
                                         >
                                             Day 4
                                         </button>
