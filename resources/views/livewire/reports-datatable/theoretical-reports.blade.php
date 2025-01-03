@@ -68,7 +68,7 @@
                         @endif
                     </td>
                     <td class="py-3 px-4">
-                        @if($student->course->payments->status === 'paid')
+                        @if($student->remarks != null && $student->course->payments->status === 'paid')
                             <a href="{{ url('/generate-student-certificate/' . $student->student->user_id . '/' . $student->id) }}" target="_blank" class="border-2 border-primary rounded-md py-1 px-2 text-primary flex items-center hover:text-white hover:bg-primary transition ease-linear">
                                 Certificate
                             </a>

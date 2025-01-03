@@ -58,7 +58,7 @@
                     <td class="py-3 px-4 ">{{$student->phone_number}}</td>
                     <td class="py-3 px-4 ">{{$student->gender ?? '--'}}</td>
                     <td class="py-3 px-4 ">{{$student->civil_status ?? '--'}}</td>
-                    <td class="py-3 px-4">
+                    {{-- <td class="py-3 px-4">
                         @if ($student->theoretical_test === 1)
                             <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
                         @elseif($student->theoretical_test === 0)
@@ -75,7 +75,46 @@
                         @else
                             --
                         @endif
+                    </td> --}}
+                    <td class="py-3 px-4">
+                        @php 
+                            $theoreticalRecord = $student->student_records()->where('type', 'theoretical')->latest('created_at')->first();
+                        @endphp
+                    
+                        @if ($theoreticalRecord) <!-- Check if the record exists -->
+                            @if (!is_null($theoreticalRecord->remarks))
+                                @if ($theoreticalRecord->remarks)
+                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                                @elseif (!$theoreticalRecord->remarks)
+                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                                @endif
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-blue-400 text-white text-sm">Enrolled</span>
+                            @endif
+                        @else
+                            --
+                        @endif
                     </td>
+                    
+                    <td class="py-3 px-4">
+                        @php 
+                            $practicalRecord = $student->student_records()->where('type', 'practical')->latest('created_at')->first();
+                        @endphp
+                    
+                        @if ($practicalRecord) <!-- Check if the record exists -->
+                            @if (!is_null($practicalRecord->remarks))
+                                @if ($practicalRecord->remarks)
+                                    <span class="py-2 px-3 rounded-full bg-success text-white text-sm">Passed</span>
+                                @elseif (!$practicalRecord->remarks)
+                                    <span class="py-2 px-3 rounded-full bg-red-400 text-white text-sm">Failed</span>
+                                @endif
+                            @else
+                                <span class="py-2 px-3 rounded-full bg-blue-400 text-white text-sm">Enrolled</span>
+                            @endif
+                        @else
+                            --
+                        @endif
+                    </td>                                     
                 </tr>
             @empty
                 <tr class="border-b border-stroke text-base">

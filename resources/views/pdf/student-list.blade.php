@@ -171,12 +171,14 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 25%;">Student ID</th>
-                    <th style="width: 20%;">Fullname</th>
-                    <th style="width: 20%;">Email</th>
-                    <th style="width: 15%;">Contact No.</th>
+                    <th style="width: 20%;">Student ID</th>
+                    <th style="width: 15%;">Fullname</th>
+                    <th style="width: 15%;">Email</th>
+                    <th style="width: 10%;">Contact No.</th>
                     <th style="width: 10%;">Gender</th>
                     <th style="width: 10%;">Civil Status</th>
+                    <th style="width: 10%;">Theoretical</th>
+                    <th style="width: 10%;">Practical</th>
                 </tr>
             </thead>
             <tbody>
@@ -188,6 +190,45 @@
                         <td>{{ $student->phone_number }}</td>
                         <td>{{ $student->gender ?? '--' }}</td>
                         <td>{{ $student->schedule->civil_status ?? '--' }}</td>
+                        <td class="py-3 px-4">
+                            @php 
+                                $theoreticalRecord = $student->student_records()->where('type', 'theoretical')->latest('created_at')->first();
+                            @endphp
+                        
+                            @if ($theoreticalRecord) <!-- Check if the record exists -->
+                                @if (!is_null($theoreticalRecord->remarks))
+                                    @if ($theoreticalRecord->remarks)
+                                        Passed
+                                    @elseif (!$theoreticalRecord->remarks)
+                                        Failed
+                                    @endif
+                                @else
+                                    Enrolled
+                                @endif
+                            @else
+                                --
+                            @endif
+                        </td>
+                        
+                        <td class="py-3 px-4">
+                            @php 
+                                $practicalRecord = $student->student_records()->where('type', 'practical')->latest('created_at')->first();
+                            @endphp
+                        
+                            @if ($practicalRecord) <!-- Check if the record exists -->
+                                @if (!is_null($practicalRecord->remarks))
+                                    @if ($practicalRecord->remarks)
+                                        Passed
+                                    @elseif (!$practicalRecord->remarks)
+                                        Failed
+                                    @endif
+                                @else
+                                    Enrolled
+                                @endif
+                            @else
+                                --
+                            @endif
+                        </td>  
                     </tr>
                 @endforeach
             </tbody>

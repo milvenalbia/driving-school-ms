@@ -216,7 +216,20 @@ class ReportsController extends Controller
 
         $student_ids = $request->input('ids');
 
-        $selectedStudents = Students::select('id', 'user_id', 'firstname', 'lastname', 'email', 'phone_number', 'gender', 'civil_status')
+        $selectedStudents = Students::with('student_records') // Eager-load student_records
+        ->select(
+            'students.id', 
+            'students.user_id', 
+            'students.firstname', 
+            'students.lastname', 
+            'students.email', 
+            'students.phone_number', 
+            'students.gender', 
+            'students.civil_status', 
+            'students.image_path', 
+            'students.theoretical_test', 
+            'students.practical_test'
+        )
         ->whereIn('id', $student_ids)
         ->get();
 

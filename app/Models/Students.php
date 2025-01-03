@@ -45,4 +45,9 @@ class Students extends Model
         return $this->hasMany(CourseEnrolled::class);
     }
 
+    public function student_records()
+    {
+        return $this->hasMany(StudentRecord::class, 'student_id', 'id');
+    }
+
 }

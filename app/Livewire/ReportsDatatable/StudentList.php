@@ -63,15 +63,39 @@ class StudentList extends Component
     private function getFilteredStudents()
     {
 
-        return Students::select('id', 'user_id', 'firstname', 'lastname', 'email', 'phone_number', 'gender', 'civil_status', 'image_path', 'theoretical_test', 'practical_test')
+        // return Students::select('id', 'user_id', 'firstname', 'lastname', 'email', 'phone_number', 'gender', 'civil_status', 'image_path', 'theoretical_test', 'practical_test')
+        // ->when($this->search, function ($query) {
+        //     $query->where('firstname', 'like', '%' . $this->search . '%')
+        //         ->orWhere('lastname', 'like', '%' . $this->search . '%')
+        //         ->orWhere('user_id', 'like', '%' .$this->search . '%')
+        //         ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']
+        //     );
+        // })
+        // ->orderBy($this->sortBy, $this->sortDirection);
+
+        return Students::with('student_records') // Eager-load student_records
+        ->select(
+            'students.id', 
+            'students.user_id', 
+            'students.firstname', 
+            'students.lastname', 
+            'students.email', 
+            'students.phone_number', 
+            'students.gender', 
+            'students.civil_status', 
+            'students.image_path', 
+            'students.theoretical_test', 
+            'students.practical_test'
+        )
         ->when($this->search, function ($query) {
-            $query->where('firstname', 'like', '%' . $this->search . '%')
-                ->orWhere('lastname', 'like', '%' . $this->search . '%')
-                ->orWhere('user_id', 'like', '%' .$this->search . '%')
-                ->orWhereRaw("CONCAT(firstname, ' ', lastname) LIKE ?", ['%' . $this->search . '%']
-            );
+            $query->where('students.firstname', 'like', '%' . $this->search . '%')
+                ->orWhere('students.lastname', 'like', '%' . $this->search . '%')
+                ->orWhere('students.user_id', 'like', '%' . $this->search . '%')
+                ->orWhereRaw("CONCAT(students.firstname, ' ', students.lastname) LIKE ?", ['%' . $this->search . '%']);
         })
         ->orderBy($this->sortBy, $this->sortDirection);
+
+
     }
 
     public function generatePDF()
